@@ -5,7 +5,6 @@ type Props = { children?: React.ReactNode };
 
 export default function PrivateRoute({ children }: Props) {
   const { currentUser } = useAuth();
-  console.log(currentUser);
   const location = useLocation();
 
   if (!currentUser) {

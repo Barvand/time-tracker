@@ -1,348 +1,73 @@
 // src/pages/EmployeeDashboard.tsx
-import { useMemo, useState } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import HourReview from "../components/HourReview";
-import { fetchProjects } from "../api/projects";
-// import { createWorkLog } from "../api/logs"; // <-- implement this to hit your backend
+import { useState } from "react";
 import { useAuth } from "../features/auth/useAuth";
+import { GetProjects } from "../api/projects";
+import { useCreateHour } from "../api/hours";
+import HourForm from "../components/employee/TimeEntryForm";
+import type { HourFormValues } from "../components/employee/TimeEntryForm";
+import HourReview from "../components/employee/HourReview";
+import WeekNavigator from "../components/employee/WeekNavigator";
+import { getISOWeek } from "../utils/date";
 
-interface LogFormData {
-  projectId: string;
-  date: string;
-  startTime: string;
-  endTime: string;
-  breakMinutes: number;
-  note: string;
-}
-
-function EmployeeDashboard() {
-  const queryClient = useQueryClient();
+export default function EmployeeDashboard() {
   const { currentUser } = useAuth();
+  const userId = currentUser?.user.userId;
+  console.log(userId);
+  const { data: projects = [], isLoading, error } = GetProjects();
+  const createHour = useCreateHour(userId);
 
-  const {
-    data: projects = [],
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ["projects"],
-    queryFn: fetchProjects,
-  });
-
-  const [formData, setFormData] = useState<LogFormData>({
-    projectId: "",
-    date: "",
-    startTime: "",
-    endTime: "",
-    breakMinutes: 0,
-    note: "",
-  });
-  const [submitting, setSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
-
-  // which identifier to use for logs (adapt to your API later)
-  const userIdForLogs =
-    (currentUser as any)?.id ??
-    (currentUser as any)?.userId ??
-    currentUser?.username ??
-    currentUser?.email ??
-    null;
-
-  // week selector (for HourReview)
   const [weekOffset, setWeekOffset] = useState(0);
 
-  // live preview of worked hours
-  const preview = useMemo(() => {
-    if (!formData.date || !formData.startTime || !formData.endTime) return null;
-    const start = new Date(`${formData.date}T${formData.startTime}`);
-    const end = new Date(`${formData.date}T${formData.endTime}`);
-    const ms = end.getTime() - start.getTime() - formData.breakMinutes * 60_000;
-    const hours = Math.round((ms / 3_600_000) * 100) / 100;
-    if (!isFinite(hours)) return null;
-    return {
-      startStr: formData.startTime,
-      endStr: formData.endTime,
-      breakStr: `${formData.breakMinutes || 0} minutes`,
-      hours,
-      valid: hours > 0,
-    };
-  }, [formData]);
-
-  const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: name === "breakMinutes" ? Number(value) : value,
-    }));
-  };
-
-  const handleSubmit = async () => {
-    setSubmitting(true);
-    setSubmitError(null);
-    setSuccessMessage(null);
-
-    try {
-      if (!userIdForLogs) {
-        setSubmitError("You must be logged in.");
-        setSubmitting(false);
-        return;
-      }
-
-      const start = new Date(`${formData.date}T${formData.startTime}`);
-      const end = new Date(`${formData.date}T${formData.endTime}`);
-      const breakMs = formData.breakMinutes * 60 * 1000;
-      const hoursWorked =
-        (end.getTime() - start.getTime() - breakMs) / (1000 * 60 * 60);
-
-      if (hoursWorked <= 0) {
-        setSubmitError(
-          "End time must be after start time, accounting for breaks."
-        );
-        setSubmitting(false);
-        return;
-      }
-
-      // // Call your backend (implement createWorkLog)
-      // await createWorkLog({
-      //   userId: userIdForLogs,
-      //   userName:
-      //     currentUser?.name ||
-      //     currentUser?.username ||
-      //     currentUser?.email ||
-      //     "Unknown",
-      //   projectId: formData.projectId,
-      //   date: formData.date, // YYYY-MM-DD
-      //   startTime: formData.startTime, // HH:mm
-      //   endTime: formData.endTime, // HH:mm
-      //   breakMinutes: formData.breakMinutes, // number
-      //   hoursAdded: Math.round(hoursWorked * 100) / 100,
-      //   note: formData.note || "",
-      // });
-
-      setSuccessMessage("Hours logged successfully!");
-      setFormData({
-        projectId: "",
-        date: "",
-        startTime: "",
-        endTime: "",
-        breakMinutes: 0,
-        note: "",
-      });
-
-      await queryClient.invalidateQueries({
-        queryKey: ["logs", "user", userIdForLogs],
-      });
-    } catch (err: any) {
-      console.error(err);
-      setSubmitError(
-        err?.response?.data?.message || err?.message || "Something went wrong."
-      );
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  if (isLoading) return <p className="p-6">Loading projects...</p>;
-  if (error)
-    return (
-      <p className="p-6 text-red-600">
-        Error: {error ? (error as any).message : null}
-      </p>
-    );
-
-  // ISO week calc for header
-  const current = new Date();
-  const monday = new Date(current);
-  const day = (current.getDay() + 6) % 7; // 0=Mon
-  monday.setDate(current.getDate() - day + weekOffset * 7);
+  const now = new Date();
+  const monday = new Date(now);
+  const day = (now.getDay() + 6) % 7;
+  monday.setDate(now.getDate() - day + weekOffset * 7);
   const weekNumber = getISOWeek(monday);
+
+  const handleSubmit = async (v: HourFormValues) => {
+    await createHour.mutateAsync({
+      userId,
+      projectsId: Number(v.projectId),
+      startTime: new Date(`${v.date}T${v.startTime}`).toISOString(),
+      endTime: new Date(`${v.date}T${v.endTime}`).toISOString(),
+      breakMinutes: v.breakMinutes,
+      note: v.note || undefined,
+    });
+  };
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10">
-      {/* Title */}
       <h1 className="text-center text-3xl font-semibold">Employee dashboard</h1>
 
-      {/* Greeting + Two-column layout */}
       <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-[1fr,420px]">
-        {/* LEFT: form column */}
         <div>
           <h2 className="text-2xl font-bold">
             Hi {currentUser?.name || currentUser?.username || "there"}, how are
             you today?
           </h2>
 
-          {/* Project card */}
-          <section className="mt-6 rounded-lg bg-neutral-100 p-6">
-            <h3 className="text-2xl font-semibold">
-              What project are you working on?
-            </h3>
-            <p className="mt-1 text-sm">Select project from the dropdown</p>
-            <select
-              name="projectId"
-              value={formData.projectId}
-              onChange={handleChange}
-              className="mt-3 w-full rounded border bg-white p-3"
-            >
-              <option value="">Select…</option>
-              {projects.map((project: any) => (
-                <option
-                  key={project.id ?? project.$id ?? project.name}
-                  value={project.id ?? project.$id}
-                >
-                  {project.name}
-                </option>
-              ))}
-            </select>
-          </section>
-
-          <div className="pt-2">
-            <p className="text-red-500 font-bold">
-              Use your keyboard to enter the hours. e.g. 08:00 - 16:00
-            </p>
-          </div>
-
-          {/* Times row */}
-          <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-3">
-            <section className="rounded-lg bg-neutral-100 p-4">
-              <label className="block text-sm font-medium">
-                What time did you start work?
-              </label>
-              <input
-                type="time"
-                name="startTime"
-                value={formData.startTime}
-                onChange={handleChange}
-                className="mt-2 w-full rounded border bg-white p-2"
-              />
-            </section>
-
-            <section className="rounded-lg bg-neutral-100 p-4">
-              <label className="block text-sm font-medium">
-                What time did you end work?
-              </label>
-              <input
-                type="time"
-                name="endTime"
-                value={formData.endTime}
-                onChange={handleChange}
-                className="mt-2 w-full rounded border bg-white p-2"
-              />
-            </section>
-
-            <section className="rounded-lg bg-neutral-100 p-4">
-              <label className="block text-sm font-medium">
-                Did you take a break?
-              </label>
-              <input
-                type="number"
-                min={0}
-                name="breakMinutes"
-                value={formData.breakMinutes}
-                onChange={handleChange}
-                className="mt-2 w-full rounded border bg-white p-2"
-                placeholder="Break (minutes)"
-              />
-            </section>
-          </div>
-
-          {/* Date picker + submit */}
-          <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-end">
-            <div className="sm:w-60">
-              <label className="block text-sm font-medium">Date</label>
-              <input
-                type="date"
-                name="date"
-                value={formData.date}
-                onChange={handleChange}
-                className="mt-2 w-full rounded border bg-white p-2"
-              />
-            </div>
-
-            <button
-              disabled={submitting}
-              onClick={handleSubmit}
-              className="mt-2 inline-flex h-11 items-center justify-center rounded bg-emerald-500 px-5 font-medium text-white transition hover:bg-emerald-600 disabled:opacity-50 sm:mt-0"
-            >
-              {submitting ? "Submitting…" : "Submit your working day"}
-            </button>
-          </div>
-
-          {/* Error / success */}
-          {submitError && (
-            <p className="mt-3 text-sm text-red-600">{submitError}</p>
-          )}
-          {successMessage && (
-            <p className="mt-3 text-sm text-emerald-700">{successMessage}</p>
-          )}
-
-          {/* Preview / status card */}
-          <section className="mt-6 rounded-lg bg-neutral-100 p-6">
-            {preview && preview.valid ? (
-              <>
-                <p className="mt-3 text-sm">
-                  You have worked today from <b>{preview.startStr}</b> to{" "}
-                  <b>{preview.endStr}</b> and you took a break of{" "}
-                  <b>{preview.breakStr}</b>.<br />
-                  In total you have worked for <b>{preview.hours} hours</b>
-                </p>
-                <button
-                  onClick={() =>
-                    window.scrollTo({ top: 0, behavior: "smooth" })
-                  }
-                  className="mt-4 text-sm font-medium text-red-600 underline"
-                >
-                  Edit your workday
-                </button>
-              </>
-            ) : (
-              <p className="mt-2 text-sm font-bold">
-                Fill out the form above to see a preview here.
-              </p>
-            )}
-          </section>
+          <HourForm
+            projects={projects}
+            projectsLoading={isLoading}
+            projectsError={error}
+            submitting={createHour.isPending}
+            successMsg={
+              createHour.isSuccess ? "Hours logged successfully!" : null
+            }
+            errorMsg={(createHour.error as any)?.message ?? null}
+            onSubmit={handleSubmit}
+          />
         </div>
 
-        {/* RIGHT: review column */}
         <aside className="rounded-lg bg-neutral-100 p-6 lg:sticky lg:top-8 lg:h-fit">
-          <div className="mb-4 flex items-center justify-center gap-6">
-            <button
-              onClick={() => setWeekOffset((w) => w - 1)}
-              aria-label="Previous week"
-            >
-              ←
-            </button>
-            <h3 className="text-2xl font-bold">Week {weekNumber}</h3>
-            <button
-              onClick={() => setWeekOffset((w) => w + 1)}
-              aria-label="Next week"
-            >
-              →
-            </button>
-          </div>
-
-          {userIdForLogs && (
-            <HourReview userId={userIdForLogs} weekOffset={weekOffset} />
-          )}
+          <WeekNavigator
+            weekNumber={weekNumber}
+            onPrev={() => setWeekOffset((w) => w - 1)}
+            onNext={() => setWeekOffset((w) => w + 1)}
+          />
+          {userId && <HourReview userId={userId} weekOffset={weekOffset} />}
         </aside>
       </div>
     </div>
   );
-}
-
-export default EmployeeDashboard;
-
-/** Helpers */
-function getISOWeek(d: Date) {
-  const date = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
-  const dayNum = date.getUTCDay() || 7;
-  date.setUTCDate(date.getUTCDate() + 4 - dayNum);
-  const yearStart = new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
-  const weekNo = Math.ceil(
-    ((date.getTime() - yearStart.getTime()) / 86400000 + 1) / 7
-  );
-  return weekNo;
 }

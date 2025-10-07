@@ -1,8 +1,8 @@
 import React from "react";
 import type { UseMutationResult } from "@tanstack/react-query";
-import ProjectForm from "../ProjectForm";
+import ProjectForm from "./ProjectForm";
 
-export type ProjectStatus = "active" | "completed" | "inactive";
+export type ProjectStatus = "inaktiv" | "aktiv" | "avsluttet";
 
 export interface ProjectFormData {
   name: string;

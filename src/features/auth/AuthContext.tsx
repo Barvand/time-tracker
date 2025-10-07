@@ -2,7 +2,7 @@ import React, { createContext, useEffect, useMemo, useState } from "react";
 import { makeRequest } from "../../axios";
 
 export type User = {
-  id: string;
+  userId: string;
   name: string;
   email: string;
   username: string;

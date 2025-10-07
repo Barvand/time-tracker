@@ -1,7 +1,6 @@
 // src/pages/Dashboard.tsx
-import React, { useState } from "react";
-import ProjectForm from "../components/ProjectForm";
-import ProjectItem from "../components/ProjectItem";
+import { useState } from "react";
+import ProjectItem from "../components/projects/ProjectItem";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import type { Project } from "../types";
 import { useAuth } from "../features/auth/useAuth";

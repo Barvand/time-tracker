@@ -9,9 +9,10 @@ export type Project = {
   totalHours: number | null;
   startDate: string | null; // "YYYY-MM-DD"
   endDate: string | null; // replaces completionDate
-  // Optional if you later add audit columns
-  createdAt?: string; // ISO or "YYYY-MM-DD HH:mm:ss"
-  updatedAt?: string;
+};
+
+export type ProjectId = {
+  projectId: string;
 };
 
 export type CreateProjectInput = {

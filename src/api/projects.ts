@@ -1,75 +1,65 @@
-// api/projects.ts
-import {
-  databases,
-  DB_ID,
-  PROJECTS_COLLECTION,
-  account,
-} from "../lib/appwrite";
-import { Query, ID } from "appwrite";
-import type { Project } from "../types.ts";
+// src/api/projects.ts
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { makeRequest } from "../axios";
+import type { Project } from "../types";
+import type { ProjectId } from "../types";
 
-export async function fetchProjects(): Promise<Project[]> {
-  const res = await databases.listDocuments(DB_ID, PROJECTS_COLLECTION, [
-    Query.orderDesc("$createdAt"),
-    Query.limit(100),
-  ]);
-  // Normalize boolean for UI (status drives isActive)
-  const docs = res.documents as any[];
-  return docs.map((d) => ({
-    ...d,
-    isActive: d?.status ? d.status === "active" : !!d?.isActive,
-  })) as Project[];
+export function GetProjects() {
+  return useQuery<Project[], Error>({
+    queryKey: ["projects"],
+    queryFn: async () => (await makeRequest.get("/projects")).data,
+    staleTime: 60_000,
+  });
 }
 
-export type NewProjectInput = {
-  name: string;
-  description?: string;
-  client?: string;
-  totalHours?: number;
-  initialHours?: number;
-};
-
-export async function createProject(data: NewProjectInput) {
-  const currentUser = await account.get();
-  if (!currentUser) {
-    throw new Error("User not authenticated");
-  }
-  const payload: any = {
-    name: data.name,
-    description: data.description ?? "",
-    totalHours: data.totalHours ?? 0,
-    createdBy: currentUser.$id,
-  };
-
-  // 1) create
-  const created: any = await databases.createDocument(
-    DB_ID,
-    PROJECTS_COLLECTION,
-    ID.unique(),
-    payload
-  );
-
-  return created as Project;
-
-  // Optionally also set 'id' to that human number as a string:
-  const updated = await databases.updateDocument(
-    DB_ID,
-    PROJECTS_COLLECTION,
-    ID.unique(),
-    payload
-  );
-
-  return updated;
+export function GetProjectById(projectId: ProjectId) {
+  return useQuery<Project, Error>({
+    queryKey: ["project", projectId],
+    queryFn: async () => {
+      const response = await makeRequest.get(`/projects/${projectId}`);
+      return response.data;
+    },
+    enabled: !!projectId, // prevents query from running if projectId is undefined/null
+    staleTime: 60_000, // 1 minute
+  });
 }
 
-export async function updateProject(
-  id: string,
-  patch: Partial<
-    Omit<
-      Project,
-      "$id" | "$databaseId" | "$collectionId" | "$createdAt" | "$updatedAt"
-    >
-  >
-) {
-  return databases.updateDocument(DB_ID, PROJECTS_COLLECTION, id, patch);
+export type UpdateProjectInput = Partial<
+  Pick<Project, "name" | "description" | "status" | "startDate" | "endDate">
+>;
+
+export function useUpdateProject() {
+  const qc = useQueryClient();
+  return useMutation({
+    // payload: { id, data }
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: string | number;
+      data: UpdateProjectInput;
+    }) => {
+      const res = await makeRequest.put(`/projects/${id}`, data);
+      return res.data as Project;
+    },
+    onSuccess: (updated) => {
+      // keep single-project view fresh
+      qc.setQueryData(["project", String(updated.id)], updated);
+      // and refresh the projects list
+      qc.invalidateQueries({ queryKey: ["projects"] });
+    },
+  });
+}
+
+export function useDeleteProject() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string | number) => {
+      await makeRequest.delete(`/projects/${id}`);
+      return id;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["projects"] });
+    },
+  });
 }
