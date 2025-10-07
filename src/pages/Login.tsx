@@ -15,7 +15,6 @@ export default function Login() {
     setError("");
     try {
       const user = await login({ email, password });
-      console.log(user);
       if (user.role === "admin") navigate("/admin-dashboard");
       else if (user.role === "accountant") navigate("/accountant-dashboard");
       else navigate("/employee-dashboard");
