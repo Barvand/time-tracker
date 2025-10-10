@@ -1,7 +1,11 @@
 @import "tailwindcss";
-
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+Runic&display=swap");
 @theme {
   --main-color: #2c3e50;
+}
+
+body {
+  color: #173a5e;
 }
 
 .custom-nav {
@@ -15,4 +19,9 @@
   font-size: 1.5rem;
   height: 200px;
   clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 75%);
+}
+
+h1 {
+  font-family: "Noto Sans Runic", sans-serif;
+  font-style: normal;
 }

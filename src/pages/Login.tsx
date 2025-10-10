@@ -11,6 +11,8 @@ export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
+  const { user } = useAuth();
+
   // Login.tsx
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -18,9 +20,9 @@ export default function Login() {
     setError("");
     try {
       await login(email, password);
-      // Assuming login sets the user in context and redirects based on role elsewhere,
-      // or you can fetch the user from context after login if needed.
-      navigate("/", { replace: true }); // Redirect to a default page or dashboard
+      if (user?.role === "admin") {
+        navigate("/admin/dashboard", { replace: true });
+      } else navigate("/employee/dashboard", { replace: true });
     } catch (err: any) {
       setError(err?.response?.data?.message || err?.message || "Login failed");
     } finally {

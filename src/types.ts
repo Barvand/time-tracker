@@ -22,3 +22,11 @@ export type CreateProjectInput = {
   startDate?: string;
   completionDate?: string;
 };
+
+
+export const ROLES = ["admin", "employee", "accountant"] as const;
+export type Role = (typeof ROLES)[number];
+
+export function isRole(x: string): x is Role {
+  return (ROLES as readonly string[]).includes(x);
+}

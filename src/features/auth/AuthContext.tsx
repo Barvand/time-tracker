@@ -2,6 +2,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { makeRequest } from "../../axios";
 import { setAccessToken as setTokenBus } from "../auth/tokenBus";
+import type { Role } from "../../types";
 type User = { id: number; email: string; username: string; role: string };
 type AuthCtx = {
   user: User | null;
@@ -9,6 +10,7 @@ type AuthCtx = {
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   bootstrapped: boolean;
+  role: Role;
 };
 
 export const AuthContext = createContext<AuthCtx>(null as unknown as AuthCtx);
