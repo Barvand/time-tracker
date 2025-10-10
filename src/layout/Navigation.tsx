@@ -1,6 +1,9 @@
 import { Link } from "react-router-dom";
+import { useAuth } from "../features/auth/useAuth";
 
 function Navigation() {
+  const { logout } = useAuth();
+
   return (
     <nav className="custom-nav flex justify-between items-center p-4 bg-gray-100">
       <div>
@@ -22,6 +25,9 @@ function Navigation() {
         >
           Admin dashboard
         </Link>
+        <button className="cursor-pointer" onClick={logout}>
+          Logout
+        </button>
       </ul>
     </nav>
   );

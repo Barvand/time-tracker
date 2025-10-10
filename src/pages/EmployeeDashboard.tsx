@@ -10,8 +10,8 @@ import WeekNavigator from "../components/employee/WeekNavigator";
 import { getISOWeek } from "../utils/date";
 
 export default function EmployeeDashboard() {
-  const { currentUser } = useAuth();
-  const userId = currentUser?.user.userId;
+  const { user } = useAuth();
+  const userId = user?.userId;
   console.log(userId);
   const { data: projects = [], isLoading, error } = GetProjects();
   const createHour = useCreateHour(userId);
@@ -42,8 +42,7 @@ export default function EmployeeDashboard() {
       <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-[1fr,420px]">
         <div>
           <h2 className="text-2xl font-bold">
-            Hi {currentUser?.name || currentUser?.username || "there"}, how are
-            you today?
+            Hi {user?.name || user?.username || "there"}, how are you today?
           </h2>
 
           <HourForm

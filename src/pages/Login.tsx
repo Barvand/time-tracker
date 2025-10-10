@@ -7,21 +7,24 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { login } = useAuth();
+  const navigate = useNavigate();
 
+  // Login.tsx
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
     setError("");
     try {
-      const user = await login({ email, password });
-      if (user.role === "admin") navigate("/admin-dashboard");
-      else if (user.role === "accountant") navigate("/accountant-dashboard");
-      else navigate("/employee-dashboard");
+      await login(email, password);
+      // Assuming login sets the user in context and redirects based on role elsewhere,
+      // or you can fetch the user from context after login if needed.
+      navigate("/", { replace: true }); // Redirect to a default page or dashboard
     } catch (err: any) {
-      const msg =
-        err?.response?.data?.message || err?.message || "Login failed";
-      setError(msg);
+      setError(err?.response?.data?.message || err?.message || "Login failed");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -33,6 +36,7 @@ export default function Login() {
       password={password}
       setPassword={setPassword}
       error={error}
+      isSubmitting={isSubmitting}
     />
   );
 }

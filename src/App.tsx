@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navigation from "./layout/Navigation";
 import Login from "./pages/Login";
 import ProjectDetails from "./components/projects/ProjectDetails";
-import PrivateRoute from "./app/PrivateRoute";
 import EmployeeDashboard from "./pages/EmployeeDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import Register from "./pages/RegisterPage";
@@ -17,57 +16,18 @@ function App() {
         <main className="container mx-auto py-4">
           <Routes>
             <Route path="/login" element={<Login />} />
-            <Route
-              path="/admin/register"
-              element={
-                <PrivateRoute>
-                  <Register />
-                </PrivateRoute>
-              }
-            />
+            <Route path="/admin/register" element={<Register />} />
             {/* Example: Protected route with a form */}
-            <Route
-              path="admin/projects/:id"
-              element={
-                <PrivateRoute>
-                  <ProjectDetails />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/employee-dashboard"
-              element={
-                <PrivateRoute>
-                  <EmployeeDashboard />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/admin-dashboard"
-              element={
-                <PrivateRoute>
-                  <AdminDashboard />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/admin-dashboard/reports"
-              element={
-                <PrivateRoute>
-                  <AdminReports />
-                </PrivateRoute>
-              }
-            />
-            // in your router
+            <Route path="admin/projects/:id" element={<ProjectDetails />} />
+            <Route path="/employee-dashboard" element={<EmployeeDashboard />} />
+            <Route path="/admin-dashboard" element={<AdminDashboard />} />
+            <Route path="/admin-dashboard/reports" element={<AdminReports />} />
             <Route
               path="admin-dashboard/reports/projects/:projectId"
               element={<AdminReports />}
             />
             {/* Default route */}
-            <Route
-              path="/"
-              element={<PrivateRoute>{<AdminDashboard />}</PrivateRoute>}
-            />
+            <Route path="/" element={<AdminDashboard />} />
           </Routes>
         </main>
       </div>

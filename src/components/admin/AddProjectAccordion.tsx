@@ -1,6 +1,7 @@
 import React from "react";
 import type { UseMutationResult } from "@tanstack/react-query";
 import ProjectForm from "./ProjectForm";
+import type { AxiosError } from "axios";
 
 export type ProjectStatus = "inaktiv" | "aktiv" | "avsluttet";
 
@@ -77,7 +78,10 @@ const AddProjectAccordion: React.FC<AddProjectAccordionProps> = ({
 
           {createMutation.isError && (
             <div className="mt-2 text-red-600 text-sm">
-              {(createMutation.error as any)?.message ||
+              {(createMutation.error as AxiosError<any>)?.response?.data
+                ?.message ??
+                (createMutation.error as AxiosError<any>)?.response?.data
+                  ?.errors?.[0]?.message ??
                 "Kunne ikke opprette prosjekt."}
             </div>
           )}

@@ -5,6 +5,7 @@ type LoginFormProps = {
   password: string;
   setPassword: React.Dispatch<React.SetStateAction<string>>;
   error?: string | null;
+  isSubmitting: boolean;
 };
 
 function LoginForm({
@@ -14,6 +15,7 @@ function LoginForm({
   password,
   setPassword,
   error,
+  isSubmitting,
 }: LoginFormProps) {
   return (
     <div className="flex items-center justify-center px-4">
@@ -56,9 +58,10 @@ function LoginForm({
           </div>
           <button
             type="submit"
+            disabled={isSubmitting}
             className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
           >
-            Log In
+            {isSubmitting ? "Login in..." : "Login"}
           </button>
         </form>
       </div>

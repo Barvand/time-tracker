@@ -3,7 +3,6 @@ import { useState } from "react";
 import ProjectItem from "../components/projects/ProjectItem";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import type { Project } from "../types";
-import { useAuth } from "../features/auth/useAuth";
 import { makeRequest } from "../axios";
 import RefetchDataBtn from "../components/admin/refetchDataBtn";
 import FilterTabs from "../components/admin/FilterTabs";
@@ -23,8 +22,6 @@ const TAB_CONFIG = {
 } as const;
 
 export default function Dashboard() {
-  const { currentUser } = useAuth();
-
   const [activeTab, setActiveTab] = useState<
     "active" | "completed" | "inactive"
   >("active");
@@ -78,7 +75,6 @@ export default function Dashboard() {
         startDate: startDate || null,
         endDate: completionDate || null,
       });
-
       try {
         if (currentUser?.id) {
           await makeRequest.post(`/projects/${created.id}/logs`, {
@@ -90,7 +86,7 @@ export default function Dashboard() {
           });
         }
       } catch (e) {
-        console.warn("Could not write project log", e);
+        console.log("Could not write project log", e);
       }
 
       return created;

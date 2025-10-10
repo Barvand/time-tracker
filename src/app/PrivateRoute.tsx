@@ -1,15 +1,9 @@
-import { Navigate, Outlet, useLocation } from "react-router-dom";
+// ProtectedRoute.tsx
+import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "../features/auth/useAuth";
 
-type Props = { children?: React.ReactNode };
-
-export default function PrivateRoute({ children }: Props) {
-  const { currentUser } = useAuth();
-  const location = useLocation();
-
-  if (!currentUser) {
-    return <Navigate to="/login" replace state={{ from: location }} />;
-  }
-  // works with either <PrivateRoute><Page/></PrivateRoute> or <Route element={<PrivateRoute/>} />
-  return children ? <>{children}</> : <Outlet />;
+export default function ProtectedRoute() {
+  const { user, bootstrapped } = useAuth();
+  if (!bootstrapped) return null; // or a spinner
+  return user ? <Outlet /> : <Navigate to="/login" replace />;
 }

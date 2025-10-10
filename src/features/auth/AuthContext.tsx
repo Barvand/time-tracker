@@ -1,57 +1,75 @@
-import React, { createContext, useEffect, useMemo, useState } from "react";
+// AuthProvider.tsx
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { makeRequest } from "../../axios";
-
-export type User = {
-  userId: string;
-  name: string;
-  email: string;
-  username: string;
-  password: string;
-  role: "admin" | "employee" | "accountant";
+import { setAccessToken as setTokenBus } from "../auth/tokenBus";
+type User = { id: number; email: string; username: string; role: string };
+type AuthCtx = {
+  user: User | null;
+  accessToken: string | null;
+  login: (email: string, password: string) => Promise<void>;
+  logout: () => Promise<void>;
+  bootstrapped: boolean;
 };
 
-type Credentials = { email: string; password: string };
+export const AuthContext = createContext<AuthCtx>(null as unknown as AuthCtx);
+export const useAuth = () => useContext(AuthContext);
 
-type AuthContextType = {
-  currentUser: User | null;
-  login: (payload: Credentials) => Promise<User>;
-  logout: () => void;
-};
-
-export const AuthContext = createContext<AuthContextType | undefined>(
-  undefined
-);
-
-export function AuthContextProvider({
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
-}: {
-  children: React.ReactNode;
-}) {
-  const [currentUser, setCurrentUser] = useState<User | null>(() => {
-    try {
-      const raw = localStorage.getItem("user");
-      return raw ? (JSON.parse(raw) as User) : null;
-    } catch {
-      return null;
-    }
-  });
+}) => {
+  const [user, setUser] = useState<User | null>(null);
+  const [accessToken, setAccessToken] = useState<string | null>(null);
+  const [bootstrapped, setBootstrapped] = useState(false);
 
-  const login = async (payload: Credentials): Promise<User> => {
-    const { data } = await makeRequest.post<User>("/auth/login", payload);
-    setCurrentUser(data);
-    return data;
-  };
-
-  const logout = () => {
-    setCurrentUser(null);
-    localStorage.removeItem("user");
-  };
-
+  // 1) On first load, try to mint a fresh access token using the HttpOnly refresh cookie
   useEffect(() => {
-    if (currentUser) localStorage.setItem("user", JSON.stringify(currentUser));
-    else localStorage.removeItem("user");
-  }, [currentUser]);
+    (async () => {
+      try {
+        // must hit your API base, with credentials
+        const { data } = await makeRequest.post("/auth/refresh", null, {
+          withCredentials: true,
+        });
 
-  const value = useMemo(() => ({ currentUser, login, logout }), [currentUser]);
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-}
+        setTokenBus(data.accessToken); // <-- CRITICAL on reload
+        setAccessToken(data.accessToken);
+
+        const me = await makeRequest.get("/auth/me"); // header added by interceptor
+        setUser(me.data.user);
+      } catch (e) {
+        // refresh failed -> stay logged out
+        setUser(null);
+        setAccessToken(null);
+        setTokenBus(null);
+      } finally {
+        setBootstrapped(true);
+      }
+    })();
+  }, []);
+
+  const login = async (email: string, password: string) => {
+    const { data } = await makeRequest.post(
+      "/auth/login",
+      { email, password },
+      { withCredentials: true } // <-- REQUIRED to receive HttpOnly cookie
+    );
+    setTokenBus(data.accessToken);
+    setAccessToken(data.accessToken);
+    setUser(data.user);
+  };
+
+  const logout = async () => {
+    await makeRequest.post("/auth/logout", null, { withCredentials: true });
+    setAccessToken(null);
+    setUser(null);
+    setTokenBus(null); // <-- add this
+  };
+  if (!bootstrapped) return null; // or a small loader
+
+  return (
+    <AuthContext.Provider
+      value={{ user, accessToken, login, logout, bootstrapped }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
+};
