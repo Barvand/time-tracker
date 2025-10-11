@@ -12,7 +12,6 @@ import {
 
 const ProjectDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  console.log(id);
   const navigate = useNavigate();
 
   // load the project
@@ -219,7 +218,7 @@ const ProjectDetails: React.FC = () => {
       </div>
 
       {/* Reports for this project */}
-      <ProjectReportPage projectId={id!} />
+      <ProjectReportPage id={id!} />
     </>
   );
 };

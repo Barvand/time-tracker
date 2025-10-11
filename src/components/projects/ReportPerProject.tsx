@@ -1,43 +1,49 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useParams, Link } from "react-router-dom";
 import { GetProjectHours, GetProjectHoursByUser } from "../../api/reports";
 import { GetProjectById } from "../../api/projects";
 
-type Props = { projectId?: string };
+interface ProjectReportPageProps {
+  id?: string;
+}
 
-export default function ProjectReportPage({ projectId: propId }: Props) {
-  // if not passed as a prop, fall back to URL params
-  const params = useParams();
-  const projectId = propId ?? params.projectId ?? params.id;
+export default function ProjectReportPage({ id }: ProjectReportPageProps) {
+  // match your route param names exactly (usually ":projectId" or ":id")
+  const { projectId } = useParams<{ projectId?: string; id?: string }>();
+  const resolvedId = projectId ?? id;
+
+  if (!resolvedId) {
+    return <div>Missing project id</div>;
+  }
 
   const {
     data: project,
     isLoading: isProjectLoading,
     error: projectError,
-  } = GetProjectById(projectId);
+  } = GetProjectById(resolvedId);
 
   const {
     data: rows = [],
     isLoading: isRowsLoading,
     error: rowsError,
-  } = GetProjectHours(projectId);
+  } = GetProjectHours(resolvedId);
 
   const {
     data: byUser = [],
     isLoading: isByUserLoading,
     error: byUserError,
-  } = GetProjectHoursByUser(projectId);
+  } = GetProjectHoursByUser(resolvedId);
 
   const totals = useMemo(
     () => ({ total: rows.reduce((s, r) => s + Number(r.hoursWorked ?? 0), 0) }),
     [rows]
   );
+
   return (
     <div className="mx-auto max-w-6xl p-6">
-      {/* Page header */}
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-2xl font-semibold">
-          Project Report #{projectId}
+          Project Report #{resolvedId}
           {project ? ` — ${project.name}` : ""}
         </h1>
         <Link to="/projects" className="text-blue-600 hover:underline">
@@ -45,7 +51,6 @@ export default function ProjectReportPage({ projectId: propId }: Props) {
         </Link>
       </div>
 
-      {/* Project info card */}
       <div className="mb-6 rounded border p-4 bg-white">
         {isProjectLoading ? (
           <p>Loading project…</p>
@@ -97,7 +102,6 @@ export default function ProjectReportPage({ projectId: propId }: Props) {
         ) : null}
       </div>
 
-      {/* Summary by user */}
       <div className="mb-6 overflow-x-auto rounded border">
         {isByUserLoading ? (
           <p className="p-3">Loading summary…</p>
@@ -137,7 +141,6 @@ export default function ProjectReportPage({ projectId: propId }: Props) {
         )}
       </div>
 
-      {/* Detailed entries */}
       {isRowsLoading ? (
         <p>Loading entries…</p>
       ) : rowsError ? (

@@ -25,6 +25,9 @@ export default function EmployeeDashboard() {
   const weekNumber = getISOWeek(monday);
 
   const handleSubmit = async (v: HourFormValues) => {
+    if (!userId) {
+      throw new Error("User ID is required to log hours.");
+    }
     await createHour.mutateAsync({
       userId,
       projectsId: Number(v.projectId),
@@ -42,7 +45,7 @@ export default function EmployeeDashboard() {
       <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-[1fr,420px]">
         <div>
           <h2 className="text-2xl font-bold">
-            Hi {user?.name || user?.username || "there"}, how are you today?
+            Hi {user?.username || user?.username || "there"}, how are you today?
           </h2>
 
           <HourForm

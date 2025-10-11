@@ -2,7 +2,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { makeRequest } from "../axios";
 import type { Project } from "../types";
-import type { ProjectId } from "../types";
+
 
 export function GetProjects() {
   return useQuery<Project[], Error>({
@@ -12,7 +12,7 @@ export function GetProjects() {
   });
 }
 
-export function GetProjectById(projectId: ProjectId) {
+export function GetProjectById(projectId: any) {
   return useQuery<Project, Error>({
     queryKey: ["project", projectId],
     queryFn: async () => {

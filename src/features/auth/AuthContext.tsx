@@ -3,7 +3,7 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { makeRequest } from "../../axios";
 import { setAccessToken as setTokenBus } from "../auth/tokenBus";
 import type { Role } from "../../types";
-type User = { id: number; email: string; username: string; role: string };
+type User = { userId: number; email: string; username: string; role: string };
 type AuthCtx = {
   user: User | null;
   accessToken: string | null;
@@ -67,9 +67,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   };
   if (!bootstrapped) return null; // or a small loader
 
+  // Derive the role from the user or set a default value
+  const role: Role = (user?.role as Role) || "user";
+
   return (
     <AuthContext.Provider
-      value={{ user, accessToken, login, logout, bootstrapped }}
+      value={{ user, accessToken, login, logout, bootstrapped, role }}
     >
       {children}
     </AuthContext.Provider>

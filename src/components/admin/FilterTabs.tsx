@@ -1,16 +1,26 @@
-function FilterTabs({ projects, activeTab, setActiveTab, TAB_CONFIG }) {
-  // ---- filter by tab + search
+type TabConfigItem = {
+  label: string;
+  filter: (project: any) => boolean; // TODO: replace any
+  active?: boolean;
+};
 
+type FilterTabsProps = {
+  projects: any[];                   // TODO: replace any
+  activeTab: string;
+  setActiveTab: React.Dispatch<React.SetStateAction<any>>;
+  TAB_CONFIG: Record<string, TabConfigItem>;
+};
+
+function FilterTabs({
+  projects,
+  activeTab,
+  setActiveTab,
+  TAB_CONFIG,
+}: FilterTabsProps) {
   return (
     <div className="max-w-4xl mx-auto">
-      {/* Header */}
-      {/* Tabs */}
       <div className="flex mb-4 space-x-4">
-        {(
-          Object.entries(TAB_CONFIG) as Array<
-            [keyof typeof TAB_CONFIG, (typeof TAB_CONFIG)["active"]]
-          >
-        ).map(([key, cfg]) => {
+        {Object.entries(TAB_CONFIG).map(([key, cfg]) => {
           const count = projects.filter(cfg.filter).length;
           return (
             <button

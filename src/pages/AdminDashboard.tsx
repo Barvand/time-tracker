@@ -8,6 +8,7 @@ import RefetchDataBtn from "../components/admin/refetchDataBtn";
 import FilterTabs from "../components/admin/FilterTabs";
 import SearchBar from "../components/admin/searchBar";
 import AddProjectAccordion from "../components/admin/AddProjectAccordion";
+import { useAuth } from "../features/auth/useAuth";
 
 const TAB_CONFIG = {
   active: { label: "Aktive", filter: (p: Project) => p.status === "active" },
@@ -63,6 +64,8 @@ export default function Dashboard() {
     completionDate: "", // mapped to endDate in API
   });
 
+  const { user } = useAuth();
+
   // ---- CREATE: POST /api/projects (+ optional log)
   const createMutation = useMutation({
     mutationFn: async (payload: any) => {
@@ -76,12 +79,12 @@ export default function Dashboard() {
         endDate: completionDate || null,
       });
       try {
-        if (currentUser?.id) {
+        if (user?.id) {
           await makeRequest.post(`/projects/${created.id}/logs`, {
             action: "created",
-            userId: currentUser.id,
-            userName: currentUser.name,
-            note: `Prosjekt opprettet av ${currentUser.name}`,
+            userId: user.id,
+            userName: user.username,
+            note: `Prosjekt opprettet av ${user.username}`,
             timestamp: new Date().toISOString(),
           });
         }
