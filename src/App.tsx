@@ -47,9 +47,6 @@ function App() {
               />
             </Route>
           </Route>
-
-          {/* Default + catch-all */}
-          <Route path="/" element={<Navigate to="/" replace />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
