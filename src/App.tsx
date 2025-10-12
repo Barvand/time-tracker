@@ -49,7 +49,7 @@ function App() {
           </Route>
 
           {/* Default + catch-all */}
-          <Route path="/" element={<Navigate to="/login" replace />} />
+          <Route path="/" element={<Navigate to="/" replace />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
