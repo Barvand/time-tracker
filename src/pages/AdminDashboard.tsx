@@ -79,10 +79,10 @@ export default function Dashboard() {
         endDate: completionDate || null,
       });
       try {
-        if (user?.id) {
+        if (user?.userId) {
           await makeRequest.post(`/projects/${created.id}/logs`, {
             action: "created",
-            userId: user.id,
+            userId: user.userId,
             userName: user.username,
             note: `Prosjekt opprettet av ${user.username}`,
             timestamp: new Date().toISOString(),
