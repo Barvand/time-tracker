@@ -42,7 +42,7 @@ function Navigation() {
                 )}
                 {user.role === "admin" && (
                   <Link
-                    to="/admin-dashboard"
+                    to="/admin/dashboard"
                     className="text-sm text-yellow-900 hover:underline cursor-pointer"
                   >
                     Admin dashboard
@@ -51,7 +51,7 @@ function Navigation() {
                 {/* Optional: Show both links for admin to switch between dashboards */}
                 {user.role === "admin" && (
                   <Link
-                    to="/employee-dashboard"
+                    to="/employee/dashboard"
                     className="text-sm text-blue-400 hover:underline cursor-pointer"
                   >
                     View Employee
