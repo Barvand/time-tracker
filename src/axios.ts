@@ -4,13 +4,13 @@ import { getAccessToken, setAccessToken } from "../src/features/auth/tokenBus";
 
 // Main API client (used everywhere in the app)
 export const makeRequest = axios.create({
-  baseURL: "http://localhost:8800/api", // <-- ensure this matches your server
+  baseURL: "api.bartholomeusberg.com/api", // <-- ensure this matches your server
   withCredentials: true, // needed for refresh cookie on same site
 });
 
 // Separate, bare client ONLY for refresh (no interceptors to avoid loops)
 const refreshClient = axios.create({
-  baseURL: "http://localhost:8800/api",
+  baseURL: "api.bartholomeusberg.com/api",
   withCredentials: true,
 });
 
