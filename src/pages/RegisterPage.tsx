@@ -58,35 +58,66 @@ function RegisterPage() {
               </p>
             )}
 
+            {/* Name */}
             <label>Name</label>
-            <Field name="name" className="p-2 border" />
+            <Field
+              name="name"
+              className={`p-2 border rounded ${
+                touched.name && errors.name ? "border-red-500" : ""
+              }`}
+            />
             {touched.name && errors.name && (
               <div className="text-red-500 text-sm">{errors.name}</div>
             )}
 
+            {/* Username */}
             <label>Username</label>
-            <Field name="username" className="p-2 border" />
+            <Field
+              name="username"
+              className={`p-2 border rounded ${
+                touched.username && errors.username ? "border-red-500" : ""
+              }`}
+            />
             {touched.username && errors.username && (
               <div className="text-red-500 text-sm">{errors.username}</div>
             )}
 
+            {/* Email */}
             <label>Email</label>
-            <Field name="email" type="email" className="p-2 border" />
+            <Field
+              name="email"
+              type="email"
+              className={`p-2 border rounded ${
+                touched.email && errors.email ? "border-red-500" : ""
+              }`}
+            />
             {touched.email && errors.email && (
               <div className="text-red-500 text-sm">{errors.email}</div>
             )}
 
+            {/* Password */}
             <label>Password</label>
-            <Field name="password" type="password" className="p-2 border" />
+            <Field
+              name="password"
+              type="password"
+              className={`p-2 border rounded ${
+                touched.password && errors.password ? "border-red-500" : ""
+              }`}
+            />
             {touched.password && errors.password && (
               <div className="text-red-500 text-sm">{errors.password}</div>
             )}
 
+            {/* Confirm Password */}
             <label>Confirm Password</label>
             <Field
               name="confirmPassword"
               type="password"
-              className="p-2 border"
+              className={`p-2 border rounded ${
+                touched.confirmPassword && errors.confirmPassword
+                  ? "border-red-500"
+                  : ""
+              }`}
             />
             {touched.confirmPassword && errors.confirmPassword && (
               <div className="text-red-500 text-sm">
@@ -94,8 +125,15 @@ function RegisterPage() {
               </div>
             )}
 
+            {/* Role */}
             <label>Role</label>
-            <Field as="select" name="role" className="p-2 border">
+            <Field
+              as="select"
+              name="role"
+              className={`p-2 border rounded ${
+                touched.role && errors.role ? "border-red-500" : ""
+              }`}
+            >
               <option value="admin">Admin</option>
               <option value="accountant">Accountant</option>
               <option value="employee">Employee</option>
@@ -103,15 +141,17 @@ function RegisterPage() {
             {touched.role && errors.role && (
               <div className="text-red-500 text-sm">{errors.role}</div>
             )}
+
             <button
               type="submit"
-              className="p-2 border bg-white mt-2"
+              className="p-2 border bg-white mt-2 rounded hover:bg-gray-100 transition"
               disabled={isSubmitting}
             >
               {isSubmitting ? "Registering..." : "Register"}
             </button>
+
             {successMessage && (
-              <div className="text-green-600 text-md p-4 bg-green-100 border border-green">
+              <div className="text-green-600 text-md p-4 bg-green-100 border border-green rounded">
                 {successMessage}
               </div>
             )}

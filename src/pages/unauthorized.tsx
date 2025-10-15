@@ -5,7 +5,7 @@ function UnAuthorizedPage() {
   return (
     <>
       <Helmet>
-        <title>Dagar - Access denied</title>
+        <title>Dagar</title>
         <meta
           name="description"
           content="Access denied, login or see you administrator."
