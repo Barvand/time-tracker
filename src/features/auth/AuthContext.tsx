@@ -23,22 +23,37 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [bootstrapped, setBootstrapped] = useState(false);
 
-  // 1) On first load, try to mint a fresh access token using the HttpOnly refresh cookie
   useEffect(() => {
+    // Optimization: skip calling refresh if user has never logged in
+    const hasLoggedInBefore =
+      localStorage.getItem("hasLoggedInBefore") === "true";
+    if (!hasLoggedInBefore) {
+      setBootstrapped(true);
+      return;
+    }
+
     (async () => {
       try {
-        // must hit your API base, with credentials
         const { data } = await makeRequest.post("/auth/refresh", null, {
           withCredentials: true,
         });
 
-        setTokenBus(data.accessToken); // <-- CRITICAL on reload
+        if (!data?.accessToken) {
+          setBootstrapped(true);
+          return;
+        }
+
+        setTokenBus(data.accessToken);
         setAccessToken(data.accessToken);
 
-        const me = await makeRequest.get("/auth/me"); // header added by interceptor
+        const me = await makeRequest.get("/auth/me");
         setUser(me.data.user);
-      } catch (e) {
-        // refresh failed -> stay logged out
+      } catch (e: any) {
+        // If no cookie (401), ignore silently
+        if (e.response?.status !== 401) {
+          console.error("Unexpected refresh error:", e);
+        }
+
         setUser(null);
         setAccessToken(null);
         setTokenBus(null);
@@ -54,6 +69,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       { email, password },
       { withCredentials: true } // <-- REQUIRED to receive HttpOnly cookie
     );
+    localStorage.setItem("hasLoggedInBefore", "true");
     setTokenBus(data.accessToken);
     setAccessToken(data.accessToken);
     setUser(data.user);
@@ -61,6 +77,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const logout = async () => {
     await makeRequest.post("/auth/logout", null, { withCredentials: true });
+    localStorage.removeItem("hasLoggedInBefore");
     setAccessToken(null);
     setUser(null);
     setTokenBus(null); // <-- add this

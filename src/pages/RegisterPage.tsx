@@ -1,140 +1,123 @@
+import { Formik, Form, Field } from "formik";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import type { Role } from "../api/Register";
 import registerUser from "../api/Register";
+import type { Role } from "../api/Register";
+import userSchema from "../validations/RegistrationValidation";
 
 function RegisterPage() {
-  const [inputs, setInputs] = useState<{
-    username: string;
-    email: string;
-    password: string;
-    name: string;
-    role: Role;
-  }>({
-    username: "",
-    email: "",
-    password: "",
-    name: "",
-    role: "employee" as Role,
-  });
-  const [error, setError] = useState(""); // string for API errors
-  const [success, setSuccess] = useState(""); // string for success message
   const navigate = useNavigate();
-
-  const handleChange = (e: any) => {
-    setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-    if (error) setError("");
-    if (success) setSuccess("");
-  };
-
-  const handleClick = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setError("");
-    setSuccess("");
-
-    try {
-      const data = await registerUser(inputs); // { message: "User has been created." }
-      const msg = data?.message || "Registration successful";
-      setSuccess(msg);
-
-      // clear the form after success
-      setInputs({
-        username: "",
-        email: "",
-        password: "",
-        name: "",
-        role: "employee" as Role,
-      });
-
-      // Option A: redirect after showing the message briefly
-      setTimeout(() => {
-        navigate("/login", {
-          replace: true,
-          state: { flash: msg }, // pass a flash message to the login page if you want
-        });
-      }, 900);
-
-      // Option B (immediate): navigate("/login", { replace: true, state: { flash: msg } });
-    } catch (err) {
-      let msg = "Something went wrong";
-      if (typeof err === "object" && err !== null) {
-        const anyErr = err as { response?: { data?: { message?: string; error?: string } }; message?: string };
-        msg =
-          anyErr.response?.data?.message ||
-          anyErr.response?.data?.error ||
-          anyErr.message ||
-          msg;
-      }
-      setError(msg);
-    }
-  };
+  const [successMessage, setSuccessMessage] = useState<string>("");
 
   return (
     <div className="container flex flex-col gap-2 mx-auto bg-gray-200 p-4">
-      {error && (
-        <p className="bg-red-100 text-red-800 border border-red-500 text-center p-2">
-          {error}
-        </p>
-      )}
-      {success && (
-        <p className="bg-green-100 text-green-800 border border-green-500 text-center p-2">
-          {success}
-        </p>
-      )}
+      <Formik
+        initialValues={{
+          name: "",
+          username: "",
+          email: "",
+          password: "",
+          confirmPassword: "",
+          role: "employee" as Role,
+        }}
+        validationSchema={userSchema}
+        onSubmit={async (values, { setSubmitting, setStatus, resetForm }) => {
+          try {
+            const data = await registerUser(values);
+            setStatus({ success: data.message });
+            resetForm();
+            setSuccessMessage(
+              "The account has been created, redirecting to login..."
+            );
+            setTimeout(
+              () => navigate("/login", { state: { flash: data.message } }),
+              4000
+            );
+          } catch (error: any) {
+            const msg =
+              error.response?.data?.message ||
+              error.response?.data?.error ||
+              error.message ||
+              "Something went wrong";
+            setStatus({ error: msg });
+          } finally {
+            setSubmitting(false);
+          }
+        }}
+      >
+        {({ isSubmitting, status, touched, errors }) => (
+          <Form className="flex flex-col gap-2">
+            {status?.error && (
+              <p className="bg-red-100 text-red-800 border border-red-500 text-center p-2">
+                {status.error}
+              </p>
+            )}
+            {status?.success && (
+              <p className="bg-green-100 text-green-800 border border-green-500 text-center p-2">
+                {status.success}
+              </p>
+            )}
 
-      <form onSubmit={handleClick} className="flex flex-col gap-2">
-        <input
-          type="text"
-          placeholder="name"
-          name="name"
-          value={inputs.name}
-          onChange={handleChange}
-          required
-          className="p-2 border"
-        />
-        <input
-          type="text"
-          placeholder="username"
-          name="username"
-          value={inputs.username}
-          onChange={handleChange}
-          required
-          className="p-2 border"
-        />
-        <input
-          type="email"
-          placeholder="email"
-          name="email"
-          value={inputs.email}
-          onChange={handleChange}
-          required
-          className="p-2 border"
-        />
-        <input
-          type="password"
-          placeholder="password"
-          name="password"
-          value={inputs.password}
-          onChange={handleChange}
-          required
-          className="p-2 border"
-        />
-        <label className="text-sm font-medium">Role</label>
-        <select
-          name="role"
-          value={inputs.role}
-          onChange={handleChange}
-          required
-          className="p-2 border"
-        >
-          <option value="admin">Admin</option>
-          <option value="accountant">Accountant</option>
-          <option value="employee">Employee</option>
-        </select>
-        <button type="submit" className="p-2 border bg-white">
-          Register
-        </button>
-      </form>
+            <label>Name</label>
+            <Field name="name" className="p-2 border" />
+            {touched.name && errors.name && (
+              <div className="text-red-500 text-sm">{errors.name}</div>
+            )}
+
+            <label>Username</label>
+            <Field name="username" className="p-2 border" />
+            {touched.username && errors.username && (
+              <div className="text-red-500 text-sm">{errors.username}</div>
+            )}
+
+            <label>Email</label>
+            <Field name="email" type="email" className="p-2 border" />
+            {touched.email && errors.email && (
+              <div className="text-red-500 text-sm">{errors.email}</div>
+            )}
+
+            <label>Password</label>
+            <Field name="password" type="password" className="p-2 border" />
+            {touched.password && errors.password && (
+              <div className="text-red-500 text-sm">{errors.password}</div>
+            )}
+
+            <label>Confirm Password</label>
+            <Field
+              name="confirmPassword"
+              type="password"
+              className="p-2 border"
+            />
+            {touched.confirmPassword && errors.confirmPassword && (
+              <div className="text-red-500 text-sm">
+                {errors.confirmPassword}
+              </div>
+            )}
+
+            <label>Role</label>
+            <Field as="select" name="role" className="p-2 border">
+              <option value="admin">Admin</option>
+              <option value="accountant">Accountant</option>
+              <option value="employee">Employee</option>
+            </Field>
+            {touched.role && errors.role && (
+              <div className="text-red-500 text-sm">{errors.role}</div>
+            )}
+            <button
+              type="submit"
+              className="p-2 border bg-white mt-2"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Registering..." : "Register"}
+            </button>
+            {successMessage && (
+              <div className="text-green-600 text-md p-4 bg-green-100 border border-green">
+                {successMessage}
+              </div>
+            )}
+          </Form>
+        )}
+      </Formik>
     </div>
   );
 }

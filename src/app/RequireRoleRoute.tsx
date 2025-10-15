@@ -6,9 +6,9 @@ import type { Role } from "../types";
 export default function RequireRole({ roles }: { roles: ReadonlyArray<Role> }) {
   const { user } = useAuth();
 
-  if (!user) return <Navigate to="/login" replace />;
+  if (!user) return <Navigate to="/unauthorized" replace />;
   if (!roles.includes(user.role as Role))
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/unauthorized" replace />;
 
   return <Outlet />;
 }

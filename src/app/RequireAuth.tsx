@@ -9,7 +9,7 @@ export default function RequireAuth() {
   if (!bootstrapped) return null;
 
   if (!user) {
-    return <Navigate to="/login" replace state={{ from: location }} />;
+    return <Navigate to="/unauthorized" replace state={{ from: location }} />;
   }
 
   // Redirect to appropriate dashboard if accessing root

@@ -1,10 +1,5 @@
 // App.tsx
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navigation from "./layout/Navigation";
 import Login from "./pages/Login";
 import ProjectDetails from "./components/projects/ProjectDetails";
@@ -15,6 +10,8 @@ import AdminReports from "./pages/AdminReports";
 import RequireRole from "./app/RequireRoleRoute";
 import RequireAuth from "./app/RequireAuth";
 import HomePage from "./pages/HomePage";
+import NotFoundPage from "./pages/404";
+import UnAuthorizedPage from "./pages/unauthorized";
 
 function App() {
   return (
@@ -47,7 +44,9 @@ function App() {
               />
             </Route>
           </Route>
-          <Route path="*" element={<Navigate to="/" replace />} />
+          <Route path="/unauthorized" element={<UnAuthorizedPage />} />
+
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>
     </Router>
