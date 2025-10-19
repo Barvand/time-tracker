@@ -1,7 +1,4 @@
-
-import { cn } from "../utils/utils";
-
-
+import { cn } from "../../utils/utils";
 type UseFormRegister = any;
 type FieldError = any; 
 type RegisterOptions = any; 
