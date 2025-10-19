@@ -1,4 +1,4 @@
-import { makeRequest } from "../axios";
+import { makeRequest } from "../lib/axios";
 
 export type Role = "admin" | "user" | "manager";
 

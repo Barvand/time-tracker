@@ -1,6 +1,6 @@
 // src/api/logs.ts  — adapter over /hours endpoints
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { makeRequest } from "../axios";
+import { makeRequest } from "../lib/axios";
 
 /** Server row (from /hours) */
 type HourRow = {

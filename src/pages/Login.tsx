@@ -1,4 +1,4 @@
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Formik, Form, Field } from "formik";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../features/auth/useAuth";
 import loginSchema from "../validations/LoginValidation";
@@ -37,15 +37,14 @@ export default function LoginPage() {
             <Field
               name="email"
               type="email"
+              placeholder="Enter a valid email"
               className={`w-full border p-2 rounded ${
                 touched.email && errors.email ? "border-red-500" : ""
               }`}
             />
-            <ErrorMessage
-              name="email"
-              component="div"
-              className="text-red-500 text-sm mt-1"
-            />
+            {touched.email && errors.email && (
+              <div className="text-red-500 text-sm">{errors.email}</div>
+            )}
           </div>
 
           <div>
@@ -57,11 +56,9 @@ export default function LoginPage() {
                 touched.password && errors.password ? "border-red-500" : ""
               }`}
             />
-            <ErrorMessage
-              name="password"
-              component="div"
-              className="text-red-500 text-sm mt-1"
-            />
+            {touched.password && errors.password && (
+              <div className="text-red-500 text-sm">{errors.password}</div>
+            )}
           </div>
 
           <button

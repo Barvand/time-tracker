@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { makeRequest } from "../axios";
+import { makeRequest } from "../lib/axios";
 
 /** Detail row for a project */
 export type ProjectHourRow = {

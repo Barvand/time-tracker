@@ -3,7 +3,7 @@ import { useState } from "react";
 import ProjectItem from "../components/projects/ProjectItem";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import type { Project } from "../types";
-import { makeRequest } from "../axios";
+import { makeRequest } from "../lib/axios";
 import RefetchDataBtn from "../components/admin/refetchDataBtn";
 import FilterTabs from "../components/admin/FilterTabs";
 import SearchBar from "../components/admin/searchBar";

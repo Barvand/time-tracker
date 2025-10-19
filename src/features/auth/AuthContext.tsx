@@ -1,6 +1,6 @@
 // AuthProvider.tsx
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { makeRequest } from "../../axios";
+import { makeRequest } from "../../lib/axios";
 import { setAccessToken as setTokenBus } from "../auth/tokenBus";
 import type { Role } from "../../types";
 type User = { userId: number; email: string; username: string; role: string };

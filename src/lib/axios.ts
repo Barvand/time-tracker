@@ -1,19 +1,20 @@
 // api.ts
 import axios, { AxiosError, type AxiosRequestConfig } from "axios";
-import { getAccessToken, setAccessToken } from "../src/features/auth/tokenBus";
+import { getAccessToken, setAccessToken } from "../features/auth/tokenBus";
 
-// const ProductionUrl = "https://api.bartholomeusberg.com/api";
-const localUrl = "http://localhost:8800/api";
+const isLocal = window.location.hostname === "localhost";
 
-// Main API client (used everywhere in the app)
+const BASE_URL = isLocal
+  ? "http://localhost:8800/api"
+  : "https://api.bartholomeusberg.com/api";
+
 export const makeRequest = axios.create({
-  baseURL: localUrl, // <-- ensure this matches your server
-  withCredentials: true, // needed for refresh cookie on same site
+  baseURL: BASE_URL,
+  withCredentials: true,
 });
 
-// Separate, bare client ONLY for refresh (no interceptors to avoid loops)
 const refreshClient = axios.create({
-  baseURL: localUrl,
+  baseURL: BASE_URL,
   withCredentials: true,
 });
 

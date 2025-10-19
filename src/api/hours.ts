@@ -1,6 +1,6 @@
 // src/api/hours.ts  <-- NOTE: lowercase file name and import it as "../api/hours"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { makeRequest } from "../axios";
+import { makeRequest } from "../lib/axios";
 
 export type HourRow = {
   idHours: number;
