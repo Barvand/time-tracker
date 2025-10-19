@@ -2,7 +2,7 @@
 import axios, { AxiosError, type AxiosRequestConfig } from "axios";
 import { getAccessToken, setAccessToken } from "../src/features/auth/tokenBus";
 
-const ProductionUrl = "https://api.bartholomeusberg.com/api";
+// const ProductionUrl = "https://api.bartholomeusberg.com/api";
 const localUrl = "http://localhost:8800/api";
 
 // Main API client (used everywhere in the app)
