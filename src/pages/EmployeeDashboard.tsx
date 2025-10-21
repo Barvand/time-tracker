@@ -7,12 +7,11 @@ import HourForm from "../components/employee/TimeEntryForm";
 import type { HourFormValues } from "../components/employee/TimeEntryForm";
 import HourReview from "../components/employee/HourReview";
 import WeekNavigator from "../components/employee/WeekNavigator";
-import { getISOWeek } from "../utils/date";
+import { getISOWeek } from "../utils/utils";
 
 export default function EmployeeDashboard() {
   const { user } = useAuth();
   const userId = user?.userId;
-  console.log(userId);
   const { data: projects = [], isLoading, error } = GetProjects();
   const createHour = useCreateHour(userId);
 
