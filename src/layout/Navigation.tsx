@@ -1,10 +1,13 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "../features/auth/useAuth";
+import { useState } from "react";
+import { Menu, X } from "lucide-react"; // optional icons
 
 function Navigation() {
   const { logout, user, bootstrapped } = useAuth();
+  const [isOpen, setIsOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
-  // Show nothing or loading state while auth is initializing
   if (!bootstrapped) {
     return (
       <nav className="p-4 bg-blue-100">
@@ -22,63 +25,151 @@ function Navigation() {
   }
 
   return (
-    <nav className="p-4 bg-blue-100">
-      <div className="flex mx-auto justify-between">
-        <div className="flex">
-          <h1 className="text-2xl md:text-3xl font-bold"></h1>
+    <nav className="p-4 bg-white border-b border-gray-300 shadow-sm">
+      <div className="flex mx-auto justify-between items-center max-w-5xl">
+        {/* Logo */}
+        <div className="flex items-center">
+          <img src="/totaltiminglogo.svg" className="h-25 mr-3" alt="Logo" />
         </div>
-        <div>
-          <ul className="flex space-x-4 items-center">
-            {/* Show dashboard links only if user is authenticated */}
+
+        {/* Hamburger button (mobile only) */}
+        <button
+          onClick={() => setMenuOpen(!menuOpen)}
+          className="md:hidden text-gray-700 hover:text-black focus:outline-none cursor-pointer"
+        >
+          {menuOpen ? <X size={30} /> : <Menu size={30} />}
+        </button>
+
+        {/* Desktop menu */}
+        <ul className="hidden md:flex space-x-4 items-center">
+          {user && (
+            <>
+              {user.role === "employee" && (
+                <Link
+                  to="/employee/dashboard"
+                  className="text-sm text-green-600 border p-3 hover:bg-gray-900"
+                >
+                  Employee Dashboard
+                </Link>
+              )}
+              {user.role === "admin" && (
+                <>
+                  <Link
+                    to="/admin/dashboard"
+                    className="text-sm text-blue-600 border p-3 hover:bg-gray-800"
+                  >
+                    Admin Dashboard
+                  </Link>
+                  <Link
+                    to="/employee/dashboard"
+                    className="text-sm text-green-600 border p-3 hover:bg-gray-800"
+                  >
+                    Employee Dashboard
+                  </Link>
+                </>
+              )}
+            </>
+          )}
+
+          {user ? (
+            <div className="relative">
+              <div
+                className="text-sm text-green-600 border p-3 hover:bg-gray-800 cursor-pointer"
+                onClick={() => setIsOpen((prev) => !prev)}
+              >
+                Profile
+              </div>
+
+              {isOpen && (
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg p-4 z-50">
+                  <p className="text-sm text-gray-700 mb-1">Logged in as</p>
+                  <p className="font-medium text-gray-900 mb-3">
+                    {user.username}
+                  </p>
+                  <button
+                    onClick={logout}
+                    className="w-full text-white bg-gray-700 hover:bg-gray-800 font-medium rounded-lg text-sm px-5 py-2.5"
+                  >
+                    Logout
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <Link
+              to="/login"
+              className="text-white bg-green-700 hover:bg-green-800 font-sm rounded-lg text-sm px-5 py-2.5"
+            >
+              Login
+            </Link>
+          )}
+        </ul>
+      </div>
+
+      {/* Mobile dropdown menu */}
+      {menuOpen && (
+        <div className="md:hidden mt-4 border-t pt-4 pb-4 border-b absolute w-full bg-white left-0 px-4 h-full z-40">
+          <ul className="space-y-3 flex gap-3 flex-col">
             {user && (
               <>
                 {user.role === "employee" && (
                   <Link
                     to="/employee/dashboard"
-                    className="text-sm text-yellow-900 hover:underline cursor-pointer"
+                    className="block text-sm text-green-600 border p-3 hover:bg-gray-900"
+                    onClick={() => setMenuOpen(false)}
                   >
-                    Dashboard
+                    Employee Dashboard
                   </Link>
                 )}
                 {user.role === "admin" && (
-                  <Link
-                    to="/admin/dashboard"
-                    className="text-sm text-yellow-900 hover:underline cursor-pointer"
-                  >
-                    Admin dashboard
-                  </Link>
-                )}
-                {/* Optional: Show both links for admin to switch between dashboards */}
-                {user.role === "admin" && (
-                  <Link
-                    to="/employee/dashboard"
-                    className="text-sm text-blue-400 hover:underline cursor-pointer"
-                  >
-                    View Employee
-                  </Link>
+                  <>
+                    <Link
+                      to="/admin/dashboard"
+                      className="block text-sm text-blue-600 border p-3 hover:bg-gray-900"
+                      onClick={() => setMenuOpen(false)}
+                    >
+                      Admin Dashboard
+                    </Link>
+                    <Link
+                      to="/employee/dashboard"
+                      className="text-sm text-green-600 border p-3 hover:bg-gray-900"
+                      onClick={() => setMenuOpen(false)}
+                    >
+                      Employee Dashboard
+                    </Link>
+                  </>
                 )}
               </>
             )}
 
-            {/* Show logout if authenticated, login if not */}
             {user ? (
-              <button
-                className="text-white font-semi-bold bg-gray-700 hover:bg-gray-800 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-gray-600 dark:hover:bg-gray-700 pointer"
-                onClick={logout}
-              >
-                Logout
-              </button>
+              <div className="mt-3 border-t pt-3">
+                <p className="text-sm text-gray-700 mb-1">Logged in as</p>
+                <p className="font-medium text-gray-900 mb-3">
+                  {user.username}
+                </p>
+                <button
+                  onClick={() => {
+                    logout();
+                    setMenuOpen(false);
+                  }}
+                  className="text-white bg-gray-700 hover:bg-gray-800 font-sm text-sm px-5 py-2.5 cursor-pointer"
+                >
+                  Logout
+                </button>
+              </div>
             ) : (
               <Link
                 to="/login"
-                className="text-white font-semi-bold bg-green-700 hover:bg-green-800 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-green-600 dark:hover:bg-green-700"
+                onClick={() => setMenuOpen(false)}
+                className="block text-white text-center bg-green-700 hover:bg-green-800 font-sm rounded-lg text-sm px-5 py-2.5"
               >
                 Login
               </Link>
             )}
           </ul>
         </div>
-      </div>
+      )}
     </nav>
   );
 }
