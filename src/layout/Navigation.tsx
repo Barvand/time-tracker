@@ -13,9 +13,7 @@ function Navigation() {
       <nav className="p-4 bg-blue-100">
         <div className="flex max-w-2xl mx-auto justify-between">
           <div className="flex">
-            <h1 className="text-2xl md:text-3xl font-bold">
-              TOTALENTREPRENØR AS -{" "}
-            </h1>
+            <h1 className="text-2xl md:text-3xl font-bold">TOTAL TIMING</h1>
             <h2 className="text-2xl md:text-3xl font-bold">TIME TRACKER</h2>
           </div>
           <div>Loading...</div>
@@ -98,7 +96,7 @@ function Navigation() {
           ) : (
             <Link
               to="/login"
-              className="text-white bg-green-700 hover:bg-green-800 font-sm rounded-lg text-sm px-5 py-2.5"
+              className="bg-black text-white font-semibold py-3 px-6 self-center hover:bg-[#e85f00] transition cursor-pointer"
             >
               Login
             </Link>
@@ -115,7 +113,7 @@ function Navigation() {
                 {user.role === "employee" && (
                   <Link
                     to="/employee/dashboard"
-                    className="block text-sm text-green-600 border p-3 hover:bg-gray-900"
+                    className="block bg-black text-white font-semibold py-3 px-6 self-center hover:bg-[#e85f00] transition cursor-pointer"
                     onClick={() => setMenuOpen(false)}
                   >
                     Employee Dashboard
@@ -125,14 +123,14 @@ function Navigation() {
                   <>
                     <Link
                       to="/admin/dashboard"
-                      className="block text-sm text-blue-600 border p-3 hover:bg-gray-900"
+                      className="block bg-black text-white font-semibold py-3 px-6 self-center hover:bg-[#e85f00] transition cursor-pointer"
                       onClick={() => setMenuOpen(false)}
                     >
                       Admin Dashboard
                     </Link>
                     <Link
                       to="/employee/dashboard"
-                      className="text-sm text-green-600 border p-3 hover:bg-gray-900"
+                      className="block bg-black text-white font-semibold py-3 px-6 self-center hover:bg-[#e85f00] transition cursor-pointer"
                       onClick={() => setMenuOpen(false)}
                     >
                       Employee Dashboard
@@ -153,7 +151,7 @@ function Navigation() {
                     logout();
                     setMenuOpen(false);
                   }}
-                  className="text-white bg-gray-700 hover:bg-gray-800 font-sm text-sm px-5 py-2.5 cursor-pointer"
+                  className="block bg-black text-white font-semibold py-3 px-6 self-center hover:bg-[#e85f00] transition cursor-pointer"
                 >
                   Logout
                 </button>
@@ -162,7 +160,7 @@ function Navigation() {
               <Link
                 to="/login"
                 onClick={() => setMenuOpen(false)}
-                className="block text-white text-center bg-green-700 hover:bg-green-800 font-sm rounded-lg text-sm px-5 py-2.5"
+                className="block bg-black text-white font-semibold py-3 px-6 self-center hover:bg-[#e85f00] transition cursor-pointer"
               >
                 Login
               </Link>

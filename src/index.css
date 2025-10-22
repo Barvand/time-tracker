@@ -1,14 +1,14 @@
 @import "tailwindcss";
 @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+Runic&display=swap");
 @theme {
-  --main-color: #2c3e50;
+  --main: #ff6700;
 }
 
 body {
   color: #173a5e;
 }
 
-.custom-nav {
+c .custom-nav {
   display: flex;
   justify-content: center;
   gap: 20px;
