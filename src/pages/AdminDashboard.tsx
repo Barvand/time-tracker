@@ -80,7 +80,7 @@ export default function Dashboard() {
       });
       try {
         if (user?.userId) {
-          await makeRequest.post(`/projects/${created.id}/logs`, {
+          await makeRequest.post(`/projects/${created.id}/entries`, {
             action: "created",
             userId: user.userId,
             userName: user.username,

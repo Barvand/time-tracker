@@ -1,4 +1,4 @@
-// src/api/logs.ts  — adapter over /hours endpoints
+// src/api/entries.ts  — adapter over /hours endpoints
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { makeRequest } from "../lib/axios";
 
@@ -14,7 +14,7 @@ type HourRow = {
   note?: string | null;
 };
 
-/** Frontend shape expected by the old "logs" UI */
+/** Frontend shape expected by the old "entries" UI */
 export type Log = {
   id: number; // maps from idHours
   userId: number;
@@ -88,7 +88,9 @@ function normalize(row: HourRow): Log {
 
 /* -------------------- API calls -------------------- */
 
-export async function listLogsByUser(userId: number | string): Promise<Log[]> {
+export async function listentriesByUser(
+  userId: number | string
+): Promise<Log[]> {
   const { data } = await makeRequest.get("/hours", { params: { userId } });
   return (data as HourRow[]).map(normalize);
 }
@@ -127,11 +129,11 @@ export async function deleteLog(
 
 /* -------------------- React Query hooks -------------------- */
 
-export function useUserLogs(userId?: number | string) {
+export function useUserentries(userId?: number | string) {
   return useQuery<Log[], Error>({
-    queryKey: ["logs", "user", userId],
+    queryKey: ["entries", "user", userId],
     enabled: !!userId,
-    queryFn: () => listLogsByUser(userId!),
+    queryFn: () => listentriesByUser(userId!),
     staleTime: 60_000,
   });
 }
@@ -147,10 +149,10 @@ export function useUpdateLog() {
       data: UpdateLogData;
     }) => updateLog(logId, data),
     onSuccess: (updated) => {
-      qc.setQueryData(["logs", "user", updated.userId], (old: Log[] = []) =>
+      qc.setQueryData(["entries", "user", updated.userId], (old: Log[] = []) =>
         old.map((l) => (l.id === updated.id ? updated : l))
       );
-      qc.invalidateQueries({ queryKey: ["logs", "user", updated.userId] });
+      qc.invalidateQueries({ queryKey: ["entries", "user", updated.userId] });
     },
   });
 }
@@ -161,12 +163,12 @@ export function useDeleteLog(userId?: number | string) {
     mutationFn: ({ logId }: { logId: number | string }) => deleteLog(logId),
     onSuccess: ({ logId }) => {
       if (userId) {
-        qc.setQueryData(["logs", "user", userId], (old: Log[] = []) =>
+        qc.setQueryData(["entries", "user", userId], (old: Log[] = []) =>
           old.filter((l) => l.id !== Number(logId))
         );
-        qc.invalidateQueries({ queryKey: ["logs", "user", userId] });
+        qc.invalidateQueries({ queryKey: ["entries", "user", userId] });
       } else {
-        qc.invalidateQueries({ queryKey: ["logs"] });
+        qc.invalidateQueries({ queryKey: ["entries"] });
       }
     },
   });

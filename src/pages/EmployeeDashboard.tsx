@@ -14,7 +14,6 @@ export default function EmployeeDashboard() {
   const userId = user?.userId;
   const { data: projects = [], isLoading, error } = GetProjects();
   const createHour = useCreateHour(userId);
-
   const [weekOffset, setWeekOffset] = useState(0);
 
   const now = new Date();
@@ -66,7 +65,13 @@ export default function EmployeeDashboard() {
             onPrev={() => setWeekOffset((w) => w - 1)}
             onNext={() => setWeekOffset((w) => w + 1)}
           />
-          {userId && <HourReview userId={userId} weekOffset={weekOffset} />}
+          {userId && (
+            <HourReview
+              userId={userId}
+              weekOffset={weekOffset}
+              projects={projects}
+            />
+          )}
         </aside>
       </div>
     </div>

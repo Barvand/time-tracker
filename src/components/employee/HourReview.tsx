@@ -9,10 +9,19 @@ import {
 import { EditingItem } from "./editHours";
 import { HourDisplayRows } from "./HourDisplay";
 
-type Props = { userId: string | number; weekOffset: number };
+type hourReviewProps = {
+  userId: string | number;
+  weekOffset: number;
+  projects: Array<{ id: number; name: string }>; // Change from projectName to projects array
+};
 
-export default function HourReview({ userId, weekOffset }: Props) {
+export default function HourReview({
+  userId,
+  weekOffset,
+  projects,
+}: hourReviewProps) {
   const [editingId, setEditingId] = useState<number | null>(null);
+  const [expandedDays, setExpandedDays] = useState<Set<string>>(new Set());
   const [start, setStart] = useState("");
   const [end, setEnd] = useState("");
   const [breakMin, setBreakMin] = useState("");
@@ -21,6 +30,14 @@ export default function HourReview({ userId, weekOffset }: Props) {
 
   const { data: rows = [], isLoading, isError, error } = useUserHours(userId);
   const updateMutation = useUpdateHour();
+
+  const projectMap = useMemo(() => {
+    const map: Record<number, string> = {};
+    projects.forEach((project) => {
+      map[project.id] = project.name;
+    });
+    return map;
+  }, [projects]);
 
   // ✅ Prefill fields when editing
   function handleEdit(row: HourRow) {
@@ -31,11 +48,68 @@ export default function HourReview({ userId, weekOffset }: Props) {
     setNote(row.note ?? "");
   }
 
+  // Toggle dropdown for a specific day
+  const toggleDay = (dateKey: string) => {
+    setExpandedDays((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(dateKey)) {
+        newSet.delete(dateKey);
+      } else {
+        newSet.add(dateKey);
+      }
+      return newSet;
+    });
+  };
+
+  // Group hours by date and filter for current week
+  const { groupedByDate, total } = useMemo(() => {
+    const grouped: Record<string, HourRow[]> = {};
+    let weekTotal = 0;
+
+    rows.forEach((row) => {
+      // Check if row belongs to current week
+      const rowWeekKey = isoWeekKey(new Date(row.startTime)).key;
+      const { key: targetKey } = isoWeekKey(
+        new Date(new Date().setDate(new Date().getDate() + weekOffset * 7))
+      );
+
+      if (rowWeekKey === targetKey) {
+        const dateKey = new Date(row.startTime).toISOString().split("T")[0];
+        if (!grouped[dateKey]) grouped[dateKey] = [];
+        grouped[dateKey].push(row);
+        weekTotal += Number(row.hoursWorked) || 0;
+      }
+    });
+
+    // Sort logs within each day by start time
+    Object.keys(grouped).forEach((dateKey) => {
+      grouped[dateKey].sort(
+        (a, b) =>
+          new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
+      );
+    });
+
+    return { groupedByDate: grouped, total: weekTotal };
+  }, [rows, weekOffset]);
+
+  // Sort dates chronologically
+  const sortedDates = useMemo(() => {
+    return Object.keys(groupedByDate).sort();
+  }, [groupedByDate]);
+
+  // Calculation week range
+  const { year, week } = isoWeekKey(
+    new Date(new Date().setDate(new Date().getDate() + weekOffset * 7))
+  );
+  const monday = mondayOfISOWeek(year, week);
+  const sunday = new Date(monday);
+  sunday.setUTCDate(monday.getUTCDate() + 6);
+
   // ✅ Handle save (update API call)
   async function handleSave(idHours: number, data: any) {
     try {
       setIsUpdating(true);
-      await updateMutation.mutateAsync({ idHours, ...data });
+      await updateMutation.mutateAsync({ idHours, data });
       setEditingId(null);
     } catch (err) {
       console.error("Error updating hour:", err);
@@ -44,28 +118,16 @@ export default function HourReview({ userId, weekOffset }: Props) {
       setIsUpdating(false);
     }
   }
-  // Calculation week range
-  const {
-    key: targetKey,
-    year,
-    week,
-  } = isoWeekKey(
-    new Date(new Date().setDate(new Date().getDate() + weekOffset * 7))
-  );
-  const monday = mondayOfISOWeek(year, week);
-  const sunday = new Date(monday);
-  sunday.setUTCDate(monday.getUTCDate() + 6);
 
-  const { items, total } = useMemo(() => {
-    const selected = rows
-      .filter((r) => isoWeekKey(new Date(r.startTime)).key === targetKey)
-      .sort(
-        (a, b) =>
-          new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
-      );
-    const sum = selected.reduce((s, r) => s + (Number(r.hoursWorked) || 0), 0);
-    return { items: selected, total: sum };
-  }, [rows, targetKey]);
+  // Expand all / collapse all functionality
+  const expandAll = () => {
+    const allDays = new Set(sortedDates);
+    setExpandedDays(allDays);
+  };
+
+  const collapseAll = () => {
+    setExpandedDays(new Set());
+  };
 
   return (
     <div className="mt-8">
@@ -74,47 +136,123 @@ export default function HourReview({ userId, weekOffset }: Props) {
         {sunday.toLocaleDateString()}
       </h2>
 
+      {/* Expand/Collapse All Controls */}
+      {sortedDates.length > 0 && (
+        <div className="mb-4 flex justify-end space-x-2">
+          <button
+            onClick={expandAll}
+            className="px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+          >
+            Expand All
+          </button>
+          <button
+            onClick={collapseAll}
+            className="px-3 py-1 text-sm bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors"
+          >
+            Collapse All
+          </button>
+        </div>
+      )}
+
       {isLoading ? (
         <p>Loading your hours...</p>
       ) : isError ? (
         <p className="text-red-600">
           Error: {String((error as any)?.message || error)}
         </p>
-      ) : items.length === 0 ? (
-        <p>No entries for this week.</p>
+      ) : sortedDates.length === 0 ? (
+        <p>No logs for this week.</p>
       ) : (
         <>
-          <ul className="space-y-3">
-            {items.map((row) =>
-              editingId === row.idHours ? (
-                <EditingItem
-                  key={row.idHours}
-                  row={row}
-                  onSave={handleSave} // ✅ pass the function down
-                  onCancel={() => setEditingId(null)}
-                  isUpdating={isUpdating}
-                  start={start}
-                  setStart={setStart}
-                  end={end}
-                  setEnd={setEnd}
-                  breakMin={breakMin}
-                  setBreakMin={setBreakMin}
-                  note={note}
-                  setNote={setNote}
-                />
-              ) : (
-                <HourDisplayRows
-                  key={row.idHours}
-                  row={row}
-                  onEdit={() => handleEdit(row)}
-                />
-              )
-            )}
-          </ul>
+          <div className="space-y-3">
+            {sortedDates.map((dateKey) => {
+              const daylogs = groupedByDate[dateKey];
+              const isExpanded = expandedDays.has(dateKey);
+              const dayTotal = daylogs.reduce(
+                (sum, row) => sum + (Number(row.hoursWorked) || 0),
+                0
+              );
+              const date = new Date(dateKey);
 
-          <div className="mt-3 border-t pt-3 text-right text-sm">
-            <span className="font-medium">Weekly total: </span>
-            {total.toFixed(2)} h
+              return (
+                <div
+                  key={dateKey}
+                  className="border rounded-lg overflow-hidden bg-white shadow-sm"
+                >
+                  {/* Day Header - Always clickable */}
+                  <div
+                    className="p-4 bg-gray-50 border-b cursor-pointer hover:bg-gray-100 transition-colors"
+                    onClick={() => toggleDay(dateKey)}
+                  >
+                    <div className="flex justify-between items-center">
+                      <div className="flex items-center space-x-3">
+                        <span className="font-semibold text-lg">
+                          {date.toLocaleDateString(undefined, {
+                            weekday: "long",
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          })}
+                        </span>
+                        <span className="text-sm text-gray-500 bg-white px-2 py-1 rounded border">
+                          {daylogs.length} entr
+                          {daylogs.length === 1 ? "y" : "ies"}
+                        </span>
+                      </div>
+                      <div className="flex items-center space-x-3">
+                        <span className="font-bold text-blue-600">
+                          {dayTotal.toFixed(2)} hours
+                        </span>
+                        <span className="text-gray-400 transform transition-transform">
+                          {isExpanded ? "▲" : "▼"}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Day logs - Only show when expanded */}
+                  {isExpanded && (
+                    <div className="divide-y bg-white">
+                      {daylogs.map((row) => {
+                        // Get project name for this specific hour row
+                        const projectName =
+                          projectMap[row.projectsId] || "Unknown Project";
+
+                        return editingId === row.idHours ? (
+                          <EditingItem
+                            key={row.idHours}
+                            row={row}
+                            onSave={handleSave}
+                            onCancel={() => setEditingId(null)}
+                            isUpdating={isUpdating}
+                            start={start}
+                            setStart={setStart}
+                            end={end}
+                            setEnd={setEnd}
+                            breakMin={breakMin}
+                            setBreakMin={setBreakMin}
+                            note={note}
+                            setNote={setNote}
+                          />
+                        ) : (
+                          <HourDisplayRows
+                            key={row.idHours}
+                            row={row}
+                            projectName={projectName} // Pass the specific project name
+                            onEdit={() => handleEdit(row)}
+                          />
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="mt-6 border-t pt-4 text-right text-lg font-semibold">
+            <span className="text-gray-700">Weekly total: </span>
+            <span className="text-blue-600">{total.toFixed(2)} hours</span>
           </div>
         </>
       )}

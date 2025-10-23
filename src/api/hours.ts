@@ -71,9 +71,7 @@ export function useUpdateHour() {
       idHours: number | string;
       data: UpdateHourData;
     }) =>
-      makeRequest
-        .patch(`/hours/${idHours}`, data)
-        .then((r) => r.data as HourRow),
+      makeRequest.put(`/hours/${idHours}`, data).then((r) => r.data as HourRow),
     onSuccess: (updated) => {
       qc.setQueryData(
         ["hours", "user", updated.userId],
