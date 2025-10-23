@@ -70,7 +70,7 @@ const ProjectDetails: React.FC = () => {
 
   const handleDelete = async () => {
     await deleteProject.mutateAsync(id!);
-    navigate("/");
+    navigate("/admin/dashboard");
   };
 
   const getStatusColor = (status: string) => {
