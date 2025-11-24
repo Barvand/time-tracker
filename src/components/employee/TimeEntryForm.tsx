@@ -5,6 +5,7 @@ import ProjectForm from "../employee/form/ProjectForm";
 
 export type HourFormValues = {
   projectId: string;
+  absenceId: string;
   date: string;
   startTime: string;
   endTime: string;
@@ -38,6 +39,7 @@ export default function HourForm({
     endTime: "",
     breakMinutes: 0,
     note: "",
+    absenceId: "",
   });
 
   const preview = useMemo(() => {
@@ -74,10 +76,11 @@ export default function HourForm({
     <>
       <ProjectForm
         projectId={formData.projectId}
-        projectsLoading={projectsLoading}
-        projects={projects}
-        projectsError={projectsError}
+        absenceId={formData.absenceId}
         onChange={change}
+        projects={projects}
+        projectsLoading={projectsLoading}
+        projectsError={projectsError}
       />
 
       <div className="pt-2">

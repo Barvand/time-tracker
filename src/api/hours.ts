@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { makeRequest } from "../lib/axios";
 
 export type HourRow = {
+  absenceId: any;
   idHours: number;
   userId: number;
   projectsId: number;

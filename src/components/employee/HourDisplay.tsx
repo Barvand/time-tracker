@@ -5,10 +5,12 @@ export function HourDisplayRows({
   row,
   onEdit,
   projectName,
+  absenceName,
 }: {
   row: HourRow;
   onEdit: () => void;
   projectName: string;
+  absenceName: string;
 }) {
   const date = new Date(row.startTime);
   const formattedDate = date.toLocaleDateString(undefined, {
@@ -23,7 +25,11 @@ export function HourDisplayRows({
       <div className="flex flex-wrap justify-between gap-2">
         <span className="font-medium">{formattedDate}</span>
         <div className="flex items-center gap-2">
-          <div className="font-medium">{projectName}</div>
+          {row.absenceId ? (
+            <span className="text-red-600">{absenceName}</span>
+          ) : (
+            <span className="text-blue-600">{projectName}</span>
+          )}
           <span className="text-sm opacity-80">
             {hhmm(row.startTime)} → {hhmm(row.endTime)}
           </span>

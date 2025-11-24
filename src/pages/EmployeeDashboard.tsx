@@ -8,14 +8,15 @@ import type { HourFormValues } from "../components/employee/TimeEntryForm";
 import HourReview from "../components/employee/HourReview";
 import WeekNavigator from "../components/employee/WeekNavigator";
 import { getISOWeek } from "../utils/utils";
+import { GetAbsenceData } from "../api/absence";
 
 export default function EmployeeDashboard() {
   const { user } = useAuth();
   const userId = user?.userId;
   const { data: projects = [], isLoading, error } = GetProjects();
+  const { data: absence = [] } = GetAbsenceData();
   const createHour = useCreateHour(userId);
   const [weekOffset, setWeekOffset] = useState(0);
-
   const now = new Date();
   const monday = new Date(now);
   const day = (now.getDay() + 6) % 7;
@@ -26,14 +27,20 @@ export default function EmployeeDashboard() {
     if (!userId) {
       throw new Error("User ID is required to log hours.");
     }
-    await createHour.mutateAsync({
+
+    const body: any = {
       userId,
-      projectsId: Number(v.projectId),
-      startTime: new Date(`${v.date}T${v.startTime}`).toISOString(),
-      endTime: new Date(`${v.date}T${v.endTime}`).toISOString(),
       breakMinutes: v.breakMinutes,
       note: v.note || undefined,
-    });
+      projectsId: v.projectId || null,
+      absenceId: v.absenceId || null,
+      startTime: v.startTime ? `${v.date}T${v.startTime}` : null,
+      endTime: v.endTime ? `${v.date}T${v.endTime}` : null,
+    };
+
+    console.log(body);
+
+    await createHour.mutateAsync(body);
   };
 
   return (
@@ -70,6 +77,7 @@ export default function EmployeeDashboard() {
               userId={userId}
               weekOffset={weekOffset}
               projects={projects}
+              absence={absence}
             />
           )}
         </aside>

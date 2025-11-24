@@ -1,5 +1,15 @@
+// src/components/employee/form/ProjectForm.tsx
 import type { Project } from "../../../types";
 import SelectField from "../../form/SelectField";
+
+const fraværOptions = [
+  { value: "101", label: "Sykedag" },
+  { value: "102", label: "Omsorgsdag" },
+  { value: "103", label: "Ferie" },
+  { value: "104", label: "Permisjon" },
+  { value: "105", label: "Møte" },
+  { value: "106", label: "Kurs" },
+];
 
 type ProjectFormProps = {
   projects: Project[];
@@ -7,22 +17,24 @@ type ProjectFormProps = {
   projectsError?: unknown;
   onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   projectId: string;
+  absenceId: string;
 };
 
-// ProjectForm component for the hour selection within the employee dashboard.
-function ProjectForm({
+export default function ProjectForm({
   projectsLoading,
   projectsError,
   projects,
   projectId,
+  absenceId,
   onChange,
 }: ProjectFormProps) {
   return (
-    <section className="grid grid-rows-3 mt-6 rounded-lg p-6">
-      <h3 className="text-2xl font-semibold">
-        What project are you working on?
-      </h3>
-      <p className="mt-1 text-sm">Select a dropdown from the menu.</p>
+    <section className="grid gap-3 mt-6 rounded-lg">
+      <h3 className="text-2xl font-semibold">Hva har du jobbet med i dag?</h3>
+
+      <p className="mt-1 text-sm text-red-600 font-bold">
+        NB: Du kan kun velge enten prosjekt eller fravær.
+      </p>
 
       {projectsLoading ? (
         <p className="mt-2 text-sm">Loading projects…</p>
@@ -33,15 +45,21 @@ function ProjectForm({
           name="projectId"
           value={projectId}
           onChange={onChange}
-          label="Select project"
+          label="Velg et prosjekt"
           options={projects.map((p) => ({
             value: String(p.id),
             label: p.name,
           }))}
         />
       )}
+
+      <SelectField
+        name="absenceId"
+        value={absenceId}
+        onChange={onChange}
+        label="Velg fravær"
+        options={fraværOptions}
+      />
     </section>
   );
 }
-
-export default ProjectForm;

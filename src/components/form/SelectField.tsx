@@ -21,8 +21,8 @@ export default function SelectField({
   placeholder = "Select…",
 }: SelectFieldProps) {
   return (
-    <div className="flex flex-col gap-1">
-      {label && <label className="text-sm font-medium">{label}</label>}
+    <div className="flex flex-col gap-1 mt-10">
+      {label && <label className="text-md font-bold">{label}</label>}
 
       <select
         name={name}

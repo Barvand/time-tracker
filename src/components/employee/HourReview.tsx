@@ -13,12 +13,14 @@ type hourReviewProps = {
   userId: string | number;
   weekOffset: number;
   projects: Array<{ id: number; name: string }>; // Change from projectName to projects array
+  absence: Array<{ id: number; name: string }>;
 };
 
 export default function HourReview({
   userId,
   weekOffset,
   projects,
+  absence,
 }: hourReviewProps) {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [expandedDays, setExpandedDays] = useState<Set<string>>(new Set());
@@ -38,6 +40,14 @@ export default function HourReview({
     });
     return map;
   }, [projects]);
+
+  const absenceMap = useMemo(() => {
+    const map: Record<number, string> = {};
+    absence.forEach((absence) => {
+      map[absence.id] = absence.name;
+    });
+    return map;
+  }, [absence]);
 
   // ✅ Prefill fields when editing
   function handleEdit(row: HourRow) {
@@ -218,6 +228,7 @@ export default function HourReview({
                         // Get project name for this specific hour row
                         const projectName =
                           projectMap[row.projectsId] || "Unknown Project";
+                        const absenceName = absenceMap[row.absenceId];
 
                         return editingId === row.idHours ? (
                           <EditingItem
@@ -240,6 +251,7 @@ export default function HourReview({
                             key={row.idHours}
                             row={row}
                             projectName={projectName} // Pass the specific project name
+                            absenceName={absenceName}
                             onEdit={() => handleEdit(row)}
                           />
                         );
