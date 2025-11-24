@@ -111,6 +111,7 @@ export default function HourReview({
       setIsUpdating(true);
       await updateMutation.mutateAsync({ idHours, data });
       setEditingId(null);
+      alert("Entry updated successfully.");
     } catch (err) {
       console.error("Error updating hour:", err);
       alert("Could not update entry. Please try again.");

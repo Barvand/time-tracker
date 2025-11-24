@@ -1,6 +1,7 @@
 // src/components/hour/HourForm.tsx
 import { useMemo, useState } from "react";
 import type { Project } from "../../types";
+import ProjectForm from "../employee/form/ProjectForm";
 
 export type HourFormValues = {
   projectId: string;
@@ -30,7 +31,7 @@ export default function HourForm({
   errorMsg,
   onSubmit,
 }: Props) {
-  const [v, setV] = useState<HourFormValues>({
+  const [formData, setFormData] = useState<HourFormValues>({
     projectId: "",
     date: "",
     startTime: "",
@@ -40,20 +41,20 @@ export default function HourForm({
   });
 
   const preview = useMemo(() => {
-    if (!v.date || !v.startTime || !v.endTime) return null;
-    const start = new Date(`${v.date}T${v.startTime}`);
-    const end = new Date(`${v.date}T${v.endTime}`);
-    const ms = end.getTime() - start.getTime() - v.breakMinutes * 60000;
+    if (!formData.date || !formData.startTime || !formData.endTime) return null;
+    const start = new Date(`${formData.date}T${formData.startTime}`);
+    const end = new Date(`${formData.date}T${formData.endTime}`);
+    const ms = end.getTime() - start.getTime() - formData.breakMinutes * 60000;
     const hours = Math.round((ms / 3600000) * 100) / 100;
     return Number.isFinite(hours) && hours > 0
       ? {
-          startStr: v.startTime,
-          endStr: v.endTime,
-          breakStr: `${v.breakMinutes} minutes`,
+          startStr: formData.startTime,
+          endStr: formData.endTime,
+          breakStr: `${formData.breakMinutes} minutes`,
           hours,
         }
       : null;
-  }, [v]);
+  }, [formData]);
 
   const change = (
     e: React.ChangeEvent<
@@ -61,42 +62,23 @@ export default function HourForm({
     >
   ) => {
     const { name, value } = e.target;
-    setV((p) => ({
+    setFormData((p) => ({
       ...p,
       [name]: name === "breakMinutes" ? Number(value) : value,
     }));
   };
 
-  const submit = async () => onSubmit(v);
+  const submit = async () => onSubmit(formData);
 
   return (
     <>
-      <section className="mt-6 rounded-lg bg-neutral-100 p-6">
-        <h3 className="text-2xl font-semibold">
-          What project are you working on?
-        </h3>
-        <p className="mt-1 text-sm">Select project from the dropdown</p>
-
-        {projectsLoading ? (
-          <p className="mt-2 text-sm">Loading projects…</p>
-        ) : projectsError ? (
-          <p className="mt-2 text-sm text-red-600">Failed to load projects</p>
-        ) : (
-          <select
-            name="projectId"
-            value={v.projectId}
-            onChange={change}
-            className="mt-3 w-full rounded border bg-white p-3"
-          >
-            <option value="">Select…</option>
-            {projects.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.name}
-              </option>
-            ))}
-          </select>
-        )}
-      </section>
+      <ProjectForm
+        projectId={formData.projectId}
+        projectsLoading={projectsLoading}
+        projects={projects}
+        projectsError={projectsError}
+        onChange={change}
+      />
 
       <div className="pt-2">
         <p className="text-red-500 font-bold">
@@ -112,7 +94,7 @@ export default function HourForm({
           <input
             type="time"
             name="startTime"
-            value={v.startTime}
+            value={formData.startTime}
             onChange={change}
             className="mt-2 w-full rounded border bg-white p-2"
           />
@@ -125,7 +107,7 @@ export default function HourForm({
           <input
             type="time"
             name="endTime"
-            value={v.endTime}
+            value={formData.endTime}
             onChange={change}
             className="mt-2 w-full rounded border bg-white p-2"
           />
@@ -139,7 +121,7 @@ export default function HourForm({
             type="number"
             min={0}
             name="breakMinutes"
-            value={v.breakMinutes}
+            value={formData.breakMinutes}
             onChange={change}
             className="mt-2 w-full rounded border bg-white p-2"
           />
@@ -152,7 +134,7 @@ export default function HourForm({
           <input
             type="date"
             name="date"
-            value={v.date}
+            value={formData.date}
             onChange={change}
             className="mt-2 w-full rounded border bg-white p-2"
           />
