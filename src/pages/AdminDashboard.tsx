@@ -9,6 +9,7 @@ import FilterTabs from "../components/admin/FilterTabs";
 import SearchBar from "../components/admin/searchBar";
 import AddProjectAccordion from "../components/admin/AddProjectAccordion";
 import { useAuth } from "../features/auth/useAuth";
+import RegisterBtn from "../components/admin/RegisterAccountBtn";
 
 const TAB_CONFIG = {
   active: { label: "Aktive", filter: (p: Project) => p.status === "active" },
@@ -110,7 +111,7 @@ export default function Dashboard() {
   return (
     <div className="p-4 max-w-4xl mx-auto">
       <RefetchDataBtn refetch={refetch} isLoading={isLoading} />
-
+      <RegisterBtn />
       <SearchBar search={search} setSearch={setSearch} />
 
       {/* Tabs */}

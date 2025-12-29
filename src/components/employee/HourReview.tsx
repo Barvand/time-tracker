@@ -264,7 +264,7 @@ export default function HourReview({
           </div>
 
           <div className="mt-6 border-t pt-4 text-right text-lg font-semibold">
-            <span className="text-gray-700">Weekly total: </span>
+            <span className="">Weekly total: </span>
             <span className="text-blue-600">{total.toFixed(2)} hours</span>
           </div>
         </>

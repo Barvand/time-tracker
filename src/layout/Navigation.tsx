@@ -106,14 +106,14 @@ function Navigation() {
 
       {/* Mobile dropdown menu */}
       {menuOpen && (
-        <div className="md:hidden mt-4 border-t pt-4 pb-4 border-b absolute w-full bg-white left-0 px-4 h-full z-40">
+        <div className="md:hidden mt-4 border-t pt-4 pb-4 border-b absolute w-full bg-white left-0 px-4 h-[100vh] flex justify-center items-center z-40 ">
           <ul className="space-y-3 flex gap-3 flex-col">
             {user && (
               <>
                 {user.role === "employee" && (
                   <Link
                     to="/employee/dashboard"
-                    className="block bg-black text-white font-semibold py-3 px-6 self-center hover:bg-[#e85f00] transition cursor-pointer"
+                    className="block bg-black text-white font-semibold py-3 px-6 self-center transition cursor-pointer"
                     onClick={() => setMenuOpen(false)}
                   >
                     Employee Dashboard
@@ -123,14 +123,14 @@ function Navigation() {
                   <>
                     <Link
                       to="/admin/dashboard"
-                      className="block bg-black text-white font-semibold py-3 px-6 self-center hover:bg-[#e85f00] transition cursor-pointer"
+                      className="block bg-gray-900 text-white font-semibold py-3 px-6 self-center hover:bg-gray-600 transition cursor-pointer"
                       onClick={() => setMenuOpen(false)}
                     >
                       Admin Dashboard
                     </Link>
                     <Link
                       to="/employee/dashboard"
-                      className="block bg-black text-white font-semibold py-3 px-6 self-center hover:bg-[#e85f00] transition cursor-pointer"
+                      className="block bg-gray-900 text-white font-semibold py-3 px-6 self-center hover:bg-gray-600 transition cursor-pointer"
                       onClick={() => setMenuOpen(false)}
                     >
                       Employee Dashboard
@@ -141,7 +141,7 @@ function Navigation() {
             )}
 
             {user ? (
-              <div className="mt-3 border-t pt-3">
+              <div className="mt-3 border-t pt-3 flex justify-center flex-col items-center">
                 <p className="text-sm text-gray-700 mb-1">Logged in as</p>
                 <p className="font-medium text-gray-900 mb-3">
                   {user.username}
