@@ -38,8 +38,6 @@ export default function EmployeeDashboard() {
       endTime: v.endTime ? `${v.date}T${v.endTime}` : null,
     };
 
-    console.log(body);
-
     await createHour.mutateAsync(body);
   };
 

@@ -29,37 +29,40 @@ export default function ProjectForm({
   onChange,
 }: ProjectFormProps) {
   return (
-    <section className="grid gap-3 mt-6 rounded-lg">
+    <section className="grid gap-3 mt-6 rounded-lg my-5">
       <h3 className="text-2xl font-semibold">Hva har du jobbet med i dag?</h3>
-
       <p className="mt-1 text-sm text-red-600 font-bold">
         NB: Du kan kun velge enten prosjekt eller fravær.
       </p>
 
-      {projectsLoading ? (
-        <p className="mt-2 text-sm">Loading projects…</p>
-      ) : projectsError ? (
-        <p className="mt-2 text-sm text-red-600">Failed to load projects</p>
-      ) : (
-        <SelectField
-          name="projectId"
-          value={projectId}
-          onChange={onChange}
-          label="Velg et prosjekt"
-          options={projects.map((p) => ({
-            value: String(p.id),
-            label: p.name,
-          }))}
-        />
-      )}
+      <div className="flex flex-col gap-2 justify-evenly w-full md:flex-row">
+        {projectsLoading ? (
+          <p className="mt-2 text-sm">Loading projects…</p>
+        ) : projectsError ? (
+          <p className="mt-2 text-sm text-red-600">Failed to load projects</p>
+        ) : (
+          <SelectField
+            name="projectId"
+            value={projectId}
+            onChange={onChange}
+            placeholder="Velg et prosjekt"
+            label="Velg et prosjekt"
+            options={projects.map((p) => ({
+              value: String(p.id),
+              label: p.name,
+            }))}
+          />
+        )}
 
-      <SelectField
-        name="absenceId"
-        value={absenceId}
-        onChange={onChange}
-        label="Velg fravær"
-        options={fraværOptions}
-      />
+        <SelectField
+          name="absenceId"
+          value={absenceId}
+          onChange={onChange}
+          label="Velg fravær"
+          placeholder="Velg et fravær"
+          options={fraværOptions}
+        />
+      </div>
     </section>
   );
 }

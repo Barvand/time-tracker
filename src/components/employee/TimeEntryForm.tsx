@@ -2,6 +2,7 @@
 import { useMemo, useState } from "react";
 import type { Project } from "../../types";
 import ProjectForm from "../employee/form/ProjectForm";
+import InputField from "../form/InputField";
 
 export type HourFormValues = {
   projectId: string;
@@ -84,49 +85,43 @@ export default function HourForm({
       />
 
       <div className="pt-2">
-        <p className="text-red-500 font-bold">
-          Use your keyboard to enter the hours. e.g. 08:00 - 16:00
+        <p className="text-red-600 text-sm font-bold m-2">
+          NB: Husk å fylle ut både starttid og sluttid for at timelisten skal
+          bli riktig.
         </p>
       </div>
 
-      <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-3">
-        <section className="rounded-lg bg-neutral-100 p-4">
-          <label className="block text-sm font-medium">
-            What time did you start work?
-          </label>
-          <input
-            type="time"
+      <div className="mb-5 mt-5 grid grid-cols-1 gap-4 md:grid-cols-3">
+        <section className="rounded-lg p-4">
+          <InputField
             name="startTime"
+            type="time"
             value={formData.startTime}
             onChange={change}
-            className="mt-2 w-full rounded border bg-white p-2"
+            label="Velg time"
+            placeholder="Start tid"
           />
         </section>
 
-        <section className="rounded-lg bg-neutral-100 p-4">
-          <label className="block text-sm font-medium">
-            What time did you end work?
-          </label>
-          <input
-            type="time"
+        <section className="rounded-lg p-4">
+          <InputField
             name="endTime"
+            type="time"
             value={formData.endTime}
             onChange={change}
-            className="mt-2 w-full rounded border bg-white p-2"
+            label="Slutt time"
+            placeholder="Slutt tid"
           />
         </section>
 
-        <section className="rounded-lg bg-neutral-100 p-4">
-          <label className="block text-sm font-medium">
-            Did you take a break?
-          </label>
-          <input
-            type="number"
-            min={0}
+        <section className="rounded-lg p-4">
+          <InputField
             name="breakMinutes"
+            type="number"
             value={formData.breakMinutes}
             onChange={change}
-            className="mt-2 w-full rounded border bg-white p-2"
+            label="Hvor lang pause har du hatt? (i minutter)"
+            placeholder="Pause i minutter"
           />
         </section>
       </div>

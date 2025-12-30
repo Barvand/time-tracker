@@ -18,12 +18,11 @@ export default function SelectField({
   onChange,
   label,
   options,
-  placeholder = "Select…",
+  placeholder,
 }: SelectFieldProps) {
   return (
-    <div className="flex flex-col gap-1 mt-10">
+    <div className="w-full">
       {label && <label className="text-md font-bold">{label}</label>}
-
       <select
         name={name}
         value={value}
