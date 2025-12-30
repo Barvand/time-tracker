@@ -44,12 +44,6 @@ export default function EmployeeDashboard() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 rounded-2xl">
       <h1 className="text-center text-3xl font-semibold">Employee dashboard</h1>
-      <div className="bg-blue-800">
-        <h2 className="p-2 rounded text-white">
-          {" "}
-          Hi {user?.name}, welcome back!{" "}
-        </h2>
-      </div>
 
       <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-[1fr,420px]">
         <div>
