@@ -65,10 +65,18 @@ export default function HourForm({
     >
   ) => {
     const { name, value } = e.target;
-    setFormData((p) => ({
-      ...p,
-      [name]: name === "breakMinutes" ? Number(value) : value,
-    }));
+
+    setFormData((prev) => {
+      const next = {
+        ...prev,
+        [name]: name === "breakMinutes" ? Number(value) : value,
+      };
+
+      if (name === "projectId" && value) next.absenceId = "";
+      if (name === "absenceId" && value) next.projectId = "";
+
+      return next;
+    });
   };
 
   const submit = async () => onSubmit(formData);

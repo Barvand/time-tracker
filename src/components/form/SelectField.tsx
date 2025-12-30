@@ -10,6 +10,8 @@ type SelectFieldProps = {
   label?: string;
   options: Option[];
   placeholder?: string;
+  disabled?: boolean; // 👈 add this
+  className?: string;
 };
 
 export default function SelectField({
@@ -19,6 +21,7 @@ export default function SelectField({
   label,
   options,
   placeholder,
+  disabled,
 }: SelectFieldProps) {
   return (
     <div className="w-full">
@@ -27,7 +30,14 @@ export default function SelectField({
         name={name}
         value={value}
         onChange={onChange}
-        className="w-full rounded border bg-white p-3"
+        disabled={disabled}
+        className="mt-4
+    w-full rounded border bg-white p-3
+    disabled:bg-gray-100
+    disabled:text-gray-400
+    disabled:border-gray-300
+    disabled:cursor-not-allowed
+  "
       >
         {placeholder && <option value="">{placeholder}</option>}
         {options.map((opt) => (

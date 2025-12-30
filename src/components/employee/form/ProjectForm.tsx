@@ -1,4 +1,3 @@
-// src/components/employee/form/ProjectForm.tsx
 import type { Project } from "../../../types";
 import SelectField from "../../form/SelectField";
 
@@ -41,27 +40,31 @@ export default function ProjectForm({
         ) : projectsError ? (
           <p className="mt-2 text-sm text-red-600">Failed to load projects</p>
         ) : (
-          <SelectField
-            name="projectId"
-            value={projectId}
-            onChange={onChange}
-            placeholder="Velg et prosjekt"
-            label="Velg et prosjekt"
-            options={projects.map((p) => ({
-              value: String(p.id),
-              label: p.name,
-            }))}
-          />
-        )}
+          <>
+            <SelectField
+              name="projectId"
+              value={projectId}
+              onChange={onChange}
+              label="Velg et prosjekt"
+              placeholder="Velg prosjekt"
+              options={projects.map((p) => ({
+                value: String(p.id),
+                label: p.name,
+              }))}
+              disabled={!!absenceId} // disable if fravær is chosen
+            />
 
-        <SelectField
-          name="absenceId"
-          value={absenceId}
-          onChange={onChange}
-          label="Velg fravær"
-          placeholder="Velg et fravær"
-          options={fraværOptions}
-        />
+            <SelectField
+              name="absenceId"
+              value={absenceId}
+              onChange={onChange}
+              label="Velg fravær:"
+              placeholder="Velg fravær"
+              options={fraværOptions}
+              disabled={!!projectId} // disable if project is chosen
+            />
+          </>
+        )}
       </div>
     </section>
   );
