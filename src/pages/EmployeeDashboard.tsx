@@ -61,11 +61,6 @@ export default function EmployeeDashboard() {
         </div>
 
         <aside className="rounded-lg bg-neutral-100 p-6 lg:sticky lg:top-8 lg:h-fit">
-          <WeekNavigator
-            weekNumber={weekNumber}
-            onPrev={() => setWeekOffset((w) => w - 1)}
-            onNext={() => setWeekOffset((w) => w + 1)}
-          />
           {userId && (
             <HourReview
               userId={userId}
