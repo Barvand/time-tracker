@@ -6,8 +6,6 @@ import { useCreateHour } from "../api/hours";
 import HourForm from "../components/employee/TimeEntryForm";
 import type { HourFormValues } from "../components/employee/TimeEntryForm";
 import HourReview from "../components/employee/HourReview";
-import WeekNavigator from "../components/employee/WeekNavigator";
-import { getISOWeek } from "../utils/utils";
 import { GetAbsenceData } from "../api/absence";
 
 export default function EmployeeDashboard() {
@@ -16,12 +14,11 @@ export default function EmployeeDashboard() {
   const { data: projects = [], isLoading, error } = GetProjects();
   const { data: absence = [] } = GetAbsenceData();
   const createHour = useCreateHour(userId);
-  const [weekOffset, setWeekOffset] = useState(0);
+  const [weekOffset] = useState(0);
   const now = new Date();
   const monday = new Date(now);
   const day = (now.getDay() + 6) % 7;
   monday.setDate(now.getDate() - day + weekOffset * 7);
-  const weekNumber = getISOWeek(monday);
 
   const handleSubmit = async (v: HourFormValues) => {
     if (!userId) {

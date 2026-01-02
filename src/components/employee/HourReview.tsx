@@ -80,8 +80,6 @@ export default function HourReview({
     groupedByDate: monthlyGroupedByDate,
     sortedDates: monthlySortedDates,
     weeklyTotal: monthTotal, // total hours in that month
-    monday: monthStart,
-    sunday: monthEnd,
   } = useMemo(
     () => getMonthlySummary(rows, currentMonthDate),
     [rows, currentMonthDate]
