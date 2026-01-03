@@ -12,14 +12,6 @@ export function HourDisplayRows({
   projectName: string;
   absenceName: string;
 }) {
-  const date = new Date(row.startTime);
-  const formattedDate = date.toLocaleDateString(undefined, {
-    weekday: "long", // 👈 adds day name (Monday, Tuesday, etc.)
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
-
   return (
     <li className="p-3 bg-gray-100">
       <div className="flex flex-col gap-1">
