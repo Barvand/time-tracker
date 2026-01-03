@@ -1,27 +1,55 @@
-import type { HourRow } from "../../api/hours";
-import { isoWeekKey, mondayOfISOWeek } from "../../utils/utils";
+import type { HourRow } from "../api/hours";
+import { isoWeekKey, mondayOfISOWeek } from "./utils";
 
-export type WeeklySummary = {
+export interface DateGroupedData {
   groupedByDate: Record<string, HourRow[]>;
   sortedDates: string[];
-  weeklyTotal: number;
-  monday: Date;
-  sunday: Date;
-};
+  total: number;
+  startDate: Date;
+  endDate: Date;
+}
 
-export type MonthTotal = {
+export interface MonthTotal {
   year: number;
   month: number;
   total: number;
   label: string;
-};
+}
 
+export interface MonthlyUserSummary {
+  userId: number;
+  userName: string;
+  totalHours: number;
+}
+
+/**
+ * Get the date for a given month offset from today
+ */
+export function getOffsetMonthDate(monthOffset: number): Date {
+  const date = new Date();
+  date.setMonth(date.getMonth() + monthOffset);
+  return date;
+}
+
+/**
+ * Format a month date to display string
+ */
+export function formatMonthName(date: Date): string {
+  return date.toLocaleString("en-US", {
+    month: "long",
+    year: "numeric",
+  });
+}
+
+/**
+ * Group hours by week with offset
+ */
 export function getWeeklySummary(
   rows: HourRow[],
   weekOffset: number
-): WeeklySummary {
+): DateGroupedData {
   const grouped: Record<string, HourRow[]> = {};
-  let weeklyTotal = 0;
+  let total = 0;
 
   // Target week (today + weekOffset)
   const today = new Date();
@@ -47,7 +75,7 @@ export function getWeeklySummary(
     grouped[dateKey].push(row);
 
     const val = Number(row.hoursWorked);
-    if (Number.isFinite(val)) weeklyTotal += val;
+    if (Number.isFinite(val)) total += val;
   }
 
   // Sort logs within each day
@@ -61,15 +89,24 @@ export function getWeeklySummary(
   // Sort days chronologically
   const sortedDates = Object.keys(grouped).sort();
 
-  return { groupedByDate: grouped, sortedDates, weeklyTotal, monday, sunday };
+  return {
+    groupedByDate: grouped,
+    sortedDates,
+    total,
+    startDate: monday,
+    endDate: sunday,
+  };
 }
 
+/**
+ * Group hours by month for a specific date
+ */
 export function getMonthlySummary(
   rows: HourRow[],
   baseDate = new Date()
-): WeeklySummary {
+): DateGroupedData {
   const grouped: Record<string, HourRow[]> = {};
-  let monthlyTotal = 0;
+  let total = 0;
 
   const targetYear = baseDate.getFullYear();
   const targetMonth = baseDate.getMonth();
@@ -95,7 +132,7 @@ export function getMonthlySummary(
     grouped[dateKey].push(row);
 
     const val = Number(row.hoursWorked);
-    if (Number.isFinite(val)) monthlyTotal += val;
+    if (Number.isFinite(val)) total += val;
   }
 
   // Sort logs within each day
@@ -112,28 +149,15 @@ export function getMonthlySummary(
   return {
     groupedByDate: grouped,
     sortedDates,
-    weeklyTotal: monthlyTotal, // Using weeklyTotal property name for compatiblity
-    monday: firstDay,
-    sunday: lastDay,
+    total,
+    startDate: firstDay,
+    endDate: lastDay,
   };
 }
 
-export function getMonthlyTotal(
-  rows: HourRow[],
-  baseDate = new Date()
-): number {
-  const year = baseDate.getFullYear();
-  const month = baseDate.getMonth(); // 0-based
-  return rows.reduce((sum, row) => {
-    if (!row.startTime) return sum;
-    const d = new Date(row.startTime);
-    const isSameMonth = d.getFullYear() === year && d.getMonth() === month;
-    if (!isSameMonth) return sum;
-    const val = Number(row.hoursWorked);
-    return sum + (Number.isFinite(val) ? val : 0);
-  }, 0);
-}
-
+/**
+ * Get all monthly totals from all hours
+ */
 export function getAllMonthlyTotals(rows: HourRow[]): MonthTotal[] {
   const monthMap = new Map<string, number>();
 
@@ -159,10 +183,7 @@ export function getAllMonthlyTotals(rows: HourRow[]): MonthTotal[] {
         year,
         month,
         total,
-        label: date.toLocaleDateString("en-US", {
-          month: "long",
-          year: "numeric",
-        }),
+        label: formatMonthName(date),
       };
     })
     .sort((a, b) => {
@@ -171,4 +192,44 @@ export function getAllMonthlyTotals(rows: HourRow[]): MonthTotal[] {
     });
 
   return months;
+}
+
+/**
+ * Group hours by user for a specific month (for accountant view)
+ */
+export function getMonthlyUserSummary(
+  rows: HourRow[],
+  baseDate: Date,
+  userMap: Record<number, string>
+): MonthlyUserSummary[] {
+  const year = baseDate.getFullYear();
+  const month = baseDate.getMonth();
+
+  const userHours: Record<number, MonthlyUserSummary> = {};
+
+  rows.forEach((hour) => {
+    const date = new Date(hour.startTime);
+    if (date.getFullYear() === year && date.getMonth() === month) {
+      if (!userHours[hour.userId]) {
+        userHours[hour.userId] = {
+          userId: hour.userId,
+          userName: userMap[hour.userId] || `User ${hour.userId}`,
+          totalHours: 0,
+        };
+      }
+      userHours[hour.userId].totalHours += Number(hour.hoursWorked) || 0;
+    }
+  });
+
+  // Convert to array and sort by name
+  return Object.values(userHours).sort((a, b) =>
+    a.userName.localeCompare(b.userName)
+  );
+}
+
+/**
+ * Calculate total hours from an array of user summaries
+ */
+export function calculateTotalHours(summaries: MonthlyUserSummary[]): number {
+  return summaries.reduce((sum, user) => sum + user.totalHours, 0);
 }

@@ -50,19 +50,33 @@ function Navigation() {
                   Employee Dashboard
                 </Link>
               )}
+              {user.role === "accountant" && (
+                <Link
+                  to="/accountant/dashboard"
+                  className="text-sm text-green-600 border p-3 hover:bg-gray-900"
+                >
+                  Regnskap
+                </Link>
+              )}
               {user.role === "admin" && (
                 <>
                   <Link
                     to="/admin/dashboard"
                     className="text-sm text-blue-600 border p-3 hover:bg-gray-800"
                   >
-                    Admin Dashboard
+                    Admin
                   </Link>
                   <Link
                     to="/employee/dashboard"
                     className="text-sm text-green-600 border p-3 hover:bg-gray-800"
                   >
-                    Employee Dashboard
+                    Ansatte
+                  </Link>
+                  <Link
+                    to="/accountant/dashboard"
+                    className="text-sm text-black border p-3 hover:bg-gray-800"
+                  >
+                    Regnskap Dashboard
                   </Link>
                 </>
               )}

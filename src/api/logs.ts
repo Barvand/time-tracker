@@ -1,4 +1,3 @@
-// src/api/entries.ts  — adapter over /hours endpoints
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { makeRequest } from "../lib/axios";
 

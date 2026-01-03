@@ -10,16 +10,14 @@ function NotFoundPage() {
   return (
     <>
       <Helmet>
-        <title>Dagar - Page not found</title>
+        <title> Page not found</title>
         <meta name="description" content="Page not found, try again later." />
       </Helmet>
       <div className="flex flex-col bg-page items-center justify-center min-h-screen text-center text-black">
         <div className="p-4 rounded">
           <h1 className="text-6xl font-bold">404</h1>
           <h2 className="text-3xl mt-2">Oops! Page Not Found</h2>
-          <p className="text-lg mt-4">
-            It looks like you did something wrong.
-          </p>
+          <p className="text-lg mt-4">It looks like you did something wrong.</p>
           <div className="flex justify-center">
             <GiAirplaneDeparture size={120} className="text-black " />
           </div>

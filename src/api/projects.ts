@@ -1,8 +1,6 @@
-// src/api/projects.ts
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { makeRequest } from "../lib/axios";
 import type { Project } from "../types";
-
 
 export function GetProjects() {
   return useQuery<Project[], Error>({

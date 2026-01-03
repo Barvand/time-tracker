@@ -1,4 +1,3 @@
-// src/components/hour/HourForm.tsx
 import { useMemo, useState } from "react";
 import type { Project } from "../../types";
 import ProjectForm from "../employee/form/ProjectForm";
@@ -53,7 +52,7 @@ export default function HourForm({
       ? {
           startStr: formData.startTime,
           endStr: formData.endTime,
-          breakStr: `${formData.breakMinutes} minutes`,
+          breakStr: `${formData.breakMinutes} minutter`,
           hours,
         }
       : null;
@@ -82,107 +81,213 @@ export default function HourForm({
   const submit = async () => onSubmit(formData);
 
   return (
-    <>
-      <ProjectForm
-        projectId={formData.projectId}
-        absenceId={formData.absenceId}
-        onChange={change}
-        projects={projects}
-        projectsLoading={projectsLoading}
-        projectsError={projectsError}
-      />
-
-      <div className="pt-2">
-        <p className="text-red-600 text-sm font-bold m-2">
-          NB: Husk å fylle ut både starttid og sluttid for at timelisten skal
-          bli riktig.
-        </p>
+    <div className="bg-white p-6">
+      {/* Project/Absence Selection */}
+      <div className="mb-6">
+        <ProjectForm
+          projectId={formData.projectId}
+          absenceId={formData.absenceId}
+          onChange={change}
+          projects={projects}
+          projectsLoading={projectsLoading}
+          projectsError={projectsError}
+        />
       </div>
 
-      <div className="mb-5 mt-5 grid grid-cols-1 gap-4 md:grid-cols-3">
-        <section className="rounded-lg p-4">
+      {/* Important Note */}
+      <div className="mb-6 bg-blue-50 border border-blue-200 p-4">
+        <div className="flex gap-3">
+          <svg
+            className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          <p className="text-sm text-blue-900">
+            <strong>NB:</strong> Husk å fylle ut både starttid og sluttid for at
+            timelisten skal bli riktig.
+          </p>
+        </div>
+      </div>
+
+      {/* Time and Break Inputs */}
+      <div className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-3">
+        <div className="space-y-2">
           <InputField
             name="startTime"
             type="time"
             value={formData.startTime}
             onChange={change}
-            label="Velg time"
-            placeholder="Start tid"
+            label="Starttid"
+            placeholder="Starttid"
           />
-        </section>
+        </div>
 
-        <section className="rounded-lg p-4">
+        <div className="space-y-2">
           <InputField
             name="endTime"
             type="time"
             value={formData.endTime}
             onChange={change}
-            label="Slutt time"
-            placeholder="Slutt tid"
+            label="Sluttid"
+            placeholder="Sluttid"
           />
-        </section>
+        </div>
 
-        <section className="rounded-lg p-4">
+        <div className="space-y-2">
           <InputField
             name="breakMinutes"
             type="number"
             value={formData.breakMinutes}
             onChange={change}
-            label="Hvor lang pause har du hatt? (i minutter)"
-            placeholder="Pause i minutter"
-          />
-        </section>
-      </div>
-
-      <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-end">
-        <div className="sm:w-60">
-          <label className="block text-sm font-medium">Date</label>
-          <input
-            type="date"
-            name="date"
-            value={formData.date}
-            onChange={change}
-            className="mt-2 w-full rounded border bg-white p-2"
+            label="Pause (minutter)"
+            placeholder="0"
           />
         </div>
+      </div>
 
+      {/* Date Input */}
+      <div className="mb-6">
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Dato
+        </label>
+        <input
+          type="date"
+          name="date"
+          value={formData.date}
+          onChange={change}
+          className="w-full md:w-64 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors"
+        />
+      </div>
+
+      {/* Note Input (Optional) */}
+      <div className="mb-6">
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Merknad (valgfritt)
+        </label>
+        <textarea
+          name="note"
+          value={formData.note}
+          onChange={change}
+          rows={3}
+          placeholder="Legg til eventuelle merknader..."
+          className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors resize-none"
+        />
+      </div>
+
+      {/* Preview Section */}
+      {preview && (
+        <div className="mb-6 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-4">
+          <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
+            <svg
+              className="w-4 h-4 text-blue-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            Oppsummering
+          </h3>
+          <div className="space-y-2 text-sm text-gray-700">
+            <p>
+              Du har jobbet fra{" "}
+              <strong className="text-gray-900">{preview.startStr}</strong> til{" "}
+              <strong className="text-gray-900">{preview.endStr}</strong> med en
+              pause på{" "}
+              <strong className="text-gray-900">{preview.breakStr}</strong>.
+            </p>
+            <p className="text-base font-semibold text-blue-600 mt-3">
+              Totalt: {preview.hours} timer
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* Error/Success Messages */}
+      {errorMsg && (
+        <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4">
+          <p className="text-sm text-red-600">{errorMsg}</p>
+        </div>
+      )}
+      {successMsg && (
+        <div className="mb-6 bg-green-50 border border-green-200 rounded-lg p-4">
+          <p className="text-sm text-green-700">{successMsg}</p>
+        </div>
+      )}
+
+      {/* Submit Button */}
+      <div className="flex justify-end">
         <button
-          disabled={!!submitting}
+          disabled={!!submitting || !preview}
           onClick={submit}
-          className="mt-2 inline-flex h-11 items-center justify-center rounded bg-emerald-500 px-5 font-medium text-white transition hover:bg-emerald-600 disabled:opacity-50 sm:mt-0"
+          className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-6 py-3 font-medium text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {submitting ? "Submitting…" : "Submit your working day"}
+          {submitting ? (
+            <>
+              <svg
+                className="animate-spin h-4 w-4"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                />
+              </svg>
+              Lagrer...
+            </>
+          ) : (
+            <>
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
+              Registrer arbeidstid
+            </>
+          )}
         </button>
       </div>
 
-      {errorMsg && <p className="mt-3 text-sm text-red-600">{errorMsg}</p>}
-      {successMsg && (
-        <p className="mt-3 text-sm text-emerald-700">{successMsg}</p>
-      )}
-
-      <section className="mt-6 rounded-lg bg-neutral-100 p-6">
-        {preview ? (
-          <>
-            <p className="mt-3 text-sm">
-              You have worked today from <b>{preview.startStr}</b> to{" "}
-              <b>{preview.endStr}</b> and you took a break of{" "}
-              <b>{preview.breakStr}</b>.
-              <br />
-              In total you have worked for <b>{preview.hours} hours</b>
-            </p>
-            <button
-              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-              className="mt-4 text-sm font-medium text-red-600 underline"
-            >
-              Edit your workday
-            </button>
-          </>
-        ) : (
-          <p className="mt-2 text-sm font-bold">
-            Fill out the form above to see a preview here.
+      {/* Help Text */}
+      {!preview && (
+        <div className="mt-6 pt-6 border-t">
+          <p className="text-sm text-gray-500 text-center">
+            Fyll ut alle feltene over for å se en oppsummering av arbeidstiden
+            din
           </p>
-        )}
-      </section>
-    </>
+        </div>
+      )}
+    </div>
   );
 }

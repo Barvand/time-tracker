@@ -1,4 +1,3 @@
-// src/pages/EmployeeDashboard.tsx
 import { useState } from "react";
 import { useAuth } from "../features/auth/useAuth";
 import { GetProjects } from "../api/projects";
@@ -40,7 +39,9 @@ export default function EmployeeDashboard() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 rounded-2xl">
-      <h1 className="text-center text-3xl font-semibold">Employee dashboard</h1>
+      <h1 className="text-center text-3xl font-semibold">
+        Registrer arbeidstid
+      </h1>
 
       <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-[1fr,420px]">
         <div>

@@ -1,4 +1,3 @@
-// src/components/hour/HourReview.tsx
 import { useMemo, useState } from "react";
 import { useUserHours, useUpdateHour, type HourRow } from "../../api/hours";
 import { formatForInputLocal } from "../../utils/utils";
@@ -6,9 +5,11 @@ import { EditingItem } from "./editHours";
 import { HourDisplayRows } from "./HourDisplay";
 import {
   getWeeklySummary,
-  getAllMonthlyTotals,
   getMonthlySummary,
-} from "./hourSummary";
+  getAllMonthlyTotals,
+  getOffsetMonthDate,
+  formatMonthName,
+} from "../../utils/dateHelpers";
 
 type hourReviewProps = {
   userId: string | number;
@@ -60,39 +61,28 @@ export default function HourReview({
   }, [absence]);
 
   // Weekly summary data
-  const {
-    groupedByDate: weeklyGroupedByDate,
-    sortedDates: weeklySortedDates,
-    weeklyTotal,
-    monday,
-    sunday,
-  } = useMemo(() => getWeeklySummary(rows, weekOffset), [rows, weekOffset]);
+  const weeklySummary = useMemo(
+    () => getWeeklySummary(rows, weekOffset),
+    [rows, weekOffset]
+  );
 
   // Current month date (offset-based)
-  const currentMonthDate = useMemo(() => {
-    const date = new Date();
-    date.setMonth(date.getMonth() + monthOffset);
-    return date;
-  }, [monthOffset]);
+  const currentMonthDate = useMemo(
+    () => getOffsetMonthDate(monthOffset),
+    [monthOffset]
+  );
 
-  // Monthly summary data (for listing all days in the selected month)
-  const {
-    groupedByDate: monthlyGroupedByDate,
-    sortedDates: monthlySortedDates,
-    weeklyTotal: monthTotal, // total hours in that month
-  } = useMemo(
+  // Monthly summary data
+  const monthlySummary = useMemo(
     () => getMonthlySummary(rows, currentMonthDate),
     [rows, currentMonthDate]
   );
 
   const allMonths = useMemo(() => getAllMonthlyTotals(rows), [rows]);
 
-  // Choose which grouped data to show based on view mode
-  const groupedByDate =
-    viewMode === "weekly" ? weeklyGroupedByDate : monthlyGroupedByDate;
-
-  const sortedDates =
-    viewMode === "weekly" ? weeklySortedDates : monthlySortedDates;
+  // Choose which data to show based on view mode
+  const currentSummary = viewMode === "weekly" ? weeklySummary : monthlySummary;
+  const { groupedByDate, sortedDates, total } = currentSummary;
 
   // Handlers
   function handleEdit(row: HourRow) {
@@ -129,15 +119,11 @@ export default function HourReview({
   const collapseAll = () => setExpandedDays(new Set());
 
   // Format helpers
-  const monthName = currentMonthDate.toLocaleString("en-US", {
-    month: "long",
-    year: "numeric",
-  });
-
-  const weekRange = `${monday.toLocaleDateString("en-US", {
+  const monthName = formatMonthName(currentMonthDate);
+  const weekRange = `${weeklySummary.startDate.toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
-  })} – ${sunday.toLocaleDateString("en-US", {
+  })} – ${weeklySummary.endDate.toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
     year: "numeric",
@@ -210,8 +196,7 @@ export default function HourReview({
                 {viewMode === "weekly" ? "Weekly Total" : "Monthly Total"}
               </p>
               <p className="text-3xl font-bold text-blue-600 mt-1">
-                {(viewMode === "weekly" ? weeklyTotal : monthTotal).toFixed(2)}{" "}
-                hrs
+                {total.toFixed(2)} hrs
               </p>
             </div>
 
@@ -311,11 +296,11 @@ export default function HourReview({
               return (
                 <div
                   key={dateKey}
-                  className="border rounded-lg overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow"
+                  className="8888rounded-lg overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow"
                 >
                   {/* Day Header */}
                   <div
-                    className="p-4 bg-gradient-to-r from-gray-50 to-gray-100 border-b cursor-pointer hover:from-gray-100 hover:to-gray-200 transition-colors"
+                    className="p-4 bg-gradient-to-r from-gray-50 to-gray-100 cursor-pointer hover:from-gray-100 hover:to-gray-200 transition-colors"
                     onClick={() => toggleDay(dateKey)}
                   >
                     <div className="flex justify-between items-center">
@@ -328,9 +313,8 @@ export default function HourReview({
                             day: "numeric",
                           })}
                         </span>
-                        <span className="text-xs text-gray-600 bg-white px-2.5 py-1 rounded-full border font-medium">
-                          {daylogs.length}{" "}
-                          {daylogs.length === 1 ? "entry" : "entries"}
+                        <span className="text-xs text-gray-600 bg-white px-2.5 py-1 border font-medium">
+                          {daylogs.length}
                         </span>
                       </div>
                       <div className="flex items-center gap-3">
@@ -346,7 +330,7 @@ export default function HourReview({
 
                   {/* Day Entries */}
                   {isExpanded && (
-                    <div className="divide-y bg-white">
+                    <div className="divide-y ">
                       {daylogs.map((row) => {
                         const projectName =
                           projectMap[row.projectsId] || "Unknown Project";
@@ -392,8 +376,7 @@ export default function HourReview({
                 {viewMode === "weekly" ? "Weekly" : "Monthly"} Total
               </span>
               <span className="text-3xl font-bold text-blue-600">
-                {(viewMode === "weekly" ? weeklyTotal : monthTotal).toFixed(2)}{" "}
-                hours
+                {total.toFixed(2)} hours
               </span>
             </div>
           </div>

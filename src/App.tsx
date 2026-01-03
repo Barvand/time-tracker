@@ -12,6 +12,7 @@ import RequireAuth from "./app/RequireAuth";
 import HomePage from "./pages/HomePage";
 import NotFoundPage from "./pages/404";
 import UnAuthorizedPage from "./pages/unauthorized";
+import AccountantDashboard from "./pages/AccountantDashboard";
 
 function App() {
   return (
@@ -41,6 +42,12 @@ function App() {
               <Route
                 path="/employee/dashboard"
                 element={<EmployeeDashboard />}
+              />
+            </Route>
+            <Route element={<RequireRole roles={["accountant", "admin"]} />}>
+              <Route
+                path="/accountant/dashboard"
+                element={<AccountantDashboard />}
               />
             </Route>
           </Route>

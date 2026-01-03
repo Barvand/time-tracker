@@ -10,7 +10,7 @@ function RegisterPage() {
   const [successMessage, setSuccessMessage] = useState<string>("");
 
   return (
-    <div className="container flex flex-col gap-2 mx-auto bg-gray-200 p-4">
+    <div className="container flex flex-col gap-2 mx-auto max-w-xl p-4">
       <Formik
         initialValues={{
           name: "",
@@ -142,13 +142,15 @@ function RegisterPage() {
               <div className="text-red-500 text-sm">{errors.role}</div>
             )}
 
-            <button
-              type="submit"
-              className="p-2 border bg-white mt-2 rounded hover:bg-gray-100 transition"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? "Registering..." : "Register"}
-            </button>
+            <div className="flex justify-end">
+              <button
+                type="submit"
+                className="p-2 border bg-green-600 text-white mt-2 rounded hover:bg-green-800 cursor-pointer transition"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Registering..." : "Register"}
+              </button>
+            </div>
 
             {successMessage && (
               <div className="text-green-600 text-md p-4 bg-green-100 border border-green rounded">

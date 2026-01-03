@@ -1,4 +1,4 @@
-// src/api/hours.ts  <-- NOTE: lowercase file name and import it as "../api/hours"
+
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { makeRequest } from "../lib/axios";
 
@@ -34,6 +34,17 @@ export type UpdateHourData = Partial<{
 export async function listHoursByUser(userId: string | number) {
   const { data } = await makeRequest.get("/hours", { params: { userId } });
   return data as HourRow[];
+}
+
+export function useAllUsersHours() {
+  return useQuery({
+    queryKey: ["hours", "all"],
+    queryFn: async () => {
+      const response = await makeRequest.get("/hours"); // Adjust endpoint as needed
+      return response.data as HourRow[];
+    },
+    staleTime: 1000 * 60 * 5, // 5 minutes
+  });
 }
 
 export function useUserHours(userId?: string | number) {

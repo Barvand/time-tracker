@@ -1,4 +1,3 @@
-// src/types.ts
 export type ProjectStatus = "active" | "completed" | "inactive";
 
 export type Project = {
@@ -22,7 +21,6 @@ export type CreateProjectInput = {
   startDate?: string;
   completionDate?: string;
 };
-
 
 export const ROLES = ["admin", "employee", "accountant"] as const;
 export type Role = (typeof ROLES)[number];

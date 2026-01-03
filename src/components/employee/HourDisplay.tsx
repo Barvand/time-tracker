@@ -21,18 +21,25 @@ export function HourDisplayRows({
   });
 
   return (
-    <li className="rounded border bg-white p-3 shadow-sm">
-      <div className="flex flex-wrap justify-between gap-2">
-        <span className="font-medium">{formattedDate}</span>
-        <div className="flex items-center gap-2">
+    <li className="p-3 bg-gray-100">
+      <div className="flex flex-col gap-1">
+        {/* Line 1 — Project or Absence */}
+        <div>
           {row.absenceId ? (
             <span className="text-red-600">{absenceName}</span>
           ) : (
-            <span className="text-blue-600">{projectName}</span>
+            <span className="text-blue-900 font-semibold">
+              Project: {projectName}
+            </span>
           )}
-          <span className="text-sm opacity-80">
+        </div>
+
+        {/* Line 2 — Hours + Edit button */}
+        <div className="flex items-center justify-between">
+          <span className="text-md font-semibold opacity-80">
             {hhmm(row.startTime)} → {hhmm(row.endTime)}
           </span>
+
           <button
             onClick={onEdit}
             className="px-2 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700"
@@ -40,9 +47,11 @@ export function HourDisplayRows({
             Edit
           </button>
         </div>
-      </div>
-      <div className="mt-1 text-sm opacity-80">
-        {Number(row.hoursWorked).toFixed(2)} h • break {row.breakMinutes} min
+
+        {/* Line 3 — Totals */}
+        <div className="text-sm opacity-80">
+          {Number(row.hoursWorked).toFixed(2)} h • break {row.breakMinutes} min
+        </div>
       </div>
     </li>
   );

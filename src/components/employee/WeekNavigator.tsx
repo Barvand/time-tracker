@@ -1,4 +1,3 @@
-// src/components/employee/WeekNavigator.tsx
 export default function WeekNavigator({
   weekNumber,
   onPrev,
