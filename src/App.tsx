@@ -9,7 +9,6 @@ import Register from "./pages/RegisterPage";
 import AdminReports from "./pages/AdminReports";
 import RequireRole from "./app/RequireRoleRoute";
 import RequireAuth from "./app/RequireAuth";
-import HomePage from "./pages/HomePage";
 import NotFoundPage from "./pages/404";
 import UnAuthorizedPage from "./pages/unauthorized";
 import AccountantDashboard from "./pages/AccountantDashboard";
@@ -21,8 +20,7 @@ function App() {
       <main className="container mx-auto py-4">
         <Routes>
           {/* Public */}
-          <Route path="/" element={<HomePage />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/" element={<Login />} />
 
           {/* Everything below here requires auth */}
           <Route element={<RequireAuth />}>

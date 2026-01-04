@@ -109,7 +109,7 @@ function Navigation() {
             </div>
           ) : (
             <Link
-              to="/login"
+              to="/"
               className="bg-black text-white font-semibold py-3 px-6 self-center hover:bg-[#e85f00] transition cursor-pointer"
             >
               Login

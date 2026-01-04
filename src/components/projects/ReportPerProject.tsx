@@ -8,12 +8,11 @@ interface ProjectReportPageProps {
 }
 
 export default function ProjectReportPage({ id }: ProjectReportPageProps) {
-  // match your route param names exactly (usually ":projectId" or ":id")
   const { projectId } = useParams<{ projectId?: string; id?: string }>();
   const resolvedId = projectId ?? id;
 
   if (!resolvedId) {
-    return <div>Missing project id</div>;
+    return <div>Mangler prosjekt-ID</div>;
   }
 
   const {
@@ -40,160 +39,228 @@ export default function ProjectReportPage({ id }: ProjectReportPageProps) {
   );
 
   return (
-    <div className="mx-auto max-w-6xl p-6">
-      <div className="mb-4 flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">
-          Project Report #{resolvedId}
+    <div className="mx-auto max-w-7xl p-6">
+      <div className="mb-6 flex items-center justify-between">
+        <h1 className="text-3xl font-bold text-gray-900">
+          Prosjektrapport #{resolvedId}
           {project ? ` — ${project.name}` : ""}
         </h1>
-        <Link to="/projects" className="text-blue-600 hover:underline">
-          ← Back to projects
+        <Link
+          to="/admin/dashboard"
+          className="text-blue-600 hover:text-blue-700 font-medium"
+        >
+          ← Tilbake til prosjekter
         </Link>
       </div>
 
-      <div className="mb-6 rounded border p-4 bg-white">
+      <div className="mb-6 rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
         {isProjectLoading ? (
-          <p>Loading project…</p>
+          <p className="text-gray-600">Laster prosjekt…</p>
         ) : projectError ? (
           <p className="text-red-600">
-            {(projectError as any)?.message ?? "Failed to load project"}
+            {(projectError as any)?.message ?? "Kunne ikke laste prosjekt"}
           </p>
         ) : project ? (
-          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
             <div>
-              <div className="text-sm opacity-70">Project name</div>
-              <div className="font-medium">{project.name}</div>
+              <div className="text-sm font-medium text-gray-500 mb-1">
+                Prosjektnavn
+              </div>
+              <div className="text-lg font-semibold text-gray-900">
+                {project.name}
+              </div>
             </div>
             <div>
-              <div className="text-sm opacity-70">Status</div>
-              <span className="inline-flex items-center rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium">
+              <div className="text-sm font-medium text-gray-500 mb-1">
+                Status
+              </div>
+              <span className="inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-800">
                 {project.status ?? "—"}
               </span>
             </div>
             <div>
-              <div className="text-sm opacity-70">Dates</div>
-              <div>
+              <div className="text-sm font-medium text-gray-500 mb-1">
+                Datoer
+              </div>
+              <div className="text-gray-900">
                 {formatDate(project.startDate) || "—"}{" "}
-                <span className="opacity-60">→</span>{" "}
-                {formatDate(project.endDate) || "ongoing"}
+                <span className="text-gray-400">→</span>{" "}
+                {formatDate(project.endDate) || "pågående"}
               </div>
             </div>
             <div>
-              <div className="text-sm opacity-70">Total logged (this view)</div>
-              <div className="font-medium">{totals.total.toFixed(2)} h</div>
+              <div className="text-sm font-medium text-gray-500 mb-1">
+                Totalt loggført (denne visningen)
+              </div>
+              <div className="text-lg font-semibold text-gray-900">
+                {totals.total.toFixed(2)} t
+              </div>
             </div>
             {project.totalHours != null && (
               <div className="sm:col-span-2">
-                <div className="text-sm opacity-70">
-                  Total hours (project record)
+                <div className="text-sm font-medium text-gray-500 mb-1">
+                  Totalt timer (prosjektoppføring)
                 </div>
-                <div className="font-medium">
-                  {Number(project.totalHours).toFixed(2)} h
+                <div className="text-lg font-semibold text-gray-900">
+                  {Number(project.totalHours).toFixed(2)} t
                 </div>
               </div>
             )}
             {project.description && (
               <div className="sm:col-span-2">
-                <div className="text-sm opacity-70">Description</div>
-                <div>{project.description}</div>
+                <div className="text-sm font-medium text-gray-500 mb-1">
+                  Beskrivelse
+                </div>
+                <div className="text-gray-700">{project.description}</div>
               </div>
             )}
           </div>
         ) : null}
       </div>
 
-      <div className="mb-6 overflow-x-auto rounded border">
+      <div className="mb-6 rounded-lg border border-gray-200 bg-white shadow-sm overflow-hidden">
+        <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
+          <h2 className="text-lg font-semibold text-gray-900">
+            Sammendrag per bruker
+          </h2>
+        </div>
         {isByUserLoading ? (
-          <p className="p-3">Loading summary…</p>
+          <p className="p-6 text-gray-600">Laster sammendrag…</p>
         ) : byUserError ? (
-          <p className="p-3 text-red-600">
-            {(byUserError as any)?.message ?? "Failed to load summary"}
+          <p className="p-6 text-red-600">
+            {(byUserError as any)?.message ?? "Kunne ikke laste sammendrag"}
           </p>
         ) : (
-          <table className="w-full text-sm">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="p-2 text-left">User</th>
-                <th className="p-2 text-right">Hours</th>
-              </tr>
-            </thead>
-            <tbody>
-              {byUser.map((u) => (
-                <tr key={u.userId} className="border-t">
-                  <td className="p-2">{u.userName}</td>
-                  <td className="p-2 text-right">
-                    {Number(u.totalHours ?? 0).toFixed(2)}
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gray-50 border-b border-gray-200">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Bruker
+                  </th>
+                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Timer
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {byUser.map((u) => (
+                  <tr key={u.userId} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {u.userName}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-right font-medium">
+                      {Number(u.totalHours ?? 0).toFixed(2)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+              <tfoot className="bg-gray-50 border-t-2 border-gray-300">
+                <tr>
+                  <td className="px-6 py-4 text-sm font-bold text-gray-900">
+                    Total
+                  </td>
+                  <td className="px-6 py-4 text-sm font-bold text-gray-900 text-right">
+                    {byUser
+                      .reduce((s, u) => s + Number(u.totalHours ?? 0), 0)
+                      .toFixed(2)}
                   </td>
                 </tr>
-              ))}
-            </tbody>
-            <tfoot className="bg-gray-50 border-t">
-              <tr>
-                <td className="p-2 font-medium">Total</td>
-                <td className="p-2 text-right font-medium">
-                  {byUser
-                    .reduce((s, u) => s + Number(u.totalHours ?? 0), 0)
-                    .toFixed(2)}
-                </td>
-              </tr>
-            </tfoot>
-          </table>
+              </tfoot>
+            </table>
+          </div>
         )}
       </div>
 
-      {isRowsLoading ? (
-        <p>Loading entries…</p>
-      ) : rowsError ? (
-        <p className="text-red-600">
-          {(rowsError as any)?.message ?? "Failed to load entries"}
-        </p>
-      ) : !rows.length ? (
-        <p>No entries in this range.</p>
-      ) : (
-        <div className="overflow-x-auto rounded border">
-          <table className="w-full text-sm">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="p-2 text-left">Date</th>
-                <th className="p-2 text-left">User</th>
-                <th className="p-2 text-left">Start</th>
-                <th className="p-2 text-left">End</th>
-                <th className="p-2 text-right">Break (min)</th>
-                <th className="p-2 text-right">Hours</th>
-                <th className="p-2 text-left">Note</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((r) => (
-                <tr key={r.idHours} className="border-t">
-                  <td className="p-2">
-                    {new Date(r.startTime).toLocaleDateString()}
-                  </td>
-                  <td className="p-2">{r.userName}</td>
-                  <td className="p-2">{timeHM(r.startTime)}</td>
-                  <td className="p-2">{timeHM(r.endTime)}</td>
-                  <td className="p-2 text-right">{r.breakMinutes}</td>
-                  <td className="p-2 text-right">
-                    {Number(r.hoursWorked ?? 0).toFixed(2)}
-                  </td>
-                  <td className="p-2">{r.note ?? ""}</td>
-                </tr>
-              ))}
-            </tbody>
-            <tfoot className="bg-gray-50 border-t">
-              <tr>
-                <td className="p-2 font-medium" colSpan={5}>
-                  Total
-                </td>
-                <td className="p-2 text-right font-medium">
-                  {totals.total.toFixed(2)}
-                </td>
-                <td />
-              </tr>
-            </tfoot>
-          </table>
+      <div className="rounded-lg border border-gray-200 bg-white shadow-sm overflow-hidden">
+        <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
+          <h2 className="text-lg font-semibold text-gray-900">
+            Detaljerte oppføringer
+          </h2>
         </div>
-      )}
+        {isRowsLoading ? (
+          <p className="p-6 text-gray-600">Laster oppføringer…</p>
+        ) : rowsError ? (
+          <p className="p-6 text-red-600">
+            {(rowsError as any)?.message ?? "Kunne ikke laste oppføringer"}
+          </p>
+        ) : !rows.length ? (
+          <p className="p-6 text-gray-600">
+            Ingen oppføringer i dette området.
+          </p>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gray-50 border-b border-gray-200">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Dato
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Bruker
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Start
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Slutt
+                  </th>
+                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Pause (min)
+                  </th>
+                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Timer
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Notat
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {rows.map((r) => (
+                  <tr key={r.idHours} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {new Date(r.startTime).toLocaleDateString("nb-NO")}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {r.userName}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {timeHM(r.startTime)}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {timeHM(r.endTime)}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-right">
+                      {r.breakMinutes}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-right font-medium">
+                      {Number(r.hoursWorked ?? 0).toFixed(2)}
+                    </td>
+                    <td className="px-6 py-4 text-sm text-gray-600">
+                      {r.note ?? ""}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+              <tfoot className="bg-gray-50 border-t-2 border-gray-300">
+                <tr>
+                  <td
+                    className="px-6 py-4 text-sm font-bold text-gray-900"
+                    colSpan={5}
+                  >
+                    Total
+                  </td>
+                  <td className="px-6 py-4 text-sm font-bold text-gray-900 text-right">
+                    {totals.total.toFixed(2)}
+                  </td>
+                  <td />
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
@@ -202,7 +269,7 @@ function formatDate(val?: string | null) {
   if (!val) return "";
   const d = new Date(val);
   if (Number.isNaN(d.getTime())) return String(val);
-  return d.toLocaleDateString();
+  return d.toLocaleDateString("nb-NO");
 }
 
 function timeHM(iso: string) {

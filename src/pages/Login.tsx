@@ -2,74 +2,115 @@ import { Formik, Form, Field } from "formik";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../features/auth/useAuth";
 import loginSchema from "../validations/LoginValidation";
+import { useEffect } from "react";
 
 export default function LoginPage() {
-  const { login } = useAuth();
+  const { login, user } = useAuth();
   const navigate = useNavigate();
 
+  useEffect(() => {
+    // If already logged in, redirect based on role
+    if (user) {
+      if (user.role === "admin") {
+        navigate("/admin/dashboard");
+      } else if (user.role === "accountant") {
+        navigate("/accountant/dashboard");
+      } else {
+        navigate("/employee/dashboard");
+      }
+    }
+  }, [user, navigate]);
+
   return (
-    <Formik
-      initialValues={{ email: "", password: "" }}
-      validationSchema={loginSchema}
-      onSubmit={async (values, { setSubmitting, setStatus }) => {
-        try {
-          await login(values.email, values.password);
-          navigate("/employee/dashboard");
-        } catch (err: any) {
-          setStatus(err?.response?.data?.message || "Login failed");
-        } finally {
-          setSubmitting(false);
-        }
-      }}
-    >
-      {({ isSubmitting, errors, touched, status }) => (
-        <Form className="max-w-sm mx-auto bg-white shadow-lg p-6 rounded-xl space-y-4">
-          <h2 className="text-xl font-bold text-center">Login</h2>
+    <div className="flex items-center justify-center px-4 py-8 min-h-screen">
+      <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-8 max-w-md w-full">
+        <h1 className="text-2xl font-bold text-gray-900 mb-6 text-center">
+          Logg inn
+        </h1>
 
-          {status && (
-            <p className="bg-red-100 text-red-700 text-center p-2 rounded">
-              {status}
-            </p>
+        <Formik
+          initialValues={{ email: "", password: "" }}
+          validationSchema={loginSchema}
+          onSubmit={async (values, { setSubmitting, setStatus }) => {
+            try {
+              await login(values.email, values.password);
+
+              // Redirect based on role
+              if (user?.role === "admin") {
+                navigate("/admin/dashboard");
+              } else if (user?.role === "accountant") {
+                navigate("/accountant/dashboard");
+              } else {
+                navigate("/employee/dashboard");
+              }
+            } catch (err: any) {
+              setStatus(err?.response?.data?.message || "Innlogging mislyktes");
+            } finally {
+              setSubmitting(false);
+            }
+          }}
+        >
+          {({ isSubmitting, errors, touched, status }) => (
+            <Form className="space-y-5">
+              {status && (
+                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+                  {status}
+                </div>
+              )}
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  E-post
+                </label>
+                <Field
+                  name="email"
+                  type="email"
+                  placeholder="din@epost.no"
+                  className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition ${
+                    touched.email && errors.email
+                      ? "border-red-500 focus:ring-red-500"
+                      : "border-gray-300"
+                  }`}
+                />
+                {touched.email && errors.email && (
+                  <div className="text-red-600 text-sm mt-1">
+                    {errors.email}
+                  </div>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Passord
+                </label>
+                <Field
+                  name="password"
+                  type="password"
+                  placeholder="••••••••"
+                  className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition ${
+                    touched.password && errors.password
+                      ? "border-red-500 focus:ring-red-500"
+                      : "border-gray-300"
+                  }`}
+                />
+                {touched.password && errors.password && (
+                  <div className="text-red-600 text-sm mt-1">
+                    {errors.password}
+                  </div>
+                )}
+              </div>
+
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full bg-blue-600 text-white py-2.5 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isSubmitting ? "Logger inn..." : "Logg inn"}
+              </button>
+            </Form>
           )}
-
-          <div>
-            <label className="block text-sm font-medium">Email</label>
-            <Field
-              name="email"
-              type="email"
-              placeholder="Enter a valid email"
-              className={`w-full border p-2 rounded ${
-                touched.email && errors.email ? "border-red-500" : ""
-              }`}
-            />
-            {touched.email && errors.email && (
-              <div className="text-red-500 text-sm">{errors.email}</div>
-            )}
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium">Password</label>
-            <Field
-              name="password"
-              type="password"
-              className={`w-full border p-2 rounded ${
-                touched.password && errors.password ? "border-red-500" : ""
-              }`}
-            />
-            {touched.password && errors.password && (
-              <div className="text-red-500 text-sm">{errors.password}</div>
-            )}
-          </div>
-
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full bg-black text-white py-2 rounded hover:bg-main transition cursor-pointer"
-          >
-            {isSubmitting ? "Logging in..." : "Login"}
-          </button>
-        </Form>
-      )}
-    </Formik>
+        </Formik>
+      </div>
+    </div>
   );
 }
