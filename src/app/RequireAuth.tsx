@@ -1,6 +1,6 @@
 // auth/RequireAuth.tsx (simple version)
 import { Navigate, useLocation, Outlet } from "react-router-dom";
-import { useAuth } from "../features/auth/AuthContext";
+import { useAuth } from "../features/auth/useAuth";
 
 export default function RequireAuth() {
   const { bootstrapped, user } = useAuth();
