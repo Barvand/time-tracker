@@ -70,13 +70,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const logout = async () => {
     await makeRequest.post("/auth/logout");
-
     localStorage.removeItem("hasLoggedInBefore");
     setAccessToken(null);
     setUser(null);
     setTokenBus(null);
-  };
 
+    window.location.href = "/"; // Forces navigation
+  };
   if (!bootstrapped) return <div>Loading...</div>;
 
   const role: Role = (user?.role as Role) || "user";
