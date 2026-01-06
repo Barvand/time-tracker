@@ -1,34 +1,40 @@
 import { Link } from "react-router-dom";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
+import { Home, AlertCircle } from "lucide-react";
 
-/**
- *
- * @returns {JSX.Element} - renders the not found page.
- */
 function NotFoundPage() {
   return (
     <>
       <Helmet>
-        <title> Page not found</title>
-        <meta name="description" content="Page not found, try again later." />
+        <title>404 - Page Not Found</title>
+        <meta
+          name="description"
+          content="Page not found. The page you're looking for doesn't exist."
+        />
       </Helmet>
-      <div className="flex flex-col bg-page items-center justify-center min-h-screen text-center text-black">
-        <div className="p-4 rounded">
-          <h1 className="text-6xl font-bold">404</h1>
-          <h2 className="text-3xl mt-2">Oops! Page Not Found</h2>
-          <p className="text-lg mt-4">It looks like something went wrong</p>
-          <div className="mt-8">
-            <Link
-              to="/"
-              className="bg-blue-500 text-white px-6 py-2 rounded-lg text-xl transition-all hover:bg-blue-600"
-            >
-              Go Back to Home
-            </Link>
+      <div className="flex flex-col items-center justify-center min-h-[80vh] px-4">
+        <div className="max-w-md w-full text-center">
+          <div className="mb-8">
+            <AlertCircle className="w-24 h-24 mx-auto text-blue-500 mb-4" />
+            <h1 className="text-7xl font-bold text-gray-800 mb-2">404</h1>
+            <h2 className="text-2xl font-semibold text-gray-700 mb-4">
+              Page Not Found
+            </h2>
+            <p className="text-gray-600 mb-8">
+              The page you're looking for doesn't exist or has been moved.
+            </p>
           </div>
+
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 bg-blue-500 text-white px-6 py-3 rounded-lg font-medium transition-all hover:bg-blue-600 shadow-md hover:shadow-lg"
+          >
+            <Home className="w-5 h-5" />
+            Back to Home
+          </Link>
         </div>
       </div>
     </>
   );
 }
-
 export default NotFoundPage;

@@ -1,32 +1,41 @@
 import { Link } from "react-router-dom";
-import { GiAirplaneDeparture } from "react-icons/gi";
 import { Helmet } from "react-helmet";
-function UnAuthorizedPage() {
+import { Home, Lock } from "lucide-react";
+
+function UnauthorizedPage() {
   return (
     <>
       <Helmet>
-        <title>Dagar</title>
+        <title>Access Denied - Unauthorized</title>
         <meta
           name="description"
-          content="Access denied, login or see you administrator."
+          content="Access denied. You don't have permission to view this page."
         />
       </Helmet>
-      <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
-        <div className=" p-4 rounded">
-          <h1 className="text-4xl mt-2">Sorry, this page is not for you</h1>
-          <p className="text-lg mt-4">But don't worry!</p>
-          <div className="flex justify-center">
-            <GiAirplaneDeparture size={120} className="text-accentColor " />
+      <div className="flex flex-col items-center justify-center min-h-[80vh] px-4">
+        <div className="max-w-lg w-full text-center">
+          <div className="mb-8">
+            <Lock className="w-24 h-24 mx-auto text-amber-500 mb-4" />
+            <h1 className="text-5xl font-bold text-gray-800 mb-2">403</h1>
+            <h2 className="text-2xl font-semibold text-gray-700 mb-4">
+              Access Denied
+            </h2>
+            <p className="text-gray-600 mb-8">
+              You don't have permission to access this page. Please log in with
+              the appropriate credentials or contact your administrator.
+            </p>
           </div>
-          <div className="mt-8 flex gap-2 items-center justify-center">
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Link
-              to="/login"
-              className="bg-blue-500 text-white px-6 py-2 rounded-lg text-xl transition-all hover:bg-blue-600"
+              to="/"
+              className="inline-flex items-center gap-2 bg-blue-500 text-white px-6 py-3 rounded-lg font-medium transition-all hover:bg-blue-600 shadow-md hover:shadow-lg"
             >
-              Login here!
+              <Home className="w-5 h-5" />
+              Go to Login
             </Link>
-            <p className="text-xl font-bold"> Or </p>
-            <h2 className="text-2xl"> Please contact your administrator</h2>
+            <span className="text-gray-500 font-medium">or</span>
+            <p className="text-gray-700">Contact your administrator</p>
           </div>
         </div>
       </div>
@@ -34,4 +43,4 @@ function UnAuthorizedPage() {
   );
 }
 
-export default UnAuthorizedPage;
+export default UnauthorizedPage;

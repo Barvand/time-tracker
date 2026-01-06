@@ -10,50 +10,54 @@ import AdminReports from "./pages/AdminReports";
 import RequireRole from "./app/RequireRoleRoute";
 import RequireAuth from "./app/RequireAuth";
 import NotFoundPage from "./pages/404";
-import UnAuthorizedPage from "./pages/unauthorized";
+import UnauthorizedPage from "./pages/unauthorized";
 import AccountantDashboard from "./pages/AccountantDashboard";
+import { HelmetProvider } from "react-helmet-async";
 
 function App() {
   return (
-    <Router>
-      <Navigation />
-      <main className="container mx-auto py-4">
-        <Routes>
-          {/* Public */}
-          <Route path="/" element={<Login />} />
+    <HelmetProvider>
+      <Router>
+        <Navigation />
+        <main className="container mx-auto py-4">
+          <Routes>
+            {/* Public Routes */}
+            <Route path="/" element={<Login />} />
+            <Route path="/unauthorized" element={<UnauthorizedPage />} />
 
-          {/* Everything below here requires auth */}
-          <Route element={<RequireAuth />}>
-            {/* Admin-only */}
-            <Route element={<RequireRole roles={["admin"]} />}>
-              <Route path="/admin/dashboard" element={<AdminDashboard />} />
-              <Route path="/admin/register" element={<Register />} />
-              <Route path="/admin/projects/:id" element={<ProjectDetails />} />
+            {/* Protected Routes */}
+            <Route element={<RequireAuth />}>
+              {/* Admin Routes */}
+              <Route path="/admin" element={<RequireRole roles={["admin"]} />}>
+                <Route path="dashboard" element={<AdminDashboard />} />
+                <Route path="register" element={<Register />} />
+                <Route path="projects/:id" element={<ProjectDetails />} />
+                <Route path="dashboard/reports" element={<AdminReports />} />
+              </Route>
+
+              {/* Employee Routes */}
               <Route
-                path="/admin/dashboard/reports"
-                element={<AdminReports />}
-              />
+                path="/employee"
+                element={<RequireRole roles={["employee", "admin"]} />}
+              >
+                <Route path="dashboard" element={<EmployeeDashboard />} />
+              </Route>
+
+              {/* Accountant Routes */}
+              <Route
+                path="/accountant"
+                element={<RequireRole roles={["accountant", "admin"]} />}
+              >
+                <Route path="dashboard" element={<AccountantDashboard />} />
+              </Route>
             </Route>
 
-            {/* Employee-only */}
-            <Route element={<RequireRole roles={["employee", "admin"]} />}>
-              <Route
-                path="/employee/dashboard"
-                element={<EmployeeDashboard />}
-              />
-            </Route>
-            <Route element={<RequireRole roles={["accountant", "admin"]} />}>
-              <Route
-                path="/accountant/dashboard"
-                element={<AccountantDashboard />}
-              />
-            </Route>
-          </Route>
-          <Route path="/unauthorized" element={<UnAuthorizedPage />} />
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
-      </main>
-    </Router>
+            {/* 404 - Must be last */}
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+        </main>
+      </Router>
+    </HelmetProvider>
   );
 }
 
