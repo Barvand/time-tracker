@@ -1,17 +1,9 @@
 import { Link } from "react-router-dom";
-import { Helmet } from "react-helmet-async";
 import { Home, AlertCircle } from "lucide-react";
 
 function NotFoundPage() {
   return (
     <>
-      <Helmet>
-        <title>404 - Page Not Found</title>
-        <meta
-          name="description"
-          content="Page not found. The page you're looking for doesn't exist."
-        />
-      </Helmet>
       <div className="flex flex-col items-center justify-center min-h-[80vh] px-4">
         <div className="max-w-md w-full text-center">
           <div className="mb-8">

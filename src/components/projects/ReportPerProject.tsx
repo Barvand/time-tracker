@@ -4,14 +4,18 @@ import { GetProjectHours, GetProjectHoursByUser } from "../../api/reports";
 import { GetProjectById } from "../../api/projects";
 
 interface ProjectReportPageProps {
-  id?: string;
+  projectCode?: string;
 }
 
-export default function ProjectReportPage({ id }: ProjectReportPageProps) {
-  const { projectId } = useParams<{ projectId?: string; id?: string }>();
-  const resolvedId = projectId ?? id;
+export default function ProjectReportPage({
+  projectCode: propProjectCode, // ← Renamed to avoid shadowing
+}: ProjectReportPageProps) {
+  const { projectCode: paramProjectCode } = useParams<{
+    projectCode?: string;
+  }>(); // ← Renamed
+  const resolvedCode = propProjectCode || paramProjectCode; // ← Fixed: was using wrong variable
 
-  if (!resolvedId) {
+  if (!resolvedCode) {
     return <div>Mangler prosjekt-ID</div>;
   }
 
@@ -19,19 +23,19 @@ export default function ProjectReportPage({ id }: ProjectReportPageProps) {
     data: project,
     isLoading: isProjectLoading,
     error: projectError,
-  } = GetProjectById(resolvedId);
+  } = GetProjectById(resolvedCode);
 
   const {
     data: rows = [],
     isLoading: isRowsLoading,
     error: rowsError,
-  } = GetProjectHours(resolvedId);
+  } = GetProjectHours(resolvedCode);
 
   const {
     data: byUser = [],
     isLoading: isByUserLoading,
     error: byUserError,
-  } = GetProjectHoursByUser(resolvedId);
+  } = GetProjectHoursByUser(resolvedCode);
 
   const totals = useMemo(
     () => ({ total: rows.reduce((s, r) => s + Number(r.hoursWorked ?? 0), 0) }),
@@ -42,7 +46,7 @@ export default function ProjectReportPage({ id }: ProjectReportPageProps) {
     <div className="mx-auto max-w-7xl p-6">
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-3xl font-bold text-gray-900">
-          Prosjektrapport #{resolvedId}
+          Prosjektrapport #{resolvedCode}
           {project ? ` — ${project.name}` : ""}
         </h1>
         <Link

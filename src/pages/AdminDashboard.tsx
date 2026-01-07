@@ -11,6 +11,7 @@ import { useAuth } from "../features/auth/useAuth";
 import RegisterBtn from "../components/admin/RegisterAccountBtn";
 
 const TAB_CONFIG = {
+  all: { label: "Alle", filter: () => true },
   active: { label: "Aktive", filter: (p: Project) => p.status === "active" },
   completed: {
     label: "Fullførte",
@@ -24,7 +25,7 @@ const TAB_CONFIG = {
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState<
-    "active" | "completed" | "inactive"
+    "active" | "completed" | "inactive" | "Alle"
   >("active");
   const [search, setSearch] = useState("");
   const [showAddProject, setShowAddProject] = useState(false);
@@ -61,7 +62,8 @@ export default function Dashboard() {
     description: "",
     status: "active",
     startDate: "",
-    completionDate: "", // mapped to endDate in API
+    completionDate: "",
+    projectCode: "",
   });
 
   const { user } = useAuth();
@@ -69,7 +71,14 @@ export default function Dashboard() {
   // ---- CREATE: POST /api/projects (+ optional log)
   const createMutation = useMutation({
     mutationFn: async (payload: any) => {
-      const { name, description, status, startDate, completionDate } = payload;
+      const {
+        name,
+        description,
+        status,
+        startDate,
+        completionDate,
+        projectCode,
+      } = payload;
 
       const { data: created } = await makeRequest.post("/projects", {
         name,
@@ -77,10 +86,11 @@ export default function Dashboard() {
         status,
         startDate: startDate || null,
         endDate: completionDate || null,
+        projectCode,
       });
       try {
         if (user?.userId) {
-          await makeRequest.post(`/projects/${created.id}/entries`, {
+          await makeRequest.post(`/projects/${created.projectCode}/entries`, {
             action: "created",
             userId: user.userId,
             userName: user.username,
@@ -101,6 +111,7 @@ export default function Dashboard() {
         status: "active",
         startDate: "",
         completionDate: "",
+        projectCode: "",
       });
       setShowAddProject(false);
       refetch();

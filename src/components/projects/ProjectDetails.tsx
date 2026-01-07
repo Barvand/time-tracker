@@ -5,17 +5,17 @@ import ProjectForm from "../admin/ProjectForm";
 import ConfirmModal from "../../utils/ConfirmModal";
 import ProjectReportPage from "./ReportPerProject";
 import {
-  GetProjectById, // <-- correct name
+  GetProjectById,
   useUpdateProject,
   useDeleteProject,
 } from "../../api/projects";
 
 const ProjectDetails: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+  const { projectCode } = useParams<{ projectCode: string }>();
   const navigate = useNavigate();
 
   // load the project
-  const { data: project, isLoading, error } = GetProjectById(id);
+  const { data: project, isLoading, error } = GetProjectById(projectCode);
   // mutations
   const updateProject = useUpdateProject();
   const deleteProject = useDeleteProject();
@@ -33,9 +33,9 @@ const ProjectDetails: React.FC = () => {
       name: project.name ?? "",
       description: project.description ?? "",
       status: project.status ?? "",
-      // inputs of type="date" prefer yyyy-MM-dd
       startDate: project.startDate ? project.startDate.slice(0, 10) : "",
       endDate: project.endDate ? project.endDate.slice(0, 10) : "",
+      projectCode: project.projectCode ?? "",
     });
   }, [project]);
 
@@ -53,23 +53,23 @@ const ProjectDetails: React.FC = () => {
     setSuccess("");
 
     await updateProject.mutateAsync({
-      id: id!,
+      id: project!.id, // ← Fixed: use project.id
       data: {
         name: editFormData.name,
         description: editFormData.description || null,
         status: editFormData.status || null,
         startDate: editFormData.startDate || null,
         endDate: editFormData.endDate || null,
+        projectCode: editFormData.projectCode || null,
       },
     });
 
     setSuccess("Prosjekt oppdatert.");
     setIsEditing(false);
-    // cache is updated by the mutation hook; no manual refetch needed
   };
 
   const handleDelete = async () => {
-    await deleteProject.mutateAsync(id!);
+    await deleteProject.mutateAsync(project!.id);
     navigate("/admin/dashboard");
   };
 
@@ -115,7 +115,7 @@ const ProjectDetails: React.FC = () => {
   return (
     <>
       <div className="max-w-3xl mx-auto p-4">
-        <Link to="/" className="text-blue-600 hover:underline">
+        <Link to="/admin/dashboard" className="text-blue-600 hover:underline">
           &larr; Tilbake til Dashboard
         </Link>
 
@@ -140,7 +140,10 @@ const ProjectDetails: React.FC = () => {
         ) : (
           <>
             <div className="p-2">
-              <h1 className="text-2xl font-bold mt-4">{project.name}</h1>
+              <h1 className="text-2xl font-bold mt-4">
+                {project.projectCode} - {project.name}{" "}
+                {/* ← Added projectCode */}
+              </h1>
 
               <div className="mt-4 space-y-3 bg-gray-50 p-4 rounded">
                 <div>
@@ -153,7 +156,7 @@ const ProjectDetails: React.FC = () => {
                 <div className="flex justify-between">
                   <span className="font-bold">Status:</span>
                   <span
-                    className={`ml-2 font-bold border border-green-700 p-2 bg-green-200 text-green-600 rounded-2xl${getStatusColor(
+                    className={`ml-2 font-bold border border-green-700 p-2 bg-green-200 rounded-2xl ${getStatusColor(
                       project.status ?? ""
                     )}`}
                   >
@@ -216,9 +219,9 @@ const ProjectDetails: React.FC = () => {
           </div>
         )}
       </div>
-
       {/* Reports for this project */}
-      <ProjectReportPage id={id!} />
+      <ProjectReportPage projectCode={projectCode} />{" "}
+      {/* ← Fixed: use projectCode prop */}
     </>
   );
 };

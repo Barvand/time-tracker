@@ -23,7 +23,10 @@ export function GetProjectById(projectId: any) {
 }
 
 export type UpdateProjectInput = Partial<
-  Pick<Project, "name" | "description" | "status" | "startDate" | "endDate">
+  Pick<
+    Project,
+    "name" | "description" | "status" | "startDate" | "endDate" | "projectCode"
+  >
 >;
 
 export function useUpdateProject() {

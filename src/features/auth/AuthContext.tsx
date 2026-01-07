@@ -15,7 +15,6 @@ type AuthCtx = {
   role: Role;
 };
 
-// ✅ ADD THIS LINE - Create the context
 export const AuthContext = createContext<AuthCtx>(null as unknown as AuthCtx);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
@@ -24,6 +23,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const [user, setUser] = useState<User | null>(null);
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [bootstrapped, setBootstrapped] = useState(false);
+
+  // In your AuthProvider
+  useEffect(() => {
+    if (!accessToken) return;
+
+    // Refresh 1 minute before expiration (14 min for 15 min token)
+    const refreshInterval = setInterval(async () => {
+      try {
+        const { data } = await makeRequest.post("/auth/refresh");
+        if (data?.accessToken) {
+          setAccessToken(data.accessToken);
+        }
+      } catch (e: any) {
+        // Refresh token expired, log out
+        setUser(null);
+        setAccessToken(null);
+        setTokenBus(null);
+      }
+    }, 14 * 60 * 1000); // 14 minutes
+
+    return () => clearInterval(refreshInterval);
+  }, [accessToken]);
 
   useEffect(() => {
     const hasLoggedInBefore =

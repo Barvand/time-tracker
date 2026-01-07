@@ -7,6 +7,7 @@ interface Props {
     status: "inaktiv" | "aktiv" | "avsluttet";
     startDate?: string;
     completionDate?: string;
+    projectCode: string;
   };
   onChange: (
     e: React.ChangeEvent<
@@ -32,13 +33,20 @@ const ProjectForm: React.FC<Props> = ({
         <h3 className="text-lg font-bold mb-4">
           {isEdit ? "REDIGER PROSJEKT" : "NYTT PROSJEKT"}
         </h3>
+      </div>
 
-        {/* Auto-generated ID note (only show when creating) */}
-        {!isEdit && (
-          <div className="mb-4 p-2 bg-gray-200 rounded text-sm text-gray-600">
-            <strong>Id:</strong>
-          </div>
-        )}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Project nr: *
+        </label>
+        <input
+          name="projectCode"
+          value={formData.projectCode}
+          onChange={onChange}
+          placeholder="Project Nr"
+          required
+          className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        />
       </div>
 
       {/* Name Field */}

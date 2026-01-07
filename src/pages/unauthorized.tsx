@@ -1,17 +1,9 @@
 import { Link } from "react-router-dom";
-import { Helmet } from "react-helmet";
 import { Home, Lock } from "lucide-react";
 
 function UnauthorizedPage() {
   return (
     <>
-      <Helmet>
-        <title>Access Denied - Unauthorized</title>
-        <meta
-          name="description"
-          content="Access denied. You don't have permission to view this page."
-        />
-      </Helmet>
       <div className="flex flex-col items-center justify-center min-h-[80vh] px-4">
         <div className="max-w-lg w-full text-center">
           <div className="mb-8">

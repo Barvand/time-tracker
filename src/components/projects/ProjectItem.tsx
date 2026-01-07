@@ -17,27 +17,18 @@ const STATUS_COLOR: Record<Status, string> = {
   completed: "bg-blue-100 text-blue-800",
 };
 
-// Date formatter
-// const formatDate = (dateString?: string) =>
-//   dateString
-//     ? new Date(dateString).toLocaleDateString("no-NO", {
-//         year: "numeric",
-//         month: "short",
-//         day: "numeric",
-//       })
-//     : null;
-
 const ProjectItem: React.FC<{ project: Project }> = ({ project }) => {
   // make sure TS knows project.status is of type Status
   const status = project.status as Status;
 
   return (
     <li className="bg-white p-4 rounded border shadow-sm hover:shadow-md transition-shadow">
-      <Link to={`/admin/projects/${project.id}`} className="block">
+      <Link to={`/admin/projects/${project.projectCode}`} className="block">
         <div className="flex justify-between items-start">
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-2">
               <h3 className="text-lg font-semibold text-gray-900 hover:text-blue-600 transition-colors">
+                {project.projectCode} -{" "}
                 {project.name}
               </h3>
               <span
@@ -45,7 +36,6 @@ const ProjectItem: React.FC<{ project: Project }> = ({ project }) => {
               >
                 {STATUS_LABEL[status]}
               </span>
-              <p> ID: {project.id}</p>
             </div>
 
             {project.description && (

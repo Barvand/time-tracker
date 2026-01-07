@@ -1,6 +1,7 @@
 export type ProjectStatus = "active" | "completed" | "inactive";
 
 export type Project = {
+  projectCode: string;
   id: number; // MySQL INT
   name: string;
   description: string | null;

@@ -47,11 +47,20 @@ export default function ProjectForm({
               onChange={onChange}
               label="Velg et prosjekt"
               placeholder="Velg prosjekt"
-              options={projects.map((p) => ({
-                value: String(p.id),
-                label: p.name,
-              }))}
-              disabled={!!absenceId} // disable if fravær is chosen
+              options={projects
+                .sort((a, b) => {
+                  // Sort by projectCode descending (highest first)
+                  const codeA = a.projectCode ? parseInt(a.projectCode, 10) : 0;
+                  const codeB = b.projectCode ? parseInt(b.projectCode, 10) : 0;
+                  return codeB - codeA; // Descending order
+                })
+                .map((p) => ({
+                  value: String(p.id),
+                  label: p.projectCode
+                    ? `${p.projectCode} - ${p.name}`
+                    : p.name,
+                }))}
+              disabled={!!absenceId}
             />
 
             <SelectField

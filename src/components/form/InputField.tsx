@@ -5,6 +5,7 @@ type InputFieldProps = {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   label?: string;
   placeholder?: string;
+  required?: boolean;
 };
 
 export default function InputField({

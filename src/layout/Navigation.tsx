@@ -83,7 +83,7 @@ function Navigation() {
                     to="/accountant/dashboard"
                     className="text-sm text-black border p-3 hover:bg-gray-800"
                   >
-                    Regnskap Dashboard
+                    Regnskap
                   </Link>
                 </>
               )}
@@ -160,7 +160,7 @@ function Navigation() {
                       to="/accountant/dashboard"
                       className="text-sm text-black border p-3 hover:bg-gray-800"
                     >
-                      Regnskap Dashboard
+                      Regnskap
                     </Link>
                   </>
                 )}
