@@ -24,13 +24,9 @@ export type ProjectUserSummary = {
 
 type RangeParams = { from?: string; to?: string; userId?: string | number };
 
-export async function fetchProjectHours(
-  projectId: string | number,
-  params: RangeParams = {}
-) {
+export async function fetchProjectHours(projectId: string | number) {
   const { data } = await makeRequest.get(
-    `/reports/projects/${projectId}/hours`,
-    { params }
+    `/reports/projects/${projectId}/hours`
   );
   console.log(data);
   return data as ProjectHourRow[];
@@ -47,26 +43,20 @@ export async function fetchProjectHoursByUser(
   return data as ProjectUserSummary[];
 }
 
-export function GetProjectHours(
-  projectId?: string | number,
-  params: RangeParams = {}
-) {
+export function GetProjectHours(projectId?: string | number) {
   return useQuery<ProjectHourRow[], Error>({
-    queryKey: ["reports", "project-hours", projectId, params],
+    queryKey: ["reports", "project-hours", projectId],
     enabled: !!projectId,
-    queryFn: () => fetchProjectHours(projectId!, params),
+    queryFn: () => fetchProjectHours(projectId!),
     staleTime: 60_000,
   });
 }
 
-export function GetProjectHoursByUser(
-  projectId?: string | number,
-  params: RangeParams = {}
-) {
+export function GetProjectHoursByUser(projectId?: string | number) {
   return useQuery<ProjectUserSummary[], Error>({
-    queryKey: ["reports", "project-hours-by-user", projectId, params],
+    queryKey: ["reports", "project-hours-by-user", projectId],
     enabled: !!projectId,
-    queryFn: () => fetchProjectHoursByUser(projectId!, params),
+    queryFn: () => fetchProjectHoursByUser(projectId!),
     staleTime: 60_000,
   });
 }

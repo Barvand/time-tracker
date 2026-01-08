@@ -8,39 +8,56 @@ interface ProjectReportPageProps {
 }
 
 export default function ProjectReportPage({
-  projectCode: propProjectCode, // ← Renamed to avoid shadowing
+  projectCode: propProjectCode,
 }: ProjectReportPageProps) {
   const { projectCode: paramProjectCode } = useParams<{
     projectCode?: string;
-  }>(); // ← Renamed
-  const resolvedCode = propProjectCode || paramProjectCode; // ← Fixed: was using wrong variable
+  }>();
+  const resolvedCode = propProjectCode || paramProjectCode;
 
   if (!resolvedCode) {
     return <div>Mangler prosjekt-ID</div>;
   }
 
+  // First fetch the project by projectCode
   const {
     data: project,
     isLoading: isProjectLoading,
     error: projectError,
-  } = GetProjectById(resolvedCode);
+  } = GetProjectById(resolvedCode); // This uses projectCode
 
+  // Extract the numeric ID from the project
+  const projectId = project?.id;
+
+  // Now fetch hours using the numeric project ID
   const {
     data: rows = [],
     isLoading: isRowsLoading,
     error: rowsError,
-  } = GetProjectHours(resolvedCode);
+  } = GetProjectHours(projectId); // Use numeric ID
 
   const {
     data: byUser = [],
     isLoading: isByUserLoading,
     error: byUserError,
-  } = GetProjectHoursByUser(resolvedCode);
+  } = GetProjectHoursByUser(projectId); // Use numeric ID
 
   const totals = useMemo(
     () => ({ total: rows.reduce((s, r) => s + Number(r.hoursWorked ?? 0), 0) }),
     [rows]
   );
+
+  if (isProjectLoading) {
+    return <div>Laster prosjekt...</div>;
+  }
+
+  if (projectError) {
+    return <div>Feil ved lasting av prosjekt</div>;
+  }
+
+  if (!project) {
+    return <div>Prosjekt ikke funnet</div>;
+  }
 
   return (
     <div className="mx-auto max-w-7xl p-6">
