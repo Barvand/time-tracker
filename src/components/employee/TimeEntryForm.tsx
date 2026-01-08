@@ -78,7 +78,24 @@ export default function HourForm({
     });
   };
 
-  const submit = async () => onSubmit(formData);
+  const handleSubmmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
+      await onSubmit(formData);
+      setFormData({
+        projectId: "",
+        date: "",
+        startTime: "",
+        endTime: "",
+        breakMinutes: 0,
+        note: "",
+        absenceId: "",
+      });
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    }
+  };
 
   return (
     <div className="bg-white p-6">
@@ -167,21 +184,6 @@ export default function HourForm({
         />
       </div>
 
-      {/* Note Input (Optional) */}
-      <div className="mb-6">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Merknad (valgfritt)
-        </label>
-        <textarea
-          name="note"
-          value={formData.note}
-          onChange={change}
-          rows={3}
-          placeholder="Legg til eventuelle merknader..."
-          className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors resize-none"
-        />
-      </div>
-
       {/* Preview Section */}
       {preview && (
         <div className="mb-6 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-4">
@@ -232,7 +234,7 @@ export default function HourForm({
       <div className="flex justify-end">
         <button
           disabled={!!submitting || !preview}
-          onClick={submit}
+          onClick={handleSubmmit}
           className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-6 py-3 font-medium text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {submitting ? (
