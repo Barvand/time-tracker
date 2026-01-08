@@ -25,7 +25,7 @@ const TAB_CONFIG = {
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState<
-    "active" | "completed" | "inactive" | "Alle"
+    "active" | "completed" | "inactive" | "all"
   >("active");
   const [search, setSearch] = useState("");
   const [showAddProject, setShowAddProject] = useState(false);

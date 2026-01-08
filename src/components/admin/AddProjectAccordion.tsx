@@ -11,7 +11,7 @@ export interface ProjectFormData {
   status: ProjectStatus;
   startDate: string;
   completionDate: string;
-  projectCode: string | null;
+  projectCode: string;
 }
 
 interface AddProjectAccordionProps {
