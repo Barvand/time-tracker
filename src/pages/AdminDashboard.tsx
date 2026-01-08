@@ -50,10 +50,12 @@ export default function Dashboard() {
     .filter((p) => {
       const q = search.trim().toLowerCase();
       if (!q) return true;
-      return (
-        p.name.toLowerCase().includes(q) ||
-        (p.description || "").toLowerCase().includes(q)
-      );
+      const searchableText = [p.name, p.description, p.projectCode]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+
+      return searchableText.includes(q);
     });
 
   // ---- local form state
