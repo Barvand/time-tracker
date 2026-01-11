@@ -3,7 +3,6 @@ import { makeRequest } from "../lib/axios";
 export type Role = "admin" | "user" | "manager";
 
 interface RegisterUserProps {
-  email: string;
   password: string;
   name: string;
   role: Role; // <-- expects Role, not just string
