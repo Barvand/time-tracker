@@ -2,17 +2,7 @@ import React from "react";
 import type { UseMutationResult } from "@tanstack/react-query";
 import ProjectForm from "./ProjectForm";
 import type { AxiosError } from "axios";
-
-export type ProjectStatus = "inaktiv" | "aktiv" | "avsluttet";
-
-export interface ProjectFormData {
-  name: string;
-  description: string;
-  status: ProjectStatus;
-  startDate: string;
-  completionDate: string;
-  projectCode: string;
-}
+import type { ProjectFormData } from "../../types";
 
 interface AddProjectAccordionProps {
   showAddProject: boolean;
@@ -73,6 +63,7 @@ const AddProjectAccordion: React.FC<AddProjectAccordionProps> = ({
             onSubmit={(e: React.FormEvent) => {
               e.preventDefault();
               if (!formData.name.trim()) return;
+              console.log(formData)
               createMutation.mutate(formData);
             }}
           />

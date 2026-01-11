@@ -10,5 +10,6 @@ interface RegisterUserProps {
 
 export default async function registerUser(inputs: RegisterUserProps) {
   const res = await makeRequest.post("/auth/register", inputs);
-  return res.data; // e.g. { message: "User has been created." }
+  return res.data; 
+  
 }

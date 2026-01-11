@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { makeRequest } from "../lib/axios";
 import type { Project } from "../types";
+import type { ProjectFormData } from "../types";
 
 export function GetProjects() {
   return useQuery<Project[], Error>({
@@ -61,6 +62,52 @@ export function useDeleteProject() {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["projects"] });
+    },
+  });
+}
+
+export function useCreateProject() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (payload: ProjectFormData) => {
+      const {
+        name,
+        description,
+        status,
+        startDate,
+        completionDate,
+        projectCode,
+      } = payload;
+
+      const { data: created } = await makeRequest.post("/projects", {
+        name,
+        description,
+        status,
+        startDate: startDate || null,
+        endDate: completionDate || null,
+        projectCode,
+      });
+
+      // // Implementing a creation log in the future perhaps? Need to make an endoint for it first.
+      // if (user?.userId) {
+      //   try {
+      //     await makeRequest.post(`/projects/${projectCode}/entries`, {
+      //       action: "created",
+      //       userId: user.userId,
+      //       name: user.name,
+      //       note: `Prosjekt opprettet av ${user.name}`,
+      //       timestamp: new Date().toISOString(),
+      //     });
+      //   } catch (e) {
+      //     console.log("Could not write project log", e);
+      //   }
+      // }
+
+      return created;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["projects"] });
     },
   });
 }

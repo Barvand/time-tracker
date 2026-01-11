@@ -1,14 +1,7 @@
+import type { ProjectFormData } from "../../types";
 import React from "react";
-
 interface Props {
-  formData: {
-    name: string;
-    description: string;
-    status: "inaktiv" | "aktiv" | "avsluttet";
-    startDate?: string;
-    completionDate?: string;
-    projectCode: string;
-  };
+  formData: ProjectFormData;
   onChange: (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
@@ -49,7 +42,6 @@ const ProjectForm: React.FC<Props> = ({
         />
       </div>
 
-      {/* Name Field */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
           Navn *
@@ -64,7 +56,6 @@ const ProjectForm: React.FC<Props> = ({
         />
       </div>
 
-      {/* Description Field */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
           Beskrivelse
@@ -79,7 +70,6 @@ const ProjectForm: React.FC<Props> = ({
         />
       </div>
 
-      {/* Status Field */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
           Status *
@@ -91,15 +81,13 @@ const ProjectForm: React.FC<Props> = ({
           className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           required
         >
-          <option value="inactive">Inaktiv</option>
           <option value="active">Aktiv</option>
+          <option value="inactive">Inaktiv</option>
           <option value="completed">Avsluttet</option>
         </select>
       </div>
 
-      {/* Date Fields Row */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Start Date */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Oppstart
@@ -113,7 +101,6 @@ const ProjectForm: React.FC<Props> = ({
           />
         </div>
 
-        {/* Completion Date */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Ferdigstilt
@@ -128,11 +115,10 @@ const ProjectForm: React.FC<Props> = ({
         </div>
       </div>
 
-      {/* Submit Button */}
       <div className="pt-4 flex justify-end">
         <button
           type="submit"
-          className=" bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded cursor-pointer transition-colors duration-200 font-medium uppercase tracking-wide"
+          className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded cursor-pointer transition-colors duration-200 font-medium uppercase tracking-wide"
         >
           {isEdit ? "OPPDATER" : "SUBMIT"}
         </button>

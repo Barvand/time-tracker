@@ -1,137 +1,60 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ProjectItem from "../components/projects/ProjectItem";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import type { Project } from "../types";
-import { makeRequest } from "../lib/axios";
+import { useCreateProject, GetProjects } from "../api/projects";
 import RefetchDataBtn from "../components/admin/refetchDataBtn";
 import FilterTabs from "../components/admin/FilterTabs";
 import SearchBar from "../components/admin/searchBar";
 import AddProjectAccordion from "../components/admin/AddProjectAccordion";
-import { useAuth } from "../features/auth/useAuth";
 import RegisterBtn from "../components/admin/RegisterAccountBtn";
 import InfoBanner from "../utils/InfoBanner";
+import {
+  TAB_CONFIG,
+  type ProjectTab,
+  filterProjects,
+} from "../features/projects/projectFilters";
+import type { ProjectFormData } from "../types";
 
-const TAB_CONFIG = {
-  all: { label: "Alle", filter: () => true },
-  active: { label: "Aktive", filter: (p: Project) => p.status === "active" },
-  completed: {
-    label: "Fullførte",
-    filter: (p: Project) => p.status === "completed",
-  },
-  inactive: {
-    label: "Inaktive",
-    filter: (p: Project) => p.status === "inactive",
-  },
-} as const;
+const initialFormData: ProjectFormData = {
+  name: "",
+  description: "",
+  status: "inactive",
+  startDate: "",
+  completionDate: "",
+  projectCode: "",
+};
 
 export default function Dashboard() {
-  const [activeTab, setActiveTab] = useState<
-    "active" | "completed" | "inactive" | "all"
-  >("active");
+  const [activeTab, setActiveTab] = useState<ProjectTab>("active");
   const [search, setSearch] = useState("");
   const [showAddProject, setShowAddProject] = useState(false);
 
-  // ---- FETCH: GET /api/projects
-  const {
-    data: projects = [],
-    isLoading,
-    error,
-    refetch,
-  } = useQuery<Project[]>({
-    queryKey: ["projects"],
-    queryFn: async () => {
-      const { data } = await makeRequest.get("/projects");
-      return data;
-    },
-  });
+  const { data: projects = [], isLoading, error, refetch } = GetProjects();
+  const displayedProjects = filterProjects(projects, activeTab, search);
 
-  // ---- filter by tab + search
-  const displayedProjects = projects
-    .filter(TAB_CONFIG[activeTab].filter)
-    .filter((p) => {
-      const q = search.trim().toLowerCase();
-      if (!q) return true;
-      const searchableText = [p.name, p.description, p.projectCode]
-        .filter(Boolean)
-        .join(" ")
-        .toLowerCase();
+  const [formData, setFormData] = useState<ProjectFormData>(initialFormData);
 
-      return searchableText.includes(q);
-    });
+  const createMutation = useCreateProject();
 
-  // ---- local form state
-  const [formData, setFormData] = useState<any>({
-    name: "",
-    description: "",
-    status: "active",
-    startDate: "",
-    completionDate: "",
-    projectCode: "",
-  });
-
-  const { user } = useAuth();
-
-  // ---- CREATE: POST /api/projects (+ optional log)
-  const createMutation = useMutation({
-    mutationFn: async (payload: any) => {
-      const {
-        name,
-        description,
-        status,
-        startDate,
-        completionDate,
-        projectCode,
-      } = payload;
-
-      const { data: created } = await makeRequest.post("/projects", {
-        name,
-        description,
-        status,
-        startDate: startDate || null,
-        endDate: completionDate || null,
-        projectCode,
-      });
-      try {
-        if (user?.userId) {
-          await makeRequest.post(`/projects/${created.projectCode}/entries`, {
-            action: "created",
-            userId: user.userId,
-            name: user.name,
-            note: `Prosjekt opprettet av ${user.name}`,
-            timestamp: new Date().toISOString(),
-          });
-        }
-      } catch (e) {
-        console.log("Could not write project log", e);
-      }
-
-      return created;
-    },
-    onSuccess: () => {
-      setFormData({
-        name: "",
-        description: "",
-        status: "active",
-        startDate: "",
-        completionDate: "",
-        projectCode: "",
-      });
+  // ✅ Reset form + close accordion after successful create
+  useEffect(() => {
+    if (createMutation.isSuccess) {
+      setFormData(initialFormData);
       setShowAddProject(false);
-      refetch();
-    },
-  });
+
+      // Prevent "sticky success" from retriggering on next renders
+      createMutation.reset();
+    }
+  }, [createMutation.isSuccess, createMutation]);
 
   return (
     <div className="p-4 max-w-4xl mx-auto">
       <h1 className="text-2xl font-bold">Adminstrator</h1>
-      <InfoBanner
-        string={`Her kan du opprette prosjekter og brukerkontoer for dine ansatte.`}
-      />
+      <InfoBanner string="Her kan du opprette prosjekter og brukerkontoer for dine ansatte." />
+
       <RefetchDataBtn refetch={refetch} isLoading={isLoading} />
       <RegisterBtn />
       <SearchBar search={search} setSearch={setSearch} />
 
-      {/* Tabs */}
       <FilterTabs
         projects={projects}
         setActiveTab={setActiveTab}
@@ -147,7 +70,6 @@ export default function Dashboard() {
         createMutation={createMutation}
       />
 
-      {/* List */}
       <div>
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-semibold">
@@ -186,9 +108,12 @@ export default function Dashboard() {
             ))}
           </ul>
         )}
+
         {error && (
-          <div className="bg-red-200 border border-red-500">
-            <p className="bg-red-700">Something went wrong, please try again</p>
+          <div className="bg-red-200 border border-red-500 p-3 rounded">
+            <p className="text-red-700">
+              Something went wrong, please try again
+            </p>
           </div>
         )}
       </div>
