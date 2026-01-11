@@ -4,7 +4,7 @@ import { makeRequest } from "../../lib/axios";
 import { setAccessToken as setTokenBus } from "../auth/tokenBus";
 import type { Role } from "../../types";
 
-type User = { userId: number; email: string; username: string; role: string };
+type User = { userId: number; email: string; name: string; role: string };
 
 type AuthCtx = {
   user: User | null;
@@ -80,8 +80,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     })();
   }, []);
 
-  const login = async (email: string, password: string) => {
-    const { data } = await makeRequest.post("/auth/login", { email, password });
+  const login = async (name: string, password: string) => {
+    const { data } = await makeRequest.post("/auth/login", { name, password });
 
     localStorage.setItem("hasLoggedInBefore", "true");
     setTokenBus(data.accessToken);

@@ -175,7 +175,7 @@ export default function AccountantHourReview({
               {currentMonthData.map((userSummary) => (
                 <tr key={userSummary.userId} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    {userSummary.userName}
+                    {userSummary.name}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-right font-semibold text-gray-900">
                     {userSummary.totalHours.toFixed(2)} timer

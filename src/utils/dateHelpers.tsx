@@ -18,7 +18,7 @@ export interface MonthTotal {
 
 export interface MonthlyUserSummary {
   userId: number;
-  userName: string;
+  name: string;
   totalHours: number;
 }
 
@@ -213,7 +213,7 @@ export function getMonthlyUserSummary(
       if (!userHours[hour.userId]) {
         userHours[hour.userId] = {
           userId: hour.userId,
-          userName: userMap[hour.userId] || `User ${hour.userId}`,
+          name: userMap[hour.userId] || `User ${hour.userId}`,
           totalHours: 0,
         };
       }
@@ -222,9 +222,7 @@ export function getMonthlyUserSummary(
   });
 
   // Convert to array and sort by name
-  return Object.values(userHours).sort((a, b) =>
-    a.userName.localeCompare(b.userName)
-  );
+  return Object.values(userHours).sort((a, b) => a.name.localeCompare(b.name));
 }
 
 /**

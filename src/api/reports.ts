@@ -5,7 +5,7 @@ import { makeRequest } from "../lib/axios";
 export type ProjectHourRow = {
   idHours: number;
   userId: number;
-  userName: string;
+  name: string;
   projectId: number;
   projectName: string;
   startTime: string;
@@ -18,7 +18,7 @@ export type ProjectHourRow = {
 /** Summary row grouped by user for a project */
 export type ProjectUserSummary = {
   userId: number;
-  userName: string;
+  name: string;
   totalHours: number | string; // coerce later
 };
 
@@ -28,7 +28,7 @@ export async function fetchProjectHours(projectId: string | number) {
   const { data } = await makeRequest.get(
     `/reports/projects/${projectId}/hours`
   );
-  console.log(data);
+  console.log(`this is the data:`, data);
   return data as ProjectHourRow[];
 }
 

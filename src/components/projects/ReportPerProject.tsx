@@ -168,7 +168,7 @@ export default function ProjectReportPage({
                 {byUser.map((u) => (
                   <tr key={u.userId} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {u.userName}
+                      {u.name}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-right font-medium">
                       {Number(u.totalHours ?? 0).toFixed(2)}
@@ -244,7 +244,7 @@ export default function ProjectReportPage({
                       {new Date(r.startTime).toLocaleDateString("nb-NO")}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {r.userName}
+                      {r.name}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {timeHM(r.startTime)}

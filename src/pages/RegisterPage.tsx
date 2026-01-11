@@ -19,8 +19,6 @@ function RegisterPage() {
         <Formik
           initialValues={{
             name: "",
-            username: "",
-            email: "",
             password: "",
             confirmPassword: "",
             role: "employee" as Role,
@@ -70,7 +68,6 @@ function RegisterPage() {
                 </label>
                 <Field
                   name="name"
-                  placeholder="Ola Nordmann"
                   className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition ${
                     touched.name && errors.name
                       ? "border-red-500 focus:ring-red-500"
@@ -82,49 +79,6 @@ function RegisterPage() {
                 )}
               </div>
 
-              {/* Username */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Brukernavn
-                </label>
-                <Field
-                  name="username"
-                  placeholder="olanordmann"
-                  className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition ${
-                    touched.username && errors.username
-                      ? "border-red-500 focus:ring-red-500"
-                      : "border-gray-300"
-                  }`}
-                />
-                {touched.username && errors.username && (
-                  <div className="text-red-600 text-sm mt-1">
-                    {errors.username}
-                  </div>
-                )}
-              </div>
-
-              {/* Email */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  E-post
-                </label>
-                <Field
-                  name="email"
-                  type="email"
-                  placeholder="ola@eksempel.no"
-                  className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition ${
-                    touched.email && errors.email
-                      ? "border-red-500 focus:ring-red-500"
-                      : "border-gray-300"
-                  }`}
-                />
-                {touched.email && errors.email && (
-                  <div className="text-red-600 text-sm mt-1">
-                    {errors.email}
-                  </div>
-                )}
-              </div>
-
               {/* Password */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -133,7 +87,6 @@ function RegisterPage() {
                 <Field
                   name="password"
                   type="password"
-                  placeholder="••••••••"
                   className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition ${
                     touched.password && errors.password
                       ? "border-red-500 focus:ring-red-500"
@@ -155,7 +108,6 @@ function RegisterPage() {
                 <Field
                   name="confirmPassword"
                   type="password"
-                  placeholder="••••••••"
                   className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition ${
                     touched.confirmPassword && errors.confirmPassword
                       ? "border-red-500 focus:ring-red-500"

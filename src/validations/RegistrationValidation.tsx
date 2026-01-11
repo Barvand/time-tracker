@@ -8,11 +8,6 @@ const userSchema = yup.object().shape({
       /^[^\d]/, // This regex ensures that the name does not start with a number
       "Name cannot start with a number"
     ),
-  email: yup
-    .string()
-    .email("Please enter a valid email address")
-    .matches(/^[^@]+@[^@]+\.[^@]+$/, "Please enter a valid email address")
-    .required("Email is required"),
   password: yup
     .string()
     .min(8, "Password must be at least 8 characters")
@@ -25,7 +20,10 @@ const userSchema = yup.object().shape({
     .string()
     .oneOf([yup.ref("password")], "Passwords must match")
     .required("Please confirm your password"),
-  venueManager: yup.boolean(),
+  role: yup
+    .string()
+    .oneOf(["admin", "accountant", "employee"], "Invalid role selected")
+    .required("Role is required"),
 });
 
 export default userSchema;

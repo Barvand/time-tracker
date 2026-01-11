@@ -9,6 +9,7 @@ import SearchBar from "../components/admin/searchBar";
 import AddProjectAccordion from "../components/admin/AddProjectAccordion";
 import { useAuth } from "../features/auth/useAuth";
 import RegisterBtn from "../components/admin/RegisterAccountBtn";
+import InfoBanner from "../utils/InfoBanner";
 
 const TAB_CONFIG = {
   all: { label: "Alle", filter: () => true },
@@ -95,8 +96,8 @@ export default function Dashboard() {
           await makeRequest.post(`/projects/${created.projectCode}/entries`, {
             action: "created",
             userId: user.userId,
-            userName: user.username,
-            note: `Prosjekt opprettet av ${user.username}`,
+            name: user.name,
+            note: `Prosjekt opprettet av ${user.name}`,
             timestamp: new Date().toISOString(),
           });
         }
@@ -122,6 +123,10 @@ export default function Dashboard() {
 
   return (
     <div className="p-4 max-w-4xl mx-auto">
+      <h1 className="text-2xl font-bold">Adminstrator</h1>
+      <InfoBanner
+        string={`Her kan du opprette prosjekter og brukerkontoer for dine ansatte.`}
+      />
       <RefetchDataBtn refetch={refetch} isLoading={isLoading} />
       <RegisterBtn />
       <SearchBar search={search} setSearch={setSearch} />

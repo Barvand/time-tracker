@@ -24,25 +24,13 @@ export default function LoginPage() {
   return (
     <div className="flex items-center justify-center px-4 py-8 min-h-screen">
       <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-8 max-w-md w-full">
-        <h1 className="text-2xl font-bold text-gray-900 mb-6 text-center">
-          Logg inn
-        </h1>
-
         <Formik
-          initialValues={{ email: "", password: "" }}
+          initialValues={{ name: "", password: "" }}
           validationSchema={loginSchema}
           onSubmit={async (values, { setSubmitting, setStatus }) => {
             try {
-              await login(values.email, values.password);
-
-              // Redirect based on role
-              if (user?.role === "admin") {
-                navigate("/admin/dashboard");
-              } else if (user?.role === "accountant") {
-                navigate("/accountant/dashboard");
-              } else {
-                navigate("/employee/dashboard");
-              }
+              await login(values.name, values.password);
+              // no navigate here — useEffect will handle it
             } catch (err: any) {
               setStatus(err?.response?.data?.message || "Innlogging mislyktes");
             } finally {
@@ -60,22 +48,20 @@ export default function LoginPage() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  E-post
+                  Navn
                 </label>
                 <Field
-                  name="email"
-                  type="email"
-                  placeholder="din@epost.no"
+                  name="name"
+                  type="text"
+                  placeholder=""
                   className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition ${
-                    touched.email && errors.email
+                    touched.name && errors.name
                       ? "border-red-500 focus:ring-red-500"
                       : "border-gray-300"
                   }`}
                 />
-                {touched.email && errors.email && (
-                  <div className="text-red-600 text-sm mt-1">
-                    {errors.email}
-                  </div>
+                {touched.name && errors.name && (
+                  <div className="text-red-600 text-sm mt-1">{errors.name}</div>
                 )}
               </div>
 
