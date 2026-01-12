@@ -44,8 +44,11 @@ export default function HourForm({
 
   const preview = useMemo(() => {
     if (!formData.date || !formData.startTime || !formData.endTime) return null;
-    const start = new Date(`${formData.date}T${formData.startTime}`);
-    const end = new Date(`${formData.date}T${formData.endTime}`);
+
+    // Add 'Z' to force UTC interpretation
+    const start = new Date(`${formData.date}T${formData.startTime}:00Z`);
+    const end = new Date(`${formData.date}T${formData.endTime}:00Z`);
+
     const ms = end.getTime() - start.getTime() - formData.breakMinutes * 60000;
     const hours = Math.round((ms / 3600000) * 100) / 100;
     return Number.isFinite(hours) && hours > 0
