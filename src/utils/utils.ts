@@ -11,7 +11,6 @@ export function hhmm(dateIso: string) {
     d.getUTCMinutes()
   ).padStart(2, "0")}`;
 }
-
 // date utils for ISO week calculations
 export function getISOWeek(d: Date) {
   const date = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
