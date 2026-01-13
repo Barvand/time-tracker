@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { useUserHours, useUpdateHour, type HourRow } from "../../api/hours";
-import { formatForInputLocal } from "../../utils/utils";
+import { toDatetimeLocal } from "../../utils/utils";
 import { EditingItem } from "./editHours";
 import { HourDisplayRows } from "./HourDisplay";
 import {
@@ -87,8 +87,8 @@ export default function HourReview({
   // Handlers
   function handleEdit(row: HourRow) {
     setEditingId(row.idHours);
-    setStart(formatForInputLocal(row.startTime));
-    setEnd(formatForInputLocal(row.endTime));
+    setStart(toDatetimeLocal(row.startTime)); // ← Changed
+    setEnd(toDatetimeLocal(row.endTime)); // ← Changed
     setBreakMin(row.breakMinutes?.toString() ?? "");
     setNote(row.note ?? "");
   }
@@ -96,6 +96,7 @@ export default function HourReview({
   const toggleDay = (dateKey: string) => {
     setExpandedDays((prev) => {
       const next = new Set(prev);
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       next.has(dateKey) ? next.delete(dateKey) : next.add(dateKey);
       return next;
     });
