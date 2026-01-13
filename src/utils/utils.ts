@@ -7,8 +7,8 @@ export function cn(...inputs: ClassValue[]) {
 
 export function hhmm(dateIso: string) {
   const d = new Date(dateIso);
-  return `${String(d.getUTCHours()).padStart(2, "0")}:${String(
-    d.getUTCMinutes()
+  return `${String(d.getHours()).padStart(2, "0")}:${String(
+    d.getMinutes()
   ).padStart(2, "0")}`;
 }
 // date utils for ISO week calculations
