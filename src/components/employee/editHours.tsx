@@ -2,7 +2,7 @@ import { useDeleteHour, type HourRow } from "../../api/hours";
 
 export function EditingItem({
   row,
-  onSave, // ✅ add this back
+  onSave,
   onCancel,
   setStart,
   isUpdating,
@@ -39,8 +39,8 @@ export function EditingItem({
           <button
             onClick={() =>
               onSave(row.idHours, {
-                startTime: new Date(start).toISOString(),
-                endTime: new Date(end).toISOString(),
+                startTime: start, 
+                endTime: end, 
                 breakMinutes: Number(breakMin) || 0,
                 note: note || undefined,
               })
