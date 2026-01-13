@@ -46,8 +46,8 @@ export default function HourForm({
     if (!formData.date || !formData.startTime || !formData.endTime) return null;
 
     // Add 'Z' to force UTC interpretation
-    const start = new Date(`${formData.date}T${formData.startTime}:00Z`);
-    const end = new Date(`${formData.date}T${formData.endTime}:00Z`);
+    const start = new Date(`${formData.date}T${formData.startTime}:00`);
+    const end = new Date(`${formData.date}T${formData.endTime}:00`);
 
     const ms = end.getTime() - start.getTime() - formData.breakMinutes * 60000;
     const hours = Math.round((ms / 3600000) * 100) / 100;
