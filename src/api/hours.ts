@@ -1,4 +1,3 @@
-
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { makeRequest } from "../lib/axios";
 
@@ -16,12 +15,13 @@ export type HourRow = {
 };
 
 export type CreateHourPayload = {
-  userId: number | string;
-  projectsId: number;
-  startTime: string; // ISO
-  endTime: string; // ISO
+  userId: number;
   breakMinutes: number;
   note?: string;
+  projectsId: string | null;
+  absenceId: string | null;
+  startTime: string | null;
+  endTime: string | null;
 };
 
 export type UpdateHourData = Partial<{

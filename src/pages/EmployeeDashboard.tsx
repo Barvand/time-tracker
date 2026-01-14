@@ -24,14 +24,17 @@ export default function EmployeeDashboard() {
       throw new Error("User ID is required to log hours.");
     }
 
-    const body: any = {
+    const toISO = (date: string, time: string) =>
+      new Date(`${date}T${time}:00`).toISOString();
+
+    const body = {
       userId,
       breakMinutes: v.breakMinutes,
       note: v.note || undefined,
       projectsId: v.projectId || null,
       absenceId: v.absenceId || null,
-      startTime: v.startTime ? `${v.date}T${v.startTime}` : null,
-      endTime: v.endTime ? `${v.date}T${v.endTime}` : null,
+      startTime: v.startTime ? toISO(v.date, v.startTime) : null,
+      endTime: v.endTime ? toISO(v.date, v.endTime) : null,
     };
 
     await createHour.mutateAsync(body);
