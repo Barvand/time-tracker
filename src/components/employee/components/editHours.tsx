@@ -33,7 +33,7 @@ export function EditingHours({
     <li className="rounded border bg-blue-50 p-3 shadow-sm">
       <div className="flex flex-wrap justify-between gap-2 mb-3">
         <span className="font-medium">
-          {new Date(row.startTime).toLocaleDateString()}
+          {new Date(row.startTime).toISOString()}
         </span>
         <div className="flex gap-2">
           <button

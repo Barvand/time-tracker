@@ -61,3 +61,6 @@ export function toDatetimeLocal(isoString: string): string {
   const minutes = String(date.getMinutes()).padStart(2, "0");
   return `${year}-${month}-${day}T${hours}:${minutes}`;
 }
+
+export const toISO = (date: string, time: string) =>
+  new Date(`${date}T${time}:00`).toISOString();

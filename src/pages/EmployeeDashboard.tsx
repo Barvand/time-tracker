@@ -6,6 +6,7 @@ import HourForm from "../components/employee/components/TimeEntryForm";
 import type { HourFormValues } from "../types";
 import HourReview from "../components/employee/components/HourReview";
 import { GetAbsenceData } from "../api/absence";
+import { toISO } from "../utils/utils";
 
 export default function EmployeeDashboard() {
   const { user } = useAuth();
@@ -23,9 +24,6 @@ export default function EmployeeDashboard() {
     if (!userId) {
       throw new Error("User ID is required to log hours.");
     }
-
-    const toISO = (date: string, time: string) =>
-      new Date(`${date}T${time}:00`).toISOString();
 
     const body = {
       userId,
