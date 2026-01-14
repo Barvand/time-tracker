@@ -28,7 +28,6 @@ export default function HourForm({
     // Add 'Z' to force UTC interpretation
     const start = new Date(`${formData.date}T${formData.startTime}:00`);
     const end = new Date(`${formData.date}T${formData.endTime}:00`);
-
     const ms = end.getTime() - start.getTime() - formData.breakMinutes * 60000;
     const hours = Math.round((ms / 3600000) * 100) / 100;
     return Number.isFinite(hours) && hours > 0
@@ -75,6 +74,7 @@ export default function HourForm({
         note: "",
         absenceId: "",
       });
+      console.log(formData);
     } catch (error) {
       console.error("Error submitting form:", error);
     }
