@@ -1,6 +1,6 @@
-import { useDeleteHour, type HourRow } from "../../api/hours";
+import { useDeleteHour, type HourRow } from "../../../api/hours";
 
-export function EditingItem({
+export function EditingHours({
   row,
   onSave,
   onCancel,
@@ -39,8 +39,8 @@ export function EditingItem({
           <button
             onClick={() =>
               onSave(row.idHours, {
-                startTime: start, 
-                endTime: end, 
+                startTime: start,
+                endTime: end,
                 breakMinutes: Number(breakMin) || 0,
                 note: note || undefined,
               })
@@ -106,9 +106,7 @@ export function EditingItem({
         </div>
 
         <div>
-          <label className="block text-xs font-medium mb-1">
-            Timer (server)
-          </label>
+          <label className="block text-xs font-medium mb-1">Timer</label>
           <div className="px-2 py-1 text-sm bg-gray-100 rounded">
             {Number(row.hoursWorked).toFixed(2)} h
           </div>

@@ -1,16 +1,18 @@
-import type { HourRow } from "../../api/hours";
-import { hhmm } from "../../utils/utils";
+import type { HourRow } from "../../../api/hours";
+import { hhmm } from "../../../utils/utils";
 
-export function HourDisplayRows({
+export function HourDisplayCards({
   row,
   onEdit,
   projectName,
   absenceName,
+  projectCode,
 }: {
   row: HourRow;
   onEdit: () => void;
   projectName: string;
   absenceName: string;
+  projectCode?: string;
 }) {
   return (
     <li className="p-3 bg-gray-100">
@@ -21,7 +23,7 @@ export function HourDisplayRows({
             <span className="text-red-600">{absenceName}</span>
           ) : (
             <span className="text-blue-900 font-semibold">
-              Project: {projectName}
+              {projectCode} - {projectName}
             </span>
           )}
         </div>

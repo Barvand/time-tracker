@@ -2,9 +2,9 @@ import { useState } from "react";
 import { useAuth } from "../features/auth/useAuth";
 import { GetProjects } from "../api/projects";
 import { useCreateHour } from "../api/hours";
-import HourForm from "../components/employee/TimeEntryForm";
-import type { HourFormValues } from "../components/employee/TimeEntryForm";
-import HourReview from "../components/employee/HourReview";
+import HourForm from "../components/employee/components/TimeEntryForm";
+import type { HourFormValues } from "../types";
+import HourReview from "../components/employee/components/HourReview";
 import { GetAbsenceData } from "../api/absence";
 
 export default function EmployeeDashboard() {

@@ -1,27 +1,7 @@
 import { useMemo, useState } from "react";
-import type { Project } from "../../types";
-import ProjectForm from "../employee/form/ProjectForm";
-import InputField from "../form/InputField";
-
-export type HourFormValues = {
-  projectId: string;
-  absenceId: string;
-  date: string;
-  startTime: string;
-  endTime: string;
-  breakMinutes: number;
-  note?: string;
-};
-
-type Props = {
-  projects: Project[];
-  projectsLoading?: boolean;
-  projectsError?: unknown;
-  submitting?: boolean;
-  successMsg?: string | null;
-  errorMsg?: string | null;
-  onSubmit: (v: HourFormValues) => void | Promise<void>;
-};
+import ProjectForm from "../form/ProjectForm";
+import InputField from "../../form/InputField";
+import type { HourFormProps, HourFormValues } from "../../../types";
 
 export default function HourForm({
   projects,
@@ -31,7 +11,7 @@ export default function HourForm({
   successMsg,
   errorMsg,
   onSubmit,
-}: Props) {
+}: HourFormProps) {
   const [formData, setFormData] = useState<HourFormValues>({
     projectId: "",
     date: "",
@@ -139,38 +119,30 @@ export default function HourForm({
 
       {/* Time and Break Inputs */}
       <div className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-3">
-        <div className="space-y-2">
-          <InputField
-            name="startTime"
-            type="time"
-            value={formData.startTime}
-            onChange={change}
-            label="Starttid"
-            placeholder="Starttid"
-          />
-        </div>
-
-        <div className="space-y-2">
-          <InputField
-            name="endTime"
-            type="time"
-            value={formData.endTime}
-            onChange={change}
-            label="Sluttid"
-            placeholder="Sluttid"
-          />
-        </div>
-
-        <div className="space-y-2">
-          <InputField
-            name="breakMinutes"
-            type="number"
-            value={formData.breakMinutes}
-            onChange={change}
-            label="Pause (minutter)"
-            placeholder="0"
-          />
-        </div>
+        <InputField
+          name="startTime"
+          type="time"
+          value={formData.startTime}
+          onChange={change}
+          label="Starttid"
+          placeholder="Starttid"
+        />
+        <InputField
+          name="endTime"
+          type="time"
+          value={formData.endTime}
+          onChange={change}
+          label="Sluttid"
+          placeholder="Sluttid"
+        />
+        <InputField
+          name="breakMinutes"
+          type="number"
+          value={formData.breakMinutes}
+          onChange={change}
+          label="Pause (minutter)"
+          placeholder="0"
+        />
       </div>
 
       {/* Date Input */}

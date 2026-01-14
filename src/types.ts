@@ -1,5 +1,4 @@
 export type Project = {
-  projectCode: string;
   id: number; // MySQL INT
   name: string;
   description: string | null;
@@ -7,6 +6,7 @@ export type Project = {
   totalHours: number | null;
   startDate: string | null; // "YYYY-MM-DD"
   endDate: string | null; // replaces completionDate
+  projectCode: string;
 };
 
 export type ProjectId = {
@@ -29,4 +29,35 @@ export type ProjectFormData = {
   startDate: string;
   completionDate: string;
   projectCode: string;
+};
+
+export type hourReviewProps = {
+  userId: string | number;
+  weekOffset: number;
+  projects: Array<{ id: number; name: string }>;
+  absence: Array<{ id: number; name: string }>;
+};
+
+export type viewMode = "weekly" | "monthly";
+
+// Hour Form Types
+
+export type HourFormValues = {
+  projectId: string;
+  absenceId: string;
+  date: string;
+  startTime: string;
+  endTime: string;
+  breakMinutes: number;
+  note?: string;
+};
+
+export type HourFormProps = {
+  projects: Project[];
+  projectsLoading?: boolean;
+  projectsError?: unknown;
+  submitting?: boolean;
+  successMsg?: string | null;
+  errorMsg?: string | null;
+  onSubmit: (v: HourFormValues) => void | Promise<void>;
 };
