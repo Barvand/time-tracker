@@ -29,6 +29,11 @@ export function EditingHours({
 }) {
   const del = useDeleteHour(row.userId);
 
+  function datetimeLocalToISO(local: string | null) {
+    if (!local) return null;
+    return new Date(local).toISOString();
+  }
+
   return (
     <li className="rounded border bg-blue-50 p-3 shadow-sm">
       <div className="flex flex-wrap justify-between gap-2 mb-3">
@@ -39,8 +44,8 @@ export function EditingHours({
           <button
             onClick={() =>
               onSave(row.idHours, {
-                startTime: start,
-                endTime: end,
+                startTime: datetimeLocalToISO(start),
+                endTime: datetimeLocalToISO(end),
                 breakMinutes: Number(breakMin) || 0,
                 note: note || undefined,
               })
