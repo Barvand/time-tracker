@@ -7,6 +7,7 @@ export type Project = {
   startDate: string | null; // "YYYY-MM-DD"
   endDate: string | null; // replaces completionDate
   projectCode: string;
+  absentId: string | null;
 };
 
 export type ProjectId = {
