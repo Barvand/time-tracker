@@ -42,7 +42,7 @@ const ProjectDetails: React.FC = () => {
   const handleEditChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >
+    >,
   ) => {
     const { name, value } = e.target;
     setEditFormData((prev: any) => ({ ...prev, [name]: value }));
@@ -157,7 +157,7 @@ const ProjectDetails: React.FC = () => {
                   <span className="font-bold">Status:</span>
                   <span
                     className={`ml-2 font-bold border border-green-700 p-2 bg-green-200 rounded-2xl ${getStatusColor(
-                      project.status ?? ""
+                      project.status ?? "",
                     )}`}
                   >
                     {getStatusText(project.status ?? "")}

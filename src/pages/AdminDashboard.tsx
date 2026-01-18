@@ -13,6 +13,8 @@ import {
   filterProjects,
 } from "../features/projects/projectFilters";
 import type { ProjectFormData } from "../types";
+import { GetAbsenceData } from "../api/absence";
+import AbsenceItem from "../components/projects/AbsenceItem";
 
 const initialFormData: ProjectFormData = {
   name: "",
@@ -27,8 +29,9 @@ export default function Dashboard() {
   const [activeTab, setActiveTab] = useState<ProjectTab>("active");
   const [search, setSearch] = useState("");
   const [showAddProject, setShowAddProject] = useState(false);
-
+  const [mode, setMode] = useState<"projects" | "absence">("projects");
   const { data: projects = [], isLoading, error, refetch } = GetProjects();
+  const { data: absence = [] } = GetAbsenceData();
   const displayedProjects = filterProjects(projects, activeTab, search);
 
   const [formData, setFormData] = useState<ProjectFormData>(initialFormData);
@@ -57,9 +60,12 @@ export default function Dashboard() {
 
       <FilterTabs
         projects={projects}
-        setActiveTab={setActiveTab}
-        TAB_CONFIG={TAB_CONFIG}
+        absence={absence}
         activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        mode={mode}
+        setMode={setMode}
+        TAB_CONFIG={TAB_CONFIG}
       />
 
       <AddProjectAccordion
@@ -73,15 +79,29 @@ export default function Dashboard() {
       <div>
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-semibold">
-            {TAB_CONFIG[activeTab].label}
+            {mode === "absence" ? "Fravær" : TAB_CONFIG[activeTab].label}
           </h2>
+
           <span className="text-sm text-gray-500">
-            {displayedProjects.length} prosjekt
-            {displayedProjects.length !== 1 ? "er" : ""}
+            {mode === "absence"
+              ? `${absence.length} fravær`
+              : `${displayedProjects.length} prosjekt${displayedProjects.length !== 1 ? "er" : ""}`}
           </span>
         </div>
 
-        {isLoading ? (
+        {mode === "absence" ? (
+          absence.length === 0 ? (
+            <div className="text-center py-8">
+              <p className="text-gray-600">Ingen fravær registrert.</p>
+            </div>
+          ) : (
+            <ul className="space-y-2">
+              {absence.map((a) => (
+                <AbsenceItem key={a.id} absence={a} />
+              ))}
+            </ul>
+          )
+        ) : isLoading ? (
           <div className="text-center py-8">
             <p className="text-gray-600">Laster prosjekter...</p>
           </div>
@@ -109,8 +129,8 @@ export default function Dashboard() {
           </ul>
         )}
 
-        {error && (
-          <div className="bg-red-200 border border-red-500 p-3 rounded">
+        {error && mode !== "absence" && (
+          <div className="bg-red-200 border border-red-500 p-3 rounded mt-4">
             <p className="text-red-700">
               Something went wrong, please try again
             </p>

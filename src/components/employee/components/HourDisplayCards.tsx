@@ -5,14 +5,14 @@ export function HourDisplayCards({
   row,
   onEdit,
   projectName,
-  absenceName,
   projectCode,
+  absenceName,
 }: {
   row: HourRow;
   onEdit: () => void;
   projectName: string;
-  absenceName: string;
   projectCode?: string;
+  absenceName?: string;
 }) {
   return (
     <li className="p-3 bg-gray-100">

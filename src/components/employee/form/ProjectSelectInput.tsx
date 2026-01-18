@@ -1,30 +1,19 @@
 import type { Project } from "../../../types";
 import SelectField from "../../form/SelectField";
 
-const fraværOptions = [
-  { value: "101", label: "Sykedag" },
-  { value: "102", label: "Omsorgsdag" },
-  { value: "103", label: "Ferie" },
-  { value: "104", label: "Permisjon" },
-  { value: "105", label: "Møte" },
-  { value: "106", label: "Kurs" },
-];
-
 type ProjectFormProps = {
   projects: Project[];
   projectsLoading?: boolean;
   projectsError?: unknown;
   onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   projectId: string;
-  absenceId: string;
 };
 
-export default function ProjectForm({
+export default function ProjectSelectInput({
   projectsLoading,
   projectsError,
   projects,
   projectId,
-  absenceId,
   onChange,
 }: ProjectFormProps) {
   return (
@@ -60,17 +49,6 @@ export default function ProjectForm({
                     ? `${p.projectCode} - ${p.name}`
                     : p.name,
                 }))}
-              disabled={!!absenceId}
-            />
-
-            <SelectField
-              name="absenceId"
-              value={absenceId}
-              onChange={onChange}
-              label="Velg fravær:"
-              placeholder="Velg fravær"
-              options={fraværOptions}
-              disabled={!!projectId} // disable if project is chosen
             />
           </>
         )}

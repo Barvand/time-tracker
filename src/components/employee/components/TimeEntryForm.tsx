@@ -1,7 +1,9 @@
 import { useMemo, useState } from "react";
-import ProjectForm from "../form/ProjectForm";
 import InputField from "../../form/InputField";
 import type { HourFormProps, HourFormValues } from "../../../types";
+import ProjectSelectInput from "../form/ProjectSelectInput";
+import AbsenceSelectInput from "../form/absenceSelectInput";
+import { GetAbsenceData } from "../../../api/absence";
 
 export default function HourForm({
   projects,
@@ -14,13 +16,17 @@ export default function HourForm({
 }: HourFormProps) {
   const [formData, setFormData] = useState<HourFormValues>({
     projectId: "",
+    absenceId: "",
     date: "",
     startTime: "",
     endTime: "",
     breakMinutes: 0,
     note: "",
-    absenceId: "",
   });
+
+  const { data: absence = [] } = GetAbsenceData();
+
+  console.log(absence);
 
   const preview = useMemo(() => {
     if (!formData.date || !formData.startTime || !formData.endTime) return null;
@@ -43,7 +49,7 @@ export default function HourForm({
   const change = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >
+    >,
   ) => {
     const { name, value } = e.target;
 
@@ -84,15 +90,21 @@ export default function HourForm({
     <div className="bg-white p-6">
       {/* Project/Absence Selection */}
       <div className="mb-6">
-        <ProjectForm
+        <ProjectSelectInput
           projectId={formData.projectId}
-          absenceId={formData.absenceId}
           onChange={change}
           projects={projects}
           projectsLoading={projectsLoading}
           projectsError={projectsError}
         />
       </div>
+      <AbsenceSelectInput
+        absenceId={formData.absenceId}
+        onChange={change}
+        absence={absence}
+        loading={projectsLoading}
+        error={projectsError}
+      />
 
       {/* Important Note */}
       <div className="mb-6 bg-blue-50 border border-blue-200 p-4">

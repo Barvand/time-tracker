@@ -13,12 +13,12 @@ import {
 import type { hourReviewProps, viewMode } from "../../../types";
 import HeaderToggle from "./HeaderToggle";
 import { GetProjects } from "../../../api/projects";
+import { GetAbsenceData } from "../../../api/absence";
 
 export default function HourReview({
   userId,
   weekOffset: initialWeekOffset,
   projects,
-  absence,
 }: hourReviewProps) {
   // View state
 
@@ -35,6 +35,7 @@ export default function HourReview({
   const [isUpdating, setIsUpdating] = useState(false);
   const { data: rows = [] } = useUserHours(userId);
   const { data: projectsData = [] } = GetProjects();
+  const { data: absenceData = [] } = GetAbsenceData();
   const updateMutation = useUpdateHour();
 
   // Maps
@@ -46,30 +47,22 @@ export default function HourReview({
     return map;
   }, [projects]);
 
-  const absenceMap = useMemo(() => {
-    const map: Record<number, string> = {};
-    absence.forEach((a) => {
-      map[a.id] = a.name;
-    });
-    return map;
-  }, [absence]);
-
   // Weekly summary data
   const weeklySummary = useMemo(
     () => getWeeklySummary(rows, weekOffset),
-    [rows, weekOffset]
+    [rows, weekOffset],
   );
 
   // Current month date (offset-based)
   const currentMonthDate = useMemo(
     () => getOffsetMonthDate(monthOffset),
-    [monthOffset]
+    [monthOffset],
   );
 
   // Monthly summary data
   const monthlySummary = useMemo(
     () => getMonthlySummary(rows, currentMonthDate),
-    [rows, currentMonthDate]
+    [rows, currentMonthDate],
   );
 
   const allMonths = useMemo(() => getAllMonthlyTotals(rows), [rows]);
@@ -142,7 +135,7 @@ export default function HourReview({
             const isExpanded = expandedDays.has(dateKey);
             const dayTotal = daylogs.reduce(
               (sum, row) => sum + (Number(row.hoursWorked) || 0),
-              0
+              0,
             );
             const date = new Date(dateKey);
 
@@ -187,7 +180,9 @@ export default function HourReview({
                     {daylogs.map((row) => {
                       const projectName =
                         projectMap[row.projectsId] || "Unknown Project";
-                      const absenceName = absenceMap[row.absenceId];
+
+                      const absenceName =
+                        absenceData[row.absenceId] || "Unknown Absence";
 
                       return editingId === row.idHours ? (
                         <EditingHours

@@ -1,79 +1,45 @@
 import { useMemo } from "react";
 import { useParams, Link } from "react-router-dom";
-import { GetProjectHours, GetProjectHoursByUser } from "../../api/reports";
-import { GetProjectById } from "../../api/projects";
-import { GetAbsenceById } from "../../api/absence"; // ✅ add this
+import { GetAbsenceByCode } from "../../api/absence";
+import { GetAbsenceHours, GetAbsenceHoursByUser } from "../../api/reports";
 
-interface ProjectReportPageProps {
-  projectCode?: string;
-}
+export default function AbsenceReportPage() {
+  const { absenceCode } = useParams<{ absenceCode?: string }>();
+  if (!absenceCode) return <div>Mangler fraværskode</div>;
 
-export default function ProjectReportPage({
-  projectCode: propProjectCode,
-}: ProjectReportPageProps) {
-  const { projectCode: paramProjectCode } = useParams<{
-    projectCode?: string;
-  }>();
-  const resolvedCode = propProjectCode || paramProjectCode;
-
-  if (!resolvedCode) return <div>Mangler prosjekt-ID</div>;
-
-  // 1) Try project by code
-  const {
-    data: project,
-    isLoading: isProjectLoading,
-    error: projectError,
-  } = GetProjectById(resolvedCode);
-
-  // 2) If no project, try absence by code
   const {
     data: absence,
     isLoading: isAbsenceLoading,
     error: absenceError,
-  } = GetAbsenceById(!project ? resolvedCode : undefined);
-  // ^ only run when project wasn't found (or implement with query enabled flag)
+  } = GetAbsenceByCode(absenceCode);
 
-  const isAbsenceMode = !project && !!absence;
+  const absenceId = absence?.id;
 
-  // 3) Pick the numeric id to use for hours
-  const entityId = project?.id ?? absence?.id;
+  const rowsQ = GetAbsenceHours(absenceId);
+  const byUserQ = GetAbsenceHoursByUser(absenceId);
 
-  const {
-    data: rows = [],
-    isLoading: isRowsLoading,
-    error: rowsError,
-  } = GetProjectHours(entityId);
+  const rows = rowsQ.data ?? [];
+  const byUser = byUserQ.data ?? [];
 
-  const {
-    data: byUser = [],
-    isLoading: isByUserLoading,
-    error: byUserError,
-  } = GetProjectHoursByUser(entityId);
+  console.log(byUser);
+
+  console.log("test " + rowsQ.data);
 
   const totals = useMemo(
     () => ({ total: rows.reduce((s, r) => s + Number(r.hoursWorked ?? 0), 0) }),
     [rows],
   );
 
-  // Loading: either one could be resolving
-  if (isProjectLoading || isAbsenceLoading) {
-    return <div>Laster…</div>;
-  }
-
-  // If both failed / not found
-  if (!project && !absence) {
-    return <div>Prosjekt eller fravær ikke funnet</div>;
-  }
+  if (isAbsenceLoading) return <div>Laster fravær...</div>;
+  if (absenceError) return <div>Feil ved lasting av fravær</div>;
+  if (!absence) return <div>Fravær ikke funnet</div>;
 
   return (
     <div className="mx-auto max-w-7xl p-6">
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-3xl font-bold text-gray-900">
-          {isAbsenceMode ? "Fraværsrapport" : "Prosjektrapport"} #{resolvedCode}
-          {" — "}
-          {isAbsenceMode ? absence?.name : project?.name}
+          Fraværsrapport #{absence.absenceCode} — {absence.name}
         </h1>
-
         <Link
           to="/admin/dashboard"
           className="text-blue-600 hover:text-blue-700 font-medium"
@@ -82,30 +48,22 @@ export default function ProjectReportPage({
         </Link>
       </div>
 
-      {/* Header card (same layout) */}
+      {/* Header card */}
       <div className="mb-6 rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
           <div>
             <div className="text-sm font-medium text-gray-500 mb-1">
-              {isAbsenceMode ? "Fraværsårsak" : "Prosjektnavn"}
+              Fraværsårsak
             </div>
             <div className="text-lg font-semibold text-gray-900">
-              {isAbsenceMode ? absence?.name : project?.name}
+              {absence.name}
             </div>
           </div>
 
           <div>
-            <div className="text-sm font-medium text-gray-500 mb-1">
-              {isAbsenceMode ? "Type" : "Status"}
-            </div>
-            <span
-              className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-medium ${
-                isAbsenceMode
-                  ? "bg-red-100 text-red-800"
-                  : "bg-blue-100 text-blue-800"
-              }`}
-            >
-              {isAbsenceMode ? "Fravær" : (project?.status ?? "—")}
+            <div className="text-sm font-medium text-gray-500 mb-1">Type</div>
+            <span className="inline-flex items-center rounded-full bg-red-100 px-3 py-1 text-sm font-medium text-red-800">
+              Fravær
             </span>
           </div>
 
@@ -117,28 +75,10 @@ export default function ProjectReportPage({
               {totals.total.toFixed(2)} t
             </div>
           </div>
-
-          {/* Only show project-specific fields when it's a project */}
-          {!isAbsenceMode && project?.description && (
-            <div className="sm:col-span-2">
-              <div className="text-sm font-medium text-gray-500 mb-1">
-                Beskrivelse
-              </div>
-              <div className="text-gray-700">{project.description}</div>
-            </div>
-          )}
         </div>
-
-        {(projectError || absenceError) && (
-          <p className="mt-4 text-red-600">
-            {(projectError as any)?.message ??
-              (absenceError as any)?.message ??
-              "Kunne ikke laste"}
-          </p>
-        )}
       </div>
 
-      {/* The rest of your tables stay IDENTICAL */}
+      {/* Summary per user */}
       <div className="mb-6 rounded-lg border border-gray-200 bg-white shadow-sm overflow-hidden">
         <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
           <h2 className="text-lg font-semibold text-gray-900">
@@ -146,11 +86,11 @@ export default function ProjectReportPage({
           </h2>
         </div>
 
-        {isByUserLoading ? (
+        {byUserQ.isLoading ? (
           <p className="p-6 text-gray-600">Laster sammendrag…</p>
-        ) : byUserError ? (
+        ) : byUserQ.error ? (
           <p className="p-6 text-red-600">
-            {(byUserError as any)?.message ?? "Kunne ikke laste sammendrag"}
+            {(byUserQ.error as any)?.message ?? "Kunne ikke laste sammendrag"}
           </p>
         ) : (
           <div className="overflow-x-auto">
@@ -194,6 +134,7 @@ export default function ProjectReportPage({
         )}
       </div>
 
+      {/* Detailed rows */}
       <div className="rounded-lg border border-gray-200 bg-white shadow-sm overflow-hidden">
         <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
           <h2 className="text-lg font-semibold text-gray-900">
@@ -201,11 +142,11 @@ export default function ProjectReportPage({
           </h2>
         </div>
 
-        {isRowsLoading ? (
+        {rowsQ.isLoading ? (
           <p className="p-6 text-gray-600">Laster oppføringer…</p>
-        ) : rowsError ? (
+        ) : rowsQ.error ? (
           <p className="p-6 text-red-600">
-            {(rowsError as any)?.message ?? "Kunne ikke laste oppføringer"}
+            {(rowsQ.error as any)?.message ?? "Kunne ikke laste oppføringer"}
           </p>
         ) : !rows.length ? (
           <p className="p-6 text-gray-600">

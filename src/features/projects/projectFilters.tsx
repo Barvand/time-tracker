@@ -18,7 +18,7 @@ export type ProjectTab = keyof typeof TAB_CONFIG;
 export function filterProjects(
   projects: Project[],
   tab: ProjectTab,
-  search: string
+  search: string,
 ) {
   const q = search.trim().toLowerCase();
 

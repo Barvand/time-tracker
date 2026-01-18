@@ -6,8 +6,8 @@ export type Project = {
   totalHours: number | null;
   startDate: string | null; // "YYYY-MM-DD"
   endDate: string | null; // replaces completionDate
-  projectCode: string;
-  absentId: string | null;
+  projectCode: string | null;
+  absenceCode: string | null;
 };
 
 export type ProjectId = {
@@ -44,8 +44,7 @@ export type viewMode = "weekly" | "monthly";
 // Hour Form Types
 
 export type HourFormValues = {
-  projectId: string;
-  absenceId: string;
+  id: string;
   date: string;
   startTime: string;
   endTime: string;

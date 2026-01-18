@@ -12,6 +12,7 @@ import RequireAuth from "./app/RequireAuth";
 import NotFoundPage from "./pages/404";
 import UnauthorizedPage from "./pages/unauthorized";
 import AccountantDashboard from "./pages/AccountantDashboard";
+import AbsenceReportPage from "./components/projects/ReportPerAbsence";
 
 function App() {
   return (
@@ -32,6 +33,10 @@ function App() {
               <Route
                 path="projects/:projectCode"
                 element={<ProjectDetails />}
+              />
+              <Route
+                path="absence/:absenceCode"
+                element={<AbsenceReportPage />}
               />
               <Route path="dashboard/reports" element={<AdminReports />} />
             </Route>

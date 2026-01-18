@@ -3,7 +3,8 @@ import { makeRequest } from "../lib/axios";
 
 export type HourRow = {
   projectCode: string;
-  absenceId: any;
+  absenceId: string;
+  name: string;
   idHours: number;
   userId: number;
   projectsId: number;
@@ -65,7 +66,7 @@ export function useCreateHour(userIdForCache?: string | number) {
     onSuccess: (created) => {
       qc.setQueryData(
         ["hours", "user", created.userId],
-        (old: HourRow[] = []) => [created, ...old]
+        (old: HourRow[] = []) => [created, ...old],
       );
       if (userIdForCache) {
         qc.invalidateQueries({ queryKey: ["hours", "user", userIdForCache] });
@@ -89,7 +90,7 @@ export function useUpdateHour() {
       qc.setQueryData(
         ["hours", "user", updated.userId],
         (old: HourRow[] = []) =>
-          old.map((r) => (r.idHours === updated.idHours ? updated : r))
+          old.map((r) => (r.idHours === updated.idHours ? updated : r)),
       );
       qc.invalidateQueries({ queryKey: ["hours", "user", updated.userId] });
     },
@@ -105,10 +106,13 @@ export function useDeleteHour(userIdForCache?: string | number) {
       if (userIdForCache) {
         qc.setQueryData(
           ["hours", "user", userIdForCache],
-          (old: HourRow[] = []) => old.filter((r) => r.idHours !== vars.idHours)
+          (old: HourRow[] = []) =>
+            old.filter((r) => r.idHours !== vars.idHours),
         );
         qc.invalidateQueries({ queryKey: ["hours", "user", userIdForCache] });
       }
     },
   });
 }
+
+
