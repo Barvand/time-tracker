@@ -96,13 +96,15 @@ export default function HourForm({
           projectsError={projectsError}
         />
       </div>
-      <AbsenceSelectInput
-        absenceId={formData.absenceId}
-        onChange={change}
-        absence={absence}
-        loading={projectsLoading}
-        error={projectsError}
-      />
+      <div className="mb-6">
+        <AbsenceSelectInput
+          absenceId={formData.absenceId}
+          onChange={change}
+          absence={absence}
+          loading={projectsLoading}
+          error={projectsError}
+        />
+      </div>
 
       {/* Important Note */}
       <div className="mb-6 bg-blue-50 border border-blue-200 p-4">
