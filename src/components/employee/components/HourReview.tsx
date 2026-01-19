@@ -47,6 +47,17 @@ export default function HourReview({
     return map;
   }, [projects]);
 
+  // Maps
+  const absenceMap = useMemo(() => {
+    const map: Record<number, string> = {};
+    absenceData.forEach((absence) => {
+      map[absence.id] = absence.name;
+    });
+    return map;
+  }, [absenceData]);
+
+  console.log("test ", absenceMap);
+
   // Weekly summary data
   const weeklySummary = useMemo(
     () => getWeeklySummary(rows, weekOffset),
@@ -132,6 +143,7 @@ export default function HourReview({
         <div className="space-y-3 mb-6">
           {sortedDates.map((dateKey) => {
             const daylogs = groupedByDate[dateKey];
+            console.log("Rendering date:", dateKey, daylogs);
             const isExpanded = expandedDays.has(dateKey);
             const dayTotal = daylogs.reduce(
               (sum, row) => sum + (Number(row.hoursWorked) || 0),
@@ -180,10 +192,9 @@ export default function HourReview({
                     {daylogs.map((row) => {
                       const projectName =
                         projectMap[row.projectsId] || "Unknown Project";
-
                       const absenceName =
-                        absenceData[row.absenceId] || "Unknown Absence";
-
+                        absenceMap[Number(row.absenceId)] || "Unknown Absence";
+                      console.log("test ", absenceMap);
                       return editingId === row.idHours ? (
                         <EditingHours
                           key={row.idHours}

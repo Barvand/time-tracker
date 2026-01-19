@@ -26,8 +26,6 @@ export default function HourForm({
 
   const { data: absence = [] } = GetAbsenceData();
 
-  console.log(absence);
-
   const preview = useMemo(() => {
     if (!formData.date || !formData.startTime || !formData.endTime) return null;
 

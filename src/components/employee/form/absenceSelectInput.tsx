@@ -6,7 +6,7 @@ type AbsenceSelectInputProps = {
   loading?: boolean;
   error?: unknown;
   onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-  absenceId: string;
+  absenceId: string | undefined;
 };
 
 export default function AbsenceSelectInput({
@@ -17,7 +17,7 @@ export default function AbsenceSelectInput({
   return (
     <SelectField
       name="absenceId" // ✅ this is what makes change() work
-      value={absenceId} // ✅ this binds the correct state
+      value={absenceId || ""} // ✅ this binds the correct state
       onChange={onChange}
       label="Fraværsårsaker"
       placeholder="Velg fravær"

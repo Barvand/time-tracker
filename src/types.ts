@@ -44,7 +44,8 @@ export type viewMode = "weekly" | "monthly";
 // Hour Form Types
 
 export type HourFormValues = {
-  id: string;
+  projectId?: string;
+  absenceId?: string;
   date: string;
   startTime: string;
   endTime: string;

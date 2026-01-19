@@ -6,7 +6,7 @@ type ProjectFormProps = {
   projectsLoading?: boolean;
   projectsError?: unknown;
   onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-  projectId: string;
+  projectId: string | undefined;
 };
 
 export default function ProjectSelectInput({
@@ -32,7 +32,7 @@ export default function ProjectSelectInput({
           <>
             <SelectField
               name="projectId"
-              value={projectId}
+              value={projectId || ""}
               onChange={onChange}
               label="Velg et prosjekt"
               placeholder="Velg prosjekt"
