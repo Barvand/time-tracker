@@ -3,6 +3,8 @@ import type { UseMutationResult } from "@tanstack/react-query";
 import ProjectForm from "./ProjectForm";
 import type { AxiosError } from "axios";
 import type { ProjectFormData } from "../../types";
+import ErrorMessage from "../UI/UX-messages/ErrorMessage";
+import SuccessMessage from "../UI/UX-messages/SuccessMessage";
 
 interface AddProjectAccordionProps {
   showAddProject: boolean;
@@ -20,6 +22,12 @@ const AddProjectAccordion: React.FC<AddProjectAccordionProps> = ({
   setFormData,
   createMutation,
 }) => {
+  const apiErrorMessage =
+    (createMutation.error as AxiosError<any>)?.response?.data?.message ??
+    (createMutation.error as AxiosError<any>)?.response?.data?.errors?.[0]
+      ?.message ??
+    "Kunne ikke opprette prosjekt.";
+
   return (
     <div className="mb-6">
       <button
@@ -55,7 +63,7 @@ const AddProjectAccordion: React.FC<AddProjectAccordionProps> = ({
             onChange={(
               e: React.ChangeEvent<
                 HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-              >
+              >,
             ) => {
               const { name, value } = e.target;
               setFormData((prev) => ({ ...prev, [name]: value }));
@@ -63,19 +71,20 @@ const AddProjectAccordion: React.FC<AddProjectAccordionProps> = ({
             onSubmit={(e: React.FormEvent) => {
               e.preventDefault();
               if (!formData.name.trim()) return;
-              console.log(formData)
               createMutation.mutate(formData);
             }}
           />
-
           {createMutation.isError && (
-            <div className="mt-2 text-red-600 text-sm">
-              {(createMutation.error as AxiosError<any>)?.response?.data
-                ?.message ??
-                (createMutation.error as AxiosError<any>)?.response?.data
-                  ?.errors?.[0]?.message ??
-                "Kunne ikke opprette prosjekt."}
-            </div>
+            <ErrorMessage
+              message={apiErrorMessage}
+              onClose={createMutation.reset}
+            />
+          )}{" "}
+          {createMutation.isSuccess && (
+            <SuccessMessage
+              message="Prosjektet ble opprettet!"
+              onClose={createMutation.reset}
+            />
           )}
         </div>
       </div>

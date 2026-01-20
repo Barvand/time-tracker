@@ -4,13 +4,13 @@ import type {
   EmployeeAddHourFormProps,
   EmployeeAddHourFormValues,
 } from "../../../types";
-import ProjectSelectInput from "../form/ProjectSelectInput";
-import AbsenceSelectInput from "../form/absenceSelectInput";
+import ProjectSelectInput from "../form/inputs/ProjectSelectInput";
+import AbsenceSelectInput from "../form/inputs/absenceSelectInput";
 import { GetAbsenceData } from "../../../api/absence";
-import ErrorMessage from "../../UI/errorHandling/ErrorMessage";
-import SuccessMessage from "../../UI/errorHandling/SuccessMessage";
-import TimeEntrySubmitBtn from "../form/timeEntrySubmitBtn";
-import AttentionMessage from "../../UI/AttentionMessage";
+import ErrorMessage from "../../UI/UX-messages/ErrorMessage";
+import SuccessMessage from "../../UI/UX-messages/SuccessMessage";
+import TimeEntrySubmitBtn from "../../UI/buttons/timeEntrySubmitBtn";
+import AttentionMessage from "../../UI/UX-messages/AttentionMessage";
 import PreviewSection from "../form/PreviewSection";
 
 export default function EmployeeAddEmployeeAddHourForm({

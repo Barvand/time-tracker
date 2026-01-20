@@ -1,5 +1,5 @@
-import SelectField from "../../form/SelectField";
-import type { Absence } from "../../../api/absence";
+import SelectField from "../../../form/SelectField";
+import type { Absence } from "../../../../api/absence";
 
 type AbsenceSelectInputProps = {
   absence: Absence[];

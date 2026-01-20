@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { useUserHours, useUpdateHour, type HourRow } from "../../../api/hours";
 import { toDatetimeLocal } from "../../../utils/utils";
 import { EditingHours } from "./editHours";
-import { HourDisplayCards } from "./HourDisplayCards";
+import { HourDisplayCards } from "../../UI/cards/HourDisplayCards";
 import {
   getWeeklySummary,
   getMonthlySummary,

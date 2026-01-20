@@ -5,7 +5,7 @@ interface Props {
   onChange: (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >
+    >,
   ) => void;
   onSubmit: (e: React.FormEvent) => void;
   isEdit?: boolean;
@@ -18,10 +18,7 @@ const ProjectForm: React.FC<Props> = ({
   isEdit,
 }) => {
   return (
-    <form
-      onSubmit={onSubmit}
-      className="space-y-4 bg-gray-50 p-4 rounded shadow mb-6"
-    >
+    <form onSubmit={onSubmit} className="space-y-4 bg-gray-50 p-4 mb-6">
       <div className="mb-4">
         <h3 className="text-lg font-bold mb-4">
           {isEdit ? "REDIGER PROSJEKT" : "NYTT PROSJEKT"}

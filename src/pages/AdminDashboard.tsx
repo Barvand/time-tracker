@@ -5,7 +5,7 @@ import RefetchDataBtn from "../components/admin/refetchDataBtn";
 import FilterTabs from "../components/admin/FilterTabs";
 import SearchBar from "../components/admin/searchBar";
 import AddProjectAccordion from "../components/admin/AddProjectAccordion";
-import RegisterBtn from "../components/admin/RegisterAccountBtn";
+import RegisterBtn from "../components/UI/buttons/RegisterAccountBtn";
 import InfoBanner from "../utils/InfoBanner";
 import {
   TAB_CONFIG,
@@ -15,6 +15,7 @@ import {
 import type { ProjectFormData } from "../types";
 import { GetAbsenceData } from "../api/absence";
 import AbsenceItem from "../components/projects/AbsenceItem";
+import ErrorMessage from "../components/UI/UX-messages/ErrorMessage";
 
 const initialFormData: ProjectFormData = {
   name: "",
@@ -33,7 +34,6 @@ export default function Dashboard() {
   const { data: projects = [], isLoading, error, refetch } = GetProjects();
   const { data: absence = [] } = GetAbsenceData();
   const displayedProjects = filterProjects(projects, activeTab, search);
-
   const [formData, setFormData] = useState<ProjectFormData>(initialFormData);
 
   const createMutation = useCreateProject();
@@ -130,11 +130,10 @@ export default function Dashboard() {
         )}
 
         {error && mode !== "absence" && (
-          <div className="bg-red-200 border border-red-500 p-3 rounded mt-4">
-            <p className="text-red-700">
-              Something went wrong, please try again
-            </p>
-          </div>
+          <ErrorMessage
+            onClose={createMutation.reset}
+            message="Noe gikk galt ved henting av prosjekter. Vennligst prøv igjen senere."
+          />
         )}
       </div>
     </div>
