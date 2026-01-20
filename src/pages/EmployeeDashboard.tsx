@@ -2,8 +2,8 @@ import { useState } from "react";
 import { useAuth } from "../features/auth/useAuth";
 import { GetProjects } from "../api/projects";
 import { useCreateHour } from "../api/hours";
-import HourForm from "../components/employee/components/TimeEntryForm";
-import type { HourFormValues } from "../types";
+import EmployeeAddEmployeeAddHourForm from "../components/employee/components/TimeEntryForm";
+import type { EmployeeAddHourFormValues } from "../types";
 import HourReview from "../components/employee/components/HourReview";
 import { GetAbsenceData } from "../api/absence";
 import { toISO } from "../utils/utils";
@@ -20,7 +20,7 @@ export default function EmployeeDashboard() {
   const day = (now.getDay() + 6) % 7;
   monday.setDate(now.getDate() - day + weekOffset * 7);
 
-  const handleSubmit = async (v: HourFormValues) => {
+  const handleSubmit = async (v: EmployeeAddHourFormValues) => {
     if (!userId) {
       throw new Error("User ID is required to log hours.");
     }
@@ -46,7 +46,7 @@ export default function EmployeeDashboard() {
 
       <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-[1fr,420px]">
         <div>
-          <HourForm
+          <EmployeeAddEmployeeAddHourForm
             projects={projects}
             projectsLoading={isLoading}
             projectsError={error}
@@ -55,6 +55,7 @@ export default function EmployeeDashboard() {
               createHour.isSuccess ? "Hours logged successfully!" : null
             }
             errorMsg={(createHour.error as any)?.message ?? null}
+            resetMessages={createHour.reset}
             onSubmit={handleSubmit}
           />
         </div>

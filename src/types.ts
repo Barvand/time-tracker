@@ -43,7 +43,7 @@ export type viewMode = "weekly" | "monthly";
 
 // Hour Form Types
 
-export type HourFormValues = {
+export type EmployeeAddHourFormValues = {
   projectId?: string;
   absenceId?: string;
   date: string;
@@ -53,12 +53,13 @@ export type HourFormValues = {
   note?: string;
 };
 
-export type HourFormProps = {
+export type EmployeeAddHourFormProps = {
   projects: Project[];
   projectsLoading?: boolean;
   projectsError?: unknown;
   submitting?: boolean;
   successMsg?: string | null;
   errorMsg?: string | null;
-  onSubmit: (v: HourFormValues) => void | Promise<void>;
+  resetMessages: () => void;
+  onSubmit: (v: EmployeeAddHourFormValues) => void | Promise<void>;
 };
