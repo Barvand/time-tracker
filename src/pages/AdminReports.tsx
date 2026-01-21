@@ -1,4 +1,4 @@
-import ReportPerProject from "../../src/components/projects/ReportPerProject";
+import ReportPerProject from "../components/ProjectDetailsPage/HourDetailsProjectPage";
 
 function AdminReports() {
   return (

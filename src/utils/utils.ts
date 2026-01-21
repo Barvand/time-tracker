@@ -8,7 +8,7 @@ export function cn(...inputs: ClassValue[]) {
 export function hhmm(dateIso: string) {
   const d = new Date(dateIso);
   return `${String(d.getHours()).padStart(2, "0")}:${String(
-    d.getMinutes()
+    d.getMinutes(),
   ).padStart(2, "0")}`;
 }
 // date utils for ISO week calculations
@@ -22,14 +22,14 @@ export function getISOWeek(d: Date) {
 
 export function isoWeekKey(d: Date) {
   const x = new Date(
-    Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate())
+    Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()),
   );
   const day = x.getUTCDay() || 7;
   x.setUTCDate(x.getUTCDate() + 4 - day);
   const year = x.getUTCFullYear();
   const yearStart = new Date(Date.UTC(year, 0, 1));
   const week = Math.ceil(
-    ((x.getTime() - yearStart.getTime()) / 86400000 + 1) / 7
+    ((x.getTime() - yearStart.getTime()) / 86400000 + 1) / 7,
   );
   return { year, week, key: `${year}-W${String(week).padStart(2, "0")}` };
 }
@@ -64,3 +64,10 @@ export function toDatetimeLocal(isoString: string): string {
 
 export const toISO = (date: string, time: string) =>
   new Date(`${date}T${time}:00`).toISOString();
+
+export function timeHM(iso: string) {
+  const d = new Date(iso);
+  const hh = String(d.getHours()).padStart(2, "0");
+  const mm = String(d.getMinutes()).padStart(2, "0");
+  return `${hh}:${mm}`;
+}

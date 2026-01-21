@@ -2,7 +2,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navigation from "./layout/Navigation";
 import Login from "./pages/Login";
-import ProjectDetails from "./components/projects/ProjectDetails";
+import ProjectDetails from "./components/ProjectDetailsPage/ProjectDetails";
 import EmployeeDashboard from "./pages/EmployeeDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import Register from "./pages/RegisterPage";

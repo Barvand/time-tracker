@@ -1,16 +1,17 @@
 import { useMemo } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { GetProjectHours, GetProjectHoursByUser } from "../../api/reports";
 import { GetProjectById } from "../../api/projects";
-import { GetAbsenceById } from "../../api/absence"; // ✅ add this
+import { GetAbsenceById } from "../../api/absence";
+import { timeHM } from "../../utils/utils";
 
-interface ProjectReportPageProps {
+interface HourlyProjectReportPageProps {
   projectCode?: string;
 }
 
-export default function ProjectReportPage({
+export default function HourlyProjectReportPage({
   projectCode: propProjectCode,
-}: ProjectReportPageProps) {
+}: HourlyProjectReportPageProps) {
   const { projectCode: paramProjectCode } = useParams<{
     projectCode?: string;
   }>();
@@ -18,22 +19,13 @@ export default function ProjectReportPage({
 
   if (!resolvedCode) return <div>Mangler prosjekt-ID</div>;
 
-  // 1) Try project by code
-  const {
-    data: project,
-    isLoading: isProjectLoading,
-    error: projectError,
-  } = GetProjectById(resolvedCode);
+  const { data: project, isLoading: isProjectLoading } =
+    GetProjectById(resolvedCode);
 
-  // 2) If no project, try absence by code
-  const {
-    data: absence,
-    isLoading: isAbsenceLoading,
-    error: absenceError,
-  } = GetAbsenceById(!project ? resolvedCode : undefined);
+  const { data: absence, isLoading: isAbsenceLoading } = GetAbsenceById(
+    !project ? resolvedCode : undefined,
+  );
   // ^ only run when project wasn't found (or implement with query enabled flag)
-
-  const isAbsenceMode = !project && !!absence;
 
   // 3) Pick the numeric id to use for hours
   const entityId = project?.id ?? absence?.id;
@@ -66,79 +58,7 @@ export default function ProjectReportPage({
   }
 
   return (
-    <div className="mx-auto max-w-7xl p-6">
-      <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-3xl font-bold text-gray-900">
-          {isAbsenceMode ? "Fraværsrapport" : "Prosjektrapport"} #{resolvedCode}
-          {" — "}
-          {isAbsenceMode ? absence?.name : project?.name}
-        </h1>
-
-        <Link
-          to="/admin/dashboard"
-          className="text-blue-600 hover:text-blue-700 font-medium"
-        >
-          ← Tilbake til oversikt
-        </Link>
-      </div>
-
-      {/* Header card (same layout) */}
-      <div className="mb-6 rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-          <div>
-            <div className="text-sm font-medium text-gray-500 mb-1">
-              {isAbsenceMode ? "Fraværsårsak" : "Prosjektnavn"}
-            </div>
-            <div className="text-lg font-semibold text-gray-900">
-              {isAbsenceMode ? absence?.name : project?.name}
-            </div>
-          </div>
-
-          <div>
-            <div className="text-sm font-medium text-gray-500 mb-1">
-              {isAbsenceMode ? "Type" : "Status"}
-            </div>
-            <span
-              className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-medium ${
-                isAbsenceMode
-                  ? "bg-red-100 text-red-800"
-                  : "bg-blue-100 text-blue-800"
-              }`}
-            >
-              {isAbsenceMode ? "Fravær" : (project?.status ?? "—")}
-            </span>
-          </div>
-
-          <div>
-            <div className="text-sm font-medium text-gray-500 mb-1">
-              Totalt loggført (denne visningen)
-            </div>
-            <div className="text-lg font-semibold text-gray-900">
-              {totals.total.toFixed(2)} t
-            </div>
-          </div>
-
-          {/* Only show project-specific fields when it's a project */}
-          {!isAbsenceMode && project?.description && (
-            <div className="sm:col-span-2">
-              <div className="text-sm font-medium text-gray-500 mb-1">
-                Beskrivelse
-              </div>
-              <div className="text-gray-700">{project.description}</div>
-            </div>
-          )}
-        </div>
-
-        {(projectError || absenceError) && (
-          <p className="mt-4 text-red-600">
-            {(projectError as any)?.message ??
-              (absenceError as any)?.message ??
-              "Kunne ikke laste"}
-          </p>
-        )}
-      </div>
-
-      {/* The rest of your tables stay IDENTICAL */}
+    <div className="mx-auto max-w-6xl p-6">
       <div className="mb-6 rounded-lg border border-gray-200 bg-white shadow-sm overflow-hidden">
         <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
           <h2 className="text-lg font-semibold text-gray-900">
@@ -286,11 +206,4 @@ export default function ProjectReportPage({
       </div>
     </div>
   );
-}
-
-function timeHM(iso: string) {
-  const d = new Date(iso);
-  const hh = String(d.getHours()).padStart(2, "0");
-  const mm = String(d.getMinutes()).padStart(2, "0");
-  return `${hh}:${mm}`;
 }
