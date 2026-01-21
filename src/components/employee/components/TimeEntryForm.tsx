@@ -146,7 +146,6 @@ export default function EmployeeAddEmployeeAddHourForm({
         message="Husk å fylle ut både starttid og sluttid for at
             timelisten skal bli riktig."
       />
-
       {/* Time and Break Inputs */}
       <div className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-3">
         <InputField

@@ -6,7 +6,6 @@ import FilterTabs from "../components/admin/FilterTabs";
 import SearchBar from "../components/admin/searchBar";
 import AddProjectAccordion from "../components/admin/AddProjectAccordion";
 import RegisterBtn from "../components/UI/buttons/RegisterAccountBtn";
-import InfoBanner from "../utils/InfoBanner";
 import {
   TAB_CONFIG,
   type ProjectTab,
@@ -16,6 +15,7 @@ import type { ProjectFormData } from "../types";
 import { GetAbsenceData } from "../api/absence";
 import AbsenceItem from "../components/projects/AbsenceItem";
 import ErrorMessage from "../components/UI/UX-messages/ErrorMessage";
+import AttentionMessage from "../components/UI/UX-messages/AttentionMessage";
 
 const initialFormData: ProjectFormData = {
   name: "",
@@ -52,7 +52,7 @@ export default function Dashboard() {
   return (
     <div className="p-4 max-w-4xl mx-auto">
       <h1 className="text-2xl font-bold">Adminstrator</h1>
-      <InfoBanner string="Her kan du opprette prosjekter og brukerkontoer for dine ansatte." />
+      <AttentionMessage message="Her kan du opprette prosjekter og brukerkontoer for dine ansatte." />
 
       <RefetchDataBtn refetch={refetch} isLoading={isLoading} />
       <RegisterBtn />
