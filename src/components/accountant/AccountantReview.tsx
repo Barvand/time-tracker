@@ -29,19 +29,19 @@ export default function AccountantHourReview({
   // Current month date (offset-based)
   const currentMonthDate = useMemo(
     () => getOffsetMonthDate(monthOffset),
-    [monthOffset]
+    [monthOffset],
   );
 
   // Get monthly user summary using unified helper
   const currentMonthData = useMemo(
     () => getMonthlyUserSummary(allHours, currentMonthDate, userMap),
-    [allHours, currentMonthDate, userMap]
+    [allHours, currentMonthDate, userMap],
   );
 
   // Calculate total using unified helper
   const monthTotal = useMemo(
     () => calculateTotalHours(currentMonthData),
-    [currentMonthData]
+    [currentMonthData],
   );
 
   const monthName = formatMonthName(currentMonthDate);
@@ -70,7 +70,7 @@ export default function AccountantHourReview({
   return (
     <div className="max-w-5xl mx-auto">
       <div className="mb-6">
-        <h2 className="text-2xl font-bold text-gray-900 mb-4">
+        <h2 className="text-2xl font-bold text-gray-800 mb-4">
           Månedsoversikt - Timer
         </h2>
 
