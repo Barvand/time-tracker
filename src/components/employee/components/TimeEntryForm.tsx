@@ -12,6 +12,7 @@ import SuccessMessage from "../../UI/UX-messages/SuccessMessage";
 import TimeEntrySubmitBtn from "../../UI/buttons/timeEntrySubmitBtn";
 import AttentionMessage from "../../UI/UX-messages/AttentionMessage";
 import PreviewSection from "../form/PreviewSection";
+import { Plus } from "lucide-react";
 
 export default function EmployeeAddEmployeeAddHourForm({
   projects,
@@ -32,6 +33,8 @@ export default function EmployeeAddEmployeeAddHourForm({
     breakMinutes: 0,
     note: "",
   });
+
+  const [hidden, setHidden] = useState(true);
 
   const { data: absence = [] } = GetAbsenceData();
 
@@ -102,16 +105,43 @@ export default function EmployeeAddEmployeeAddHourForm({
           projectsError={projectsError}
         />
       </div>
-      <div className="mb-6">
-        <AbsenceSelectInput
-          absenceId={formData.absenceId}
-          onChange={change}
-          absence={absence}
-          loading={projectsLoading}
-          error={projectsError}
-        />
-      </div>
 
+      <button
+        onClick={() => setHidden((prev) => !prev)}
+        className="
+    mb-4 group inline-flex items-center gap-2
+    text-sm font-medium text-green-800
+    px-2 py-1 rounded-md
+    transition-colors duration-200
+    hover:bg-green-50
+    focus:outline-none focus-visible:ring-2 focus-visible:ring-green-600
+  "
+        aria-expanded={!hidden}
+      >
+        <Plus
+          className={`
+      w-4 h-4
+      transition-transform duration-200 ease-out
+      ${hidden ? "rotate-0" : "rotate-45"}
+    `}
+        />
+
+        <span>{hidden ? "Registrer fravær" : "Skjul fravær"}</span>
+      </button>
+
+      {hidden ? null : (
+        <div className="w-full px-4 py-3 rounded transition">
+          <div className="mb-6">
+            <AbsenceSelectInput
+              absenceId={formData.absenceId}
+              onChange={change}
+              absence={absence}
+              loading={projectsLoading}
+              error={projectsError}
+            />
+          </div>
+        </div>
+      )}
       <AttentionMessage
         message="Husk å fylle ut både starttid og sluttid for at
             timelisten skal bli riktig."
