@@ -2,17 +2,16 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navigation from "./layout/Navigation";
 import Login from "./pages/Login";
-import ProjectDetails from "./components/ProjectDetailsPage/ProjectDetails";
 import EmployeeDashboard from "./pages/EmployeeDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import Register from "./pages/RegisterPage";
-import AdminReports from "./pages/AdminReports";
 import RequireRole from "./app/RequireRoleRoute";
 import RequireAuth from "./app/RequireAuth";
 import NotFoundPage from "./pages/404";
 import UnauthorizedPage from "./pages/unauthorized";
 import AccountantDashboard from "./pages/AccountantDashboard";
 import AbsenceReportPage from "./components/projects/ReportPerAbsence";
+import ProjectPage from "./pages/ProjectPage";
 
 function App() {
   return (
@@ -30,17 +29,12 @@ function App() {
             <Route path="/admin" element={<RequireRole roles={["admin"]} />}>
               <Route path="dashboard" element={<AdminDashboard />} />
               <Route path="register" element={<Register />} />
-              <Route
-                path="projects/:projectCode"
-                element={<ProjectDetails />}
-              />
+              <Route path="projects/:projectCode" element={<ProjectPage />} />
               <Route
                 path="absence/:absenceCode"
                 element={<AbsenceReportPage />}
               />
-              <Route path="dashboard/reports" element={<AdminReports />} />
             </Route>
-
             {/* Employee Routes */}
             <Route
               path="/employee"

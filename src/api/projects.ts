@@ -111,3 +111,8 @@ export function useCreateProject() {
     },
   });
 }
+
+export const fetchProjectImages = async (projectCode: string) => {
+  const res = await makeRequest.get(`/projects/${projectCode}/images`);
+  return res.data;
+};

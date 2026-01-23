@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import ProjectForm from "../admin/ProjectForm";
 import ConfirmModal from "../../utils/ConfirmModal";
-import HourlyProjectReportPage from "./HourDetailsProjectPage";
 import {
   GetProjectById,
   useUpdateProject,
@@ -169,7 +168,6 @@ const ProjectDetails: React.FC = () => {
           <SuccessMessage message={success} onClose={() => setSuccess("")} />
         )}
       </div>
-      <HourlyProjectReportPage projectCode={projectCode} />
     </>
   );
 };
