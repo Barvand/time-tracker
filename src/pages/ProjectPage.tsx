@@ -4,7 +4,9 @@ import ProjectDetails from "../components/ProjectDetailsPage/ProjectDetails";
 import ProjectImagesPage from "../components/ProjectDetailsPage/ProjectImagesPage";
 
 function ProjectPage() {
-  const [isActive, setisActive] = useState<string | null>(null);
+  const [isActive, setIsActive] = useState<string>(() => {
+    return localStorage.getItem("projectPageActiveTab") || "tab1";
+  });
 
   const tabs = [
     { id: "tab1", label: "Informasjon om prosjekt" },
@@ -23,7 +25,10 @@ function ProjectPage() {
         {tabs.map((tab) => (
           <button
             key={tab.id}
-            onClick={() => setisActive(tab.id)}
+            onClick={() => {
+              setIsActive(tab.id);
+              localStorage.setItem("projectPageActiveTab", tab.id);
+            }}
             className={`px-4 py-2 ${
               isActive === tab.id
                 ? "bg-[#2c3e50] font-bold text-white"

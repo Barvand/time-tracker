@@ -74,7 +74,7 @@ export default function ImageInput({ projectCode }: { projectCode: string }) {
         <input
           ref={inputRef}
           type="file"
-          accept="images/*"
+          accept="image/*"
           multiple
           className="hidden"
           onChange={(e) => {
