@@ -76,7 +76,7 @@ function ProjectDetailsCard({
       {/* Description */}
       <div className="mt-6 max-w-3xl">
         <p className="text-xs text-gray-500 mb-1">Beskrivelse</p>
-        <p className="text-sm text-gray-800">
+        <p className="text-sm text-gray-800 whitespace-pre-line">
           {project.description || "Ingen beskrivelse"}
         </p>
       </div>
