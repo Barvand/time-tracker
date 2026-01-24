@@ -7,7 +7,6 @@ function ProjectImagesPage() {
 
   return (
     <div>
-      {" "}
       <ImageInput projectCode={projectCode} />
       <ProjectImages projectCode={projectCode} />
     </div>

@@ -34,8 +34,9 @@ function ImageInput({ projectCode }: { projectCode: string }) {
 
   return (
     <div className="flex items-center gap-3">
+      <div className="border py-2 ">
       <input type="file" accept="image/*" onChange={handleFileSelect} />
-
+</div>
       <button
         onClick={handleUpload}
         disabled={!file || mutation.isPending}

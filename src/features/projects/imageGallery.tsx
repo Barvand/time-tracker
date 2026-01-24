@@ -15,27 +15,17 @@ type GalleryImage = {
 const ImageGallery = ({ images }: { images: GalleryImage[] }) => {
   const [open, setOpen] = useState(false);
   const [index, setIndex] = useState(0);
-  const [heroLoaded, setHeroLoaded] = useState(false);
-  const [loadedThumbs, setLoadedThumbs] = useState<boolean[]>([]);
+  const [loaded, setLoaded] = useState<boolean[]>([]);
 
-  // Sync thumbnails when images change
   useEffect(() => {
-    setLoadedThumbs(Array(Math.max(images.length - 1, 0)).fill(false));
+    setLoaded(Array(images.length).fill(false));
   }, [images]);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (open) setOpen(false);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [open]);
-
-  const handleThumbLoad = (idx: number) => {
-    setLoadedThumbs((prev) => {
-      const updated = [...prev];
-      updated[idx] = true;
-      return updated;
+  const handleLoad = (idx: number) => {
+    setLoaded((prev) => {
+      const next = [...prev];
+      next[idx] = true;
+      return next;
     });
   };
 
@@ -45,67 +35,43 @@ const ImageGallery = ({ images }: { images: GalleryImage[] }) => {
 
   return (
     <div className="container mx-auto py-6 px-4">
-      {/* Hero image */}
-      <div className="relative mb-4 aspect-[16/10] bg-gray-200 rounded-lg overflow-hidden">
-        {!heroLoaded && (
-          <div className="absolute inset-0 animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 z-10" />
-        )}
+      {/* Image grid */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+        {images.map((image, idx) => (
+          <div
+            key={idx}
+            className="relative aspect-[4/3] bg-gray-200 rounded-lg overflow-hidden cursor-pointer"
+            onClick={() => {
+              setIndex(idx);
+              setOpen(true);
+            }}
+          >
+            {!loaded[idx] && (
+              <div className="absolute inset-0 animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 z-10" />
+            )}
 
-        <img
-          src={images[0].url}
-          alt={images[0].alt || "Project image"}
-          className={`w-full h-full object-cover cursor-pointer transition-opacity duration-300 ${
-            heroLoaded ? "opacity-100" : "opacity-0"
-          }`}
-          onLoad={() => setHeroLoaded(true)}
-          onClick={() => {
-            setIndex(0);
-            setOpen(true);
-          }}
-        />
-      </div>
-
-      {/* Thumbnails */}
-      {images.length > 1 && (
-        <div className="relative overflow-x-auto whitespace-nowrap scrollbar-custom">
-          <div className="flex gap-2">
-            {images.slice(1).map((image, idx) => (
-              <div
-                key={idx}
-                className="relative flex-shrink-0 w-32 h-24 rounded-md bg-gray-200 overflow-hidden"
-              >
-                {!loadedThumbs[idx] && (
-                  <div className="absolute inset-0 animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 z-10" />
-                )}
-
-                <img
-                  src={image.url}
-                  alt={image.alt || "Project image"}
-                  className={`w-full h-full object-cover cursor-pointer transition-opacity duration-300 ${
-                    loadedThumbs[idx] ? "opacity-100" : "opacity-0"
-                  }`}
-                  onLoad={() => handleThumbLoad(idx)}
-                  onClick={() => {
-                    setIndex(idx + 1);
-                    setOpen(true);
-                  }}
-                />
-              </div>
-            ))}
+            <img
+              src={image.url}
+              alt={image.alt || "Gallery image"}
+              className={`w-full h-full object-cover transition-opacity duration-300 ${
+                loaded[idx] ? "opacity-100" : "opacity-0"
+              }`}
+              onLoad={() => handleLoad(idx)}
+            />
           </div>
-        </div>
-      )}
+        ))}
+      </div>
 
       {/* Lightbox */}
       {open && (
         <Lightbox
           open={open}
           close={() => setOpen(false)}
+          index={index}
           slides={images.map((img) => ({
             src: img.url,
             alt: img.alt,
           }))}
-          index={index}
           on={{ view: ({ index }) => setIndex(index) }}
           plugins={[Thumbnails, Zoom]}
           render={{
