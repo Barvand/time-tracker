@@ -19,7 +19,7 @@ function ProjectPage() {
   };
   return (
     <div>
-      <div className="flex items-center gap-5 border-b-5 border-[#2c3e50]">
+      <div className="flex justify-start gap-5 border-b-5 border-[#2c3e50] max-w-6xl mx-auto">
         {tabs.map((tab) => (
           <button
             key={tab.id}

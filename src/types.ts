@@ -63,3 +63,9 @@ export type EmployeeAddHourFormProps = {
   resetMessages: () => void;
   onSubmit: (v: EmployeeAddHourFormValues) => void | Promise<void>;
 };
+
+export type GalleryImage = {
+  id: number;
+  url: string;
+  alt?: string;
+};

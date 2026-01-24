@@ -28,8 +28,7 @@ const ProjectItem: React.FC<{ project: Project }> = ({ project }) => {
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-2">
               <h3 className="text-lg font-semibold text-gray-900 hover:text-blue-600 transition-colors">
-                {project.projectCode} -{" "}
-                {project.name}
+                {project.projectCode} - {project.name}
               </h3>
               <span
                 className={`text-sm font-medium px-2 py-1 rounded-full ${STATUS_COLOR[status]}`}
@@ -37,12 +36,6 @@ const ProjectItem: React.FC<{ project: Project }> = ({ project }) => {
                 {STATUS_LABEL[status]}
               </span>
             </div>
-
-            {project.description && (
-              <p className="text-sm text-gray-600 mb-2 line-clamp-2">
-                {project.description}
-              </p>
-            )}
           </div>
 
           <div className="ml-4 flex-shrink-0">

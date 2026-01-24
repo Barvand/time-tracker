@@ -1,12 +1,7 @@
 import ImageGallery from "./imageGallery";
 import { fetchProjectImages } from "../../api/projects";
 import { useQuery } from "@tanstack/react-query";
-
-type GalleryImage = {
-  id: string; 
-  url: string;
-  alt?: string;
-};
+import type { GalleryImage } from "../../types";
 
 export default function ProjectImages({
   projectCode,

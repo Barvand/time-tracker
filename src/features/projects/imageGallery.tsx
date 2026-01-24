@@ -1,19 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Lightbox from "yet-another-react-lightbox";
 import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteProjectImage } from "../../api/upload";
 import ConfirmModal from "../../utils/ConfirmModal";
-
+import type { GalleryImage } from "../../types";
 import "yet-another-react-lightbox/styles.css";
 import "yet-another-react-lightbox/plugins/thumbnails.css";
-
-type GalleryImage = {
-  id: number;
-  url: string;
-  alt?: string;
-};
 
 export default function ImageGallery({
   images,
@@ -31,22 +25,21 @@ export default function ImageGallery({
   const queryClient = useQueryClient();
 
   const deleteMutation = useMutation({
-  mutationFn: deleteProjectImage,
-  onSuccess: () => {
-    queryClient.invalidateQueries({
-      queryKey: ["project-images", projectCode],
-    });
-    setOpen(false);
-  },
-});
-
+    mutationFn: deleteProjectImage,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["project-images", projectCode],
+      });
+      setOpen(false);
+    },
+  });
 
   const handleLoad = (id: number) => {
-  setLoaded((prev) => ({
-    ...prev,
-    [id]: true,
-  }));
-};
+    setLoaded((prev) => ({
+      ...prev,
+      [id]: true,
+    }));
+  };
 
   if (!images || images.length === 0) {
     return <p className="text-gray-400">No images available.</p>;
@@ -65,19 +58,18 @@ export default function ImageGallery({
               setOpen(true);
             }}
           >
-           {!loaded[image.id] && (
-  <div className="absolute inset-0 animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 z-10" />
-)}
+            {!loaded[image.id] && (
+              <div className="absolute inset-0 animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 z-10" />
+            )}
 
-<img
-  src={image.url}
-  alt={image.alt || "Gallery image"}
-  className={`w-full h-full object-cover transition-opacity duration-300 ${
-    loaded[image.id] ? "opacity-100" : "opacity-0"
-  }`}
-  onLoad={() => handleLoad(image.id)}
-/>
-
+            <img
+              src={image.url}
+              alt={image.alt || "Gallery image"}
+              className={`w-full h-full object-cover transition-opacity duration-300 ${
+                loaded[image.id] ? "opacity-100" : "opacity-50"
+              }`}
+              onLoad={() => handleLoad(image.id)}
+            />
 
             {/* ❌ Delete button */}
             <button
@@ -89,14 +81,14 @@ export default function ImageGallery({
                 setConfirmOpen(true);
               }}
               className="
-                absolute top-2 right-2 z-20
-                w-8 h-8 rounded-full
-                bg-black/70 text-red-500
-                flex items-center justify-center
-                opacity-0 group-hover:opacity-100
-                transition
-                hover:bg-red-600 hover:text-white
-              "
+    absolute top-2 right-2 z-20 cursor-pointer
+    w-8 h-8 rounded-full
+    bg-black/70 text-red-500
+    flex items-center justify-center
+    transition
+    hover:bg-red-600 hover:text-white
+  "
+              title="Delete image"
             >
               ✕
             </button>

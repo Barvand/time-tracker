@@ -6,7 +6,7 @@ function ProjectImagesPage() {
   const { projectCode } = useParams<{ projectCode: any }>();
 
   return (
-    <div>
+    <div className="max-w-6xl mx-auto">
       <ImageInput projectCode={projectCode} />
       <ProjectImages projectCode={projectCode} />
     </div>
