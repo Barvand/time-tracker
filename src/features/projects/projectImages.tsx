@@ -3,6 +3,7 @@ import { fetchProjectImages } from "../../api/projects";
 import { useQuery } from "@tanstack/react-query";
 
 type GalleryImage = {
+  id: string; 
   url: string;
   alt?: string;
 };
@@ -26,9 +27,10 @@ export default function ProjectImages({
   }
 
   const images: GalleryImage[] = data.map((img: any) => ({
+    id: img.id,
     url: img.url,
     alt: img.filename,
   }));
 
-  return <ImageGallery images={images} />;
+  return <ImageGallery images={images} projectCode={projectCode} />;
 }
