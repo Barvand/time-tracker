@@ -111,6 +111,15 @@ const ProjectForm: React.FC<Props> = ({
           />
         </div>
       </div>
+
+      <div className="pt-4 flex justify-end">
+        <button
+          type="submit"
+          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 cursor-pointer transition-colors duration-200 font-medium uppercase tracking-wide"
+        >
+          {isEdit ? "OPPDATER" : "SUBMIT"}
+        </button>
+      </div>
     </form>
   );
 };

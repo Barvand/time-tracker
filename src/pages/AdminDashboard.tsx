@@ -43,8 +43,6 @@ export default function Dashboard() {
     if (createMutation.isSuccess) {
       setFormData(initialFormData);
       setShowAddProject(false);
-
-      // Prevent "sticky success" from retriggering on next renders
       createMutation.reset();
     }
   }, [createMutation.isSuccess, createMutation]);
@@ -53,15 +51,15 @@ export default function Dashboard() {
     <div className="p-4 max-w-4xl mx-auto">
       <h1 className="text-2xl font-bold text-gray-800 mb-4">Adminstrator</h1>
       <AttentionMessage message="Her kan du opprette prosjekter og brukerkontoer for dine ansatte." />
-
-      <RefetchDataBtn refetch={refetch} isLoading={isLoading} />
       <RegisterBtn />
-      <button
-        onClick={() => setShowAddProject(true)}
-        className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 mb-2"
-      >
-        + Nytt prosjekt
-      </button>
+      <div className="flex justify-end">
+        <button
+          onClick={() => setShowAddProject(true)}
+          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 mb-2"
+        >
+          + Nytt prosjekt
+        </button>
+      </div>
       <SearchBar search={search} setSearch={setSearch} />
 
       <FilterTabs
