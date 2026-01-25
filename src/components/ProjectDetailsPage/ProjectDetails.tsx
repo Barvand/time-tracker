@@ -12,11 +12,12 @@ import ProjectDetailsCard from "./ProjectDetailsCard";
 import SuccessMessage from "../UI/UX-messages/SuccessMessage";
 import Modal from "../UI/modal/modal";
 import type { ProjectFormData } from "../../types";
+import { useQueryClient } from "@tanstack/react-query";
 
 const ProjectDetails: React.FC = () => {
   const { projectCode } = useParams<{ projectCode: string }>();
   const navigate = useNavigate();
-
+  const queryClient = useQueryClient();
   // load the project
   const { data: project, isLoading, error } = GetProjectById(projectCode);
   // mutations
@@ -73,6 +74,7 @@ const ProjectDetails: React.FC = () => {
 
     setSuccess("Prosjekt oppdatert.");
     setShowEditModal(false);
+    queryClient.invalidateQueries({ queryKey: ["project"] });
   };
 
   const handleDelete = async () => {
