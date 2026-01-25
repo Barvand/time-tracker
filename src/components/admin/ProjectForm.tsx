@@ -2,26 +2,29 @@ import type { ProjectFormData } from "../../types";
 import React from "react";
 interface Props {
   formData: ProjectFormData;
+
   onChange: (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
     >,
   ) => void;
-  onSubmit: (e: React.FormEvent) => void;
-  isEdit?: boolean;
+
+  onSubmit?: (e: React.FormEvent) => void;
+
+  children?: React.ReactNode; // 👈 ADD THIS
 }
 
 const ProjectForm: React.FC<Props> = ({
   formData,
   onChange,
   onSubmit,
-  isEdit,
+  children,
 }) => {
   return (
     <form onSubmit={onSubmit} className="space-y-4 p-4 mb-6">
       <div className="mb-4">
         <h3 className="text-lg font-bold mb-4">
-          {isEdit ? "REDIGER PROSJEKT" : "NYTT PROSJEKT"}
+          {children ? "REDIGER PROSJEKT" : "NYTT PROSJEKT"}
         </h3>
       </div>
 
@@ -103,9 +106,9 @@ const ProjectForm: React.FC<Props> = ({
             Ferdigstilt
           </label>
           <input
-            name="completionDate"
+            name="endDate"
             type="date"
-            value={formData.completionDate || ""}
+            value={formData.endDate || ""}
             onChange={onChange}
             className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           />
@@ -117,7 +120,7 @@ const ProjectForm: React.FC<Props> = ({
           type="submit"
           className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 cursor-pointer transition-colors duration-200 font-medium uppercase tracking-wide"
         >
-          {isEdit ? "OPPDATER" : "SUBMIT"}
+          {children ? "OPPDATER" : "SUBMIT"}
         </button>
       </div>
     </form>

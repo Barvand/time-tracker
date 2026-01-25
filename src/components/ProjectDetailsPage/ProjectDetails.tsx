@@ -64,7 +64,7 @@ const ProjectDetails: React.FC = () => {
       data: {
         name: editFormData?.name,
         description: editFormData?.description || null,
-        status: editFormData?.status || null,
+        status: editFormData?.status,
         startDate: editFormData?.startDate || null,
         endDate: editFormData?.endDate || null,
         projectCode: editFormData?.projectCode || null,
@@ -158,7 +158,7 @@ const ProjectDetails: React.FC = () => {
 
                 <button
                   type="submit"
-                  disabled={updateProject.isLoading}
+                  disabled={updateProject.isPending}
                   className="
         px-4 py-2
         bg-blue-600
@@ -169,7 +169,7 @@ const ProjectDetails: React.FC = () => {
         disabled:cursor-not-allowed
       "
                 >
-                  {updateProject.isLoading ? "Lagrer..." : "Lagre"}
+                  {updateProject.isPending ? "Lagrer..." : "Lagre"}
                 </button>
               </div>
             </ProjectForm>

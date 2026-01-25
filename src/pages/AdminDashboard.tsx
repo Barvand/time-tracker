@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import ProjectItem from "../components/projects/ProjectItem";
 import { useCreateProject, GetProjects } from "../api/projects";
-import RefetchDataBtn from "../components/admin/refetchDataBtn";
 import FilterTabs from "../components/admin/FilterTabs";
 import SearchBar from "../components/admin/searchBar";
 
@@ -23,7 +22,7 @@ const initialFormData: ProjectFormData = {
   description: "",
   status: "active",
   startDate: "",
-  completionDate: "",
+  endDate: "",
   projectCode: "",
 };
 
@@ -32,7 +31,7 @@ export default function Dashboard() {
   const [search, setSearch] = useState("");
   const [showAddProject, setShowAddProject] = useState(false);
   const [mode, setMode] = useState<"projects" | "absence">("projects");
-  const { data: projects = [], isLoading, error, refetch } = GetProjects();
+  const { data: projects = [], isLoading, error } = GetProjects();
   const { data: absence = [] } = GetAbsenceData();
   const displayedProjects = filterProjects(projects, activeTab, search);
   const [formData, setFormData] = useState<ProjectFormData>(initialFormData);

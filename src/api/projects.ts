@@ -71,21 +71,15 @@ export function useCreateProject() {
 
   return useMutation({
     mutationFn: async (payload: ProjectFormData) => {
-      const {
-        name,
-        description,
-        status,
-        startDate,
-        completionDate,
-        projectCode,
-      } = payload;
+      const { name, description, status, startDate, endDate, projectCode } =
+        payload;
 
       const { data: created } = await makeRequest.post("/projects", {
         name,
         description,
         status,
         startDate: startDate || null,
-        endDate: completionDate || null,
+        endDate: endDate || null,
         projectCode,
       });
 

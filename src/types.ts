@@ -28,7 +28,7 @@ export type ProjectFormData = {
   description: string;
   status: ProjectStatus;
   startDate: string;
-  completionDate: string;
+  endDate: string;
   projectCode: string;
 };
 
