@@ -2,6 +2,7 @@ import { useState } from "react";
 import Lightbox from "yet-another-react-lightbox";
 import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
+import Download from "yet-another-react-lightbox/plugins/download";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteProjectImage } from "../../api/upload";
 import ConfirmModal from "../../utils/ConfirmModal";
@@ -124,7 +125,7 @@ export default function ImageGallery({
             alt: img.alt,
           }))}
           on={{ view: ({ index }) => setIndex(index) }}
-          plugins={[Thumbnails, Zoom]}
+          plugins={[Thumbnails, Zoom, Download]}
         />
       )}
     </div>
