@@ -19,6 +19,9 @@ export default function EmployeeDashboard() {
   const monday = new Date(now);
   const day = (now.getDay() + 6) % 7;
   monday.setDate(now.getDate() - day + weekOffset * 7);
+  const errorMessage =
+    (createHour.error as AxiosError<any>)?.response?.data?.message ??
+    "Kunne ikke registrere timer.";
 
   const handleSubmit = async (v: EmployeeAddHourFormValues) => {
     if (!userId) {
@@ -53,7 +56,7 @@ export default function EmployeeDashboard() {
             successMsg={
               createHour.isSuccess ? "Hours logged successfully!" : null
             }
-            errorMsg={(createHour.error as any)?.message ?? null}
+            errorMsg={errorMessage}
             resetMessages={createHour.reset}
             onSubmit={handleSubmit}
           />

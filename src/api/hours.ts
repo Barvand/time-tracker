@@ -114,5 +114,3 @@ export function useDeleteHour(userIdForCache?: string | number) {
     },
   });
 }
-
-
