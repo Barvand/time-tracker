@@ -1,27 +1,32 @@
 import React from "react";
 import type { UseMutationResult } from "@tanstack/react-query";
-import ProjectForm from "./ProjectForm";
 import type { AxiosError } from "axios";
-import type { ProjectFormData } from "../../types";
+
+import ProjectForm from "./ProjectForm";
+import Modal from "../UI/modal/modal";
 import ErrorMessage from "../UI/UX-messages/ErrorMessage";
 import SuccessMessage from "../UI/UX-messages/SuccessMessage";
+import type { ProjectFormData } from "../../types";
 
-interface AddProjectAccordionProps {
-  showAddProject: boolean;
-  setShowAddProject: React.Dispatch<React.SetStateAction<boolean>>;
+interface AddProjectModalProps {
+  open: boolean;
+  onClose: () => void;
+
   formData: ProjectFormData;
   setFormData: React.Dispatch<React.SetStateAction<ProjectFormData>>;
-  // created project type can be widened if you have a Project type available
+
   createMutation: UseMutationResult<any, unknown, ProjectFormData, unknown>;
 }
 
-const AddProjectAccordion: React.FC<AddProjectAccordionProps> = ({
-  showAddProject,
-  setShowAddProject,
+const AddProjectModal: React.FC<AddProjectModalProps> = ({
+  open,
+  onClose,
   formData,
   setFormData,
   createMutation,
 }) => {
+  if (!open) return null;
+
   const apiErrorMessage =
     (createMutation.error as AxiosError<any>)?.response?.data?.message ??
     (createMutation.error as AxiosError<any>)?.response?.data?.errors?.[0]
@@ -29,67 +34,71 @@ const AddProjectAccordion: React.FC<AddProjectAccordionProps> = ({
     "Kunne ikke opprette prosjekt.";
 
   return (
-    <div className="mb-6">
-      <button
-        onClick={() => setShowAddProject((prev) => !prev)}
-        className="w-full text-left flex justify-between items-center bg-gray-100 px-4 py-3 rounded hover:bg-gray-200 transition"
-      >
-        <span className="text-xl font-semibold">Legg til nytt prosjekt</span>
-        <svg
-          className={`w-5 h-5 transform transition-transform duration-300 ${
-            showAddProject ? "rotate-180" : ""
-          }`}
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M19 9l-7 7-7-7"
-          />
-        </svg>
-      </button>
+    <Modal title="Nytt prosjekt" onClose={onClose}>
+      <ProjectForm
+        formData={formData}
+        onChange={(
+          e: React.ChangeEvent<
+            HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+          >,
+        ) => {
+          const { name, value } = e.target;
 
-      <div
-        className={`transition-all duration-300 ease-in-out overflow-hidden ${
-          showAddProject ? "max-h-[1000px] mt-4" : "max-h-0"
-        }`}
-      >
-        <div className="p-4 bg-gray-50 rounded border">
-          <ProjectForm
-            formData={formData}
-            onChange={(
-              e: React.ChangeEvent<
-                HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-              >,
-            ) => {
-              const { name, value } = e.target;
-              setFormData((prev) => ({ ...prev, [name]: value }));
-            }}
-            onSubmit={(e: React.FormEvent) => {
-              e.preventDefault();
-              if (!formData.name.trim()) return;
-              createMutation.mutate(formData);
-            }}
+          setFormData((prev) => ({
+            ...prev,
+            [name]: value,
+          }));
+        }}
+        onSubmit={(e: React.FormEvent) => {
+          e.preventDefault();
+
+          if (!formData.name.trim()) return;
+
+          createMutation.mutate(formData, {
+            onSuccess: () => {
+              setTimeout(() => {
+                onClose();
+              }, 800);
+            },
+          });
+        }}
+      />
+
+      {/* Messages */}
+      <div className="mt-3">
+        {createMutation.isError && (
+          <ErrorMessage
+            message={apiErrorMessage}
+            onClose={createMutation.reset}
           />
-          {createMutation.isError && (
-            <ErrorMessage
-              message={apiErrorMessage}
-              onClose={createMutation.reset}
-            />
-          )}{" "}
-          {createMutation.isSuccess && (
-            <SuccessMessage
-              message="Prosjektet ble opprettet!"
-              onClose={createMutation.reset}
-            />
-          )}
-        </div>
+        )}
+
+        {createMutation.isSuccess && (
+          <SuccessMessage
+            message="Prosjektet ble opprettet!"
+            onClose={createMutation.reset}
+          />
+        )}
       </div>
-    </div>
+
+      {/* Footer */}
+      <div className="flex justify-end gap-3 mt-6">
+        <button
+          onClick={onClose}
+          className="px-4 py-2 border rounded hover:bg-gray-50"
+        >
+          Avbryt
+        </button>
+
+        <button
+          onClick={() => createMutation.mutate(formData)}
+          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+        >
+          Lagre
+        </button>
+      </div>
+    </Modal>
   );
 };
 
-export default AddProjectAccordion;
+export default AddProjectModal;

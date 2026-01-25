@@ -4,7 +4,7 @@ import { useCreateProject, GetProjects } from "../api/projects";
 import RefetchDataBtn from "../components/admin/refetchDataBtn";
 import FilterTabs from "../components/admin/FilterTabs";
 import SearchBar from "../components/admin/searchBar";
-import AddProjectAccordion from "../components/admin/AddProjectAccordion";
+
 import RegisterBtn from "../components/UI/buttons/RegisterAccountBtn";
 import {
   TAB_CONFIG,
@@ -16,11 +16,12 @@ import { GetAbsenceData } from "../api/absence";
 import AbsenceItem from "../components/projects/AbsenceItem";
 import ErrorMessage from "../components/UI/UX-messages/ErrorMessage";
 import AttentionMessage from "../components/UI/UX-messages/AttentionMessage";
+import AddProjectModal from "../components/admin/AddProjectAccordion";
 
 const initialFormData: ProjectFormData = {
   name: "",
   description: "",
-  status: "inactive",
+  status: "active",
   startDate: "",
   completionDate: "",
   projectCode: "",
@@ -35,7 +36,6 @@ export default function Dashboard() {
   const { data: absence = [] } = GetAbsenceData();
   const displayedProjects = filterProjects(projects, activeTab, search);
   const [formData, setFormData] = useState<ProjectFormData>(initialFormData);
-
   const createMutation = useCreateProject();
 
   // ✅ Reset form + close accordion after successful create
@@ -56,6 +56,12 @@ export default function Dashboard() {
 
       <RefetchDataBtn refetch={refetch} isLoading={isLoading} />
       <RegisterBtn />
+      <button
+        onClick={() => setShowAddProject(true)}
+        className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 mb-2"
+      >
+        + Nytt prosjekt
+      </button>
       <SearchBar search={search} setSearch={setSearch} />
 
       <FilterTabs
@@ -68,11 +74,11 @@ export default function Dashboard() {
         TAB_CONFIG={TAB_CONFIG}
       />
 
-      <AddProjectAccordion
-        showAddProject={showAddProject}
-        setShowAddProject={setShowAddProject}
-        setFormData={setFormData}
+      <AddProjectModal
+        open={showAddProject}
+        onClose={() => setShowAddProject(false)}
         formData={formData}
+        setFormData={setFormData}
         createMutation={createMutation}
       />
 

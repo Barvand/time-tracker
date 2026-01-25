@@ -18,7 +18,7 @@ const ProjectForm: React.FC<Props> = ({
   isEdit,
 }) => {
   return (
-    <form onSubmit={onSubmit} className="space-y-4 bg-gray-50 p-4 mb-6">
+    <form onSubmit={onSubmit} className="space-y-4 p-4 mb-6">
       <div className="mb-4">
         <h3 className="text-lg font-bold mb-4">
           {isEdit ? "REDIGER PROSJEKT" : "NYTT PROSJEKT"}
@@ -27,13 +27,13 @@ const ProjectForm: React.FC<Props> = ({
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
-          Project nr: *
+          Prosjektnummer: *
         </label>
         <input
           name="projectCode"
           value={formData.projectCode}
           onChange={onChange}
-          placeholder="Project Nr"
+          placeholder="Prosjektnummer"
           required
           className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
         />
@@ -110,15 +110,6 @@ const ProjectForm: React.FC<Props> = ({
             className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           />
         </div>
-      </div>
-
-      <div className="pt-4 flex justify-end">
-        <button
-          type="submit"
-          className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded cursor-pointer transition-colors duration-200 font-medium uppercase tracking-wide"
-        >
-          {isEdit ? "OPPDATER" : "SUBMIT"}
-        </button>
       </div>
     </form>
   );
