@@ -56,8 +56,6 @@ export default function HourReview({
     return map;
   }, [absenceData]);
 
-  console.log("test ", absenceMap);
-
   // Weekly summary data
   const weeklySummary = useMemo(
     () => getWeeklySummary(rows, weekOffset),
@@ -143,7 +141,6 @@ export default function HourReview({
         <div className="space-y-3 mb-6">
           {sortedDates.map((dateKey) => {
             const daylogs = groupedByDate[dateKey];
-            console.log("Rendering date:", dateKey, daylogs);
             const isExpanded = expandedDays.has(dateKey);
             const dayTotal = daylogs.reduce(
               (sum, row) => sum + (Number(row.hoursWorked) || 0),
@@ -194,7 +191,6 @@ export default function HourReview({
                         projectMap[row.projectsId] || "Unknown Project";
                       const absenceName =
                         absenceMap[Number(row.absenceId)] || "Unknown Absence";
-                      console.log("test ", absenceMap);
                       return editingId === row.idHours ? (
                         <EditingHours
                           key={row.idHours}

@@ -29,7 +29,6 @@ export async function fetchProjectHours(projectId: string | number) {
   const { data } = await makeRequest.get(
     `/reports/projects/${projectId}/hours`,
   );
-  console.log(`this is the data:`, data);
   return data as ProjectHourRow[];
 }
 

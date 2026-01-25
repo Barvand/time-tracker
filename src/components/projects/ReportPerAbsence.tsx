@@ -21,10 +21,6 @@ export default function AbsenceReportPage() {
   const rows = rowsQ.data ?? [];
   const byUser = byUserQ.data ?? [];
 
-  console.log(byUser);
-
-  console.log("test " + rowsQ.data);
-
   const totals = useMemo(
     () => ({ total: rows.reduce((s, r) => s + Number(r.hoursWorked ?? 0), 0) }),
     [rows],
