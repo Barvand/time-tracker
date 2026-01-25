@@ -1,47 +1,82 @@
 import ReportPerProject from "../components/ProjectDetailsPage/HourDetailsProjectPage";
-import { useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import ProjectDetails from "../components/ProjectDetailsPage/ProjectDetails";
 import ProjectImagesPage from "../components/ProjectDetailsPage/ProjectImagesPage";
+import { useAuth } from "../features/auth/useAuth";
 
 function ProjectPage() {
-  const [isActive, setIsActive] = useState<string>(() => {
-    return localStorage.getItem("projectPageActiveTab") || "tab1";
+  const { user } = useAuth();
+
+  const [activeTab, setActiveTab] = useState<string>(() => {
+    return localStorage.getItem("projectPageActiveTab") || "info";
   });
 
-  const tabs = [
-    { id: "tab1", label: "Informasjon om prosjekt" },
-    { id: "tab2", label: "Rapport per ansatt" },
-    { id: "tab3", label: "Bilder av prosjekt" },
-  ];
+  const tabs = useMemo(
+    () => [
+      {
+        key: "info",
+        label: "Informasjon om prosjekt",
+        component: <ProjectDetails />,
+      },
 
-  const tabContent = {
-    tab1: <ProjectDetails />,
-    tab2: <ReportPerProject />,
-    tab3: <ProjectImagesPage />,
-  };
+      ...(user?.role === "admin"
+        ? [
+            {
+              key: "report",
+              label: "Rapport per ansatt",
+              component: <ReportPerProject />,
+            },
+          ]
+        : []),
+
+      {
+        key: "images",
+        label: "Bilder av prosjekt",
+        component: <ProjectImagesPage />,
+      },
+    ],
+    [user?.role],
+  );
+
+  // Ensure active tab is valid (important if role changes)
+  useEffect(() => {
+    const exists = tabs.find((tab) => tab.key === activeTab);
+
+    if (!exists) {
+      setActiveTab("info");
+    }
+  }, [tabs, activeTab]);
+
+  // Save active tab
+  useEffect(() => {
+    localStorage.setItem("projectPageActiveTab", activeTab);
+  }, [activeTab]);
+
+  const activeComponent = tabs.find((tab) => tab.key === activeTab)?.component;
+
   return (
     <div>
-      <div className="flex justify-start gap-5 border-b-5 border-[#2c3e50] max-w-6xl mx-auto">
-        {tabs.map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => {
-              setIsActive(tab.id);
-              localStorage.setItem("projectPageActiveTab", tab.id);
-            }}
-            className={`px-4 py-2 ${
-              isActive === tab.id
-                ? "bg-[#2c3e50] font-bold text-white"
-                : "bg-gray-200"
-            }`}
-          >
-            {tab.label}
-          </button>
-        ))}
+      {/* Tabs */}
+      <div className="flex justify-start gap-5 border-[#2c3e50] max-w-6xl mx-auto">
+        <div className="tabs flex gap-3">
+          {tabs.map((tab) => (
+            <button
+              key={tab.key}
+              onClick={() => setActiveTab(tab.key)}
+              className={`px-4 py-2 ${
+                activeTab === tab.key
+                  ? "border-b-4 border-[#2c3e50]font-semibold bg-gray-50 font-semibold"
+                  : "text-gray-600"
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
       </div>
-      <div className="mt-4">
-        {tabContent[isActive as keyof typeof tabContent] || tabContent.tab1}
-      </div>
+
+      {/* Content */}
+      <div className="mt-4 max-w-6xl mx-auto">{activeComponent}</div>
     </div>
   );
 }

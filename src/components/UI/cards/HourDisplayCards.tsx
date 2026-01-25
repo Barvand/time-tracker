@@ -1,3 +1,4 @@
+import { Link } from "react-router";
 import type { HourRow } from "../../../api/hours";
 import { hhmm } from "../../../utils/utils";
 
@@ -22,9 +23,12 @@ export function HourDisplayCards({
           {row.absenceId ? (
             <span className="text-red-600">{absenceName}</span>
           ) : (
-            <span className="text-blue-900 font-semibold">
+            <Link
+              to={`/project/${projectCode}`}
+              className="text-blue-900 font-semibold"
+            >
               {projectCode} - {projectName}
-            </span>
+            </Link>
           )}
         </div>
 

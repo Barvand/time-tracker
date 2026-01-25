@@ -29,7 +29,6 @@ function App() {
             <Route path="/admin" element={<RequireRole roles={["admin"]} />}>
               <Route path="dashboard" element={<AdminDashboard />} />
               <Route path="register" element={<Register />} />
-              <Route path="projects/:projectCode" element={<ProjectPage />} />
               <Route
                 path="absence/:absenceCode"
                 element={<AbsenceReportPage />}
@@ -43,6 +42,12 @@ function App() {
               <Route path="dashboard" element={<EmployeeDashboard />} />
             </Route>
 
+            <Route
+              path="/project"
+              element={<RequireRole roles={["employee", "admin"]} />}
+            >
+              <Route path=":projectCode" element={<ProjectPage />} />
+            </Route>
             {/* Accountant Routes */}
             <Route
               path="/accountant"

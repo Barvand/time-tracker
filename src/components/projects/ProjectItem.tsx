@@ -23,7 +23,7 @@ const ProjectItem: React.FC<{ project: Project }> = ({ project }) => {
 
   return (
     <li className="bg-white p-4 rounded border shadow-sm hover:shadow-md transition-shadow">
-      <Link to={`/admin/projects/${project.projectCode}`} className="block">
+      <Link to={`/project/${project.projectCode}`} className="block">
         <div className="flex justify-between items-start">
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-2">
