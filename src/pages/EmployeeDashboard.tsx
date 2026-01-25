@@ -7,6 +7,7 @@ import type { EmployeeAddHourFormValues } from "../types";
 import HourReview from "../components/employee/components/HourReview";
 import { GetAbsenceData } from "../api/absence";
 import { toISO } from "../utils/utils";
+import { AxiosError } from "axios";
 
 export default function EmployeeDashboard() {
   const { user } = useAuth();
