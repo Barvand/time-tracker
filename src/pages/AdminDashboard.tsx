@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import ProjectItem from "../components/projects/ProjectItem";
 import { useCreateProject, GetProjects } from "../api/projects";
 import FilterTabs from "../components/admin/FilterTabs";
@@ -33,11 +33,13 @@ export default function Dashboard() {
   const [mode, setMode] = useState<"projects" | "absence">("projects");
   const { data: projects = [], isLoading, error } = GetProjects();
   const { data: absence = [] } = GetAbsenceData();
-  const displayedProjects = [
-    ...filterProjects(projects, activeTab, search),
-  ].sort((a, b) => Number(b.projectCode) - Number(a.projectCode));
   const [formData, setFormData] = useState<ProjectFormData>(initialFormData);
   const createMutation = useCreateProject();
+  const displayedProjects = useMemo(() => {
+    return [...filterProjects(projects, activeTab, search)].sort(
+      (a, b) => Number(b.projectCode) - Number(a.projectCode),
+    );
+  }, [projects, activeTab, search]);
 
   // ✅ Reset form + close accordion after successful create
   useEffect(() => {
