@@ -1,14 +1,14 @@
 import type { Project } from "../../types";
 
 export const TAB_CONFIG = {
-  all: { label: "Alle", filter: () => true },
-  active: { label: "Aktive", filter: (p: Project) => p.status === "active" },
+  all: { label: "Alle prosjekter", filter: () => true },
+  active: { label: "Aktive prosjekter", filter: (p: Project) => p.status === "active" },
   completed: {
-    label: "Fullførte",
+    label: "Fullførte prosjekter",
     filter: (p: Project) => p.status === "completed",
   },
   inactive: {
-    label: "Inaktive",
+    label: "Inaktive prosjekter",
     filter: (p: Project) => p.status === "inactive",
   },
 } as const;

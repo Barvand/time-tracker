@@ -1,13 +1,12 @@
 function RegisterBtn() {
   return (
-    <div className="text-right mb-4">
-      <a
-        className="text-sm text-red-600 hover:underline"
-        href="/admin/register"
-      >
-        Opprett ny konto{" "}
-      </a>
-    </div>
+    <a
+      href="/admin/register"
+      className="px-4 py-2 border border-red-600 text-red-600 rounded
+                 hover:bg-red-50 transition"
+    >
+      + Ny bruker
+    </a>
   );
 }
 

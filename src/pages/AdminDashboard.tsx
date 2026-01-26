@@ -15,7 +15,7 @@ import { GetAbsenceData } from "../api/absence";
 import AbsenceItem from "../components/projects/AbsenceItem";
 import ErrorMessage from "../components/UI/UX-messages/ErrorMessage";
 import AttentionMessage from "../components/UI/UX-messages/AttentionMessage";
-import AddProjectModal from "../components/admin/AddProjectAccordion";
+import AddProjectModal from "../components/admin/AddProjectModal";
 
 const initialFormData: ProjectFormData = {
   name: "",
@@ -50,17 +50,25 @@ export default function Dashboard() {
     <div className="p-4 max-w-4xl mx-auto">
       <h1 className="text-2xl font-bold text-gray-800 mb-4">Adminstrator</h1>
       <AttentionMessage message="Her kan du opprette prosjekter og brukerkontoer for dine ansatte." />
-      <RegisterBtn />
-      <div className="flex justify-end">
-        <button
-          onClick={() => setShowAddProject(true)}
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 mb-2"
-        >
-          + Nytt prosjekt
-        </button>
-      </div>
-      <SearchBar search={search} setSearch={setSearch} />
+      <h2 className="text-lg font-semibold mb-1">Hva vil du gjøre?</h2>
 
+      <p className="text-sm text-gray-600 mb-3">
+        Start med å opprette et prosjekt eller legge til ansatte.
+      </p>
+
+      <div className="bg-gray-50 p-4 mb-10 mt-10">
+        <div className="flex gap-3 flex-wrap items-center">
+          <button
+            onClick={() => setShowAddProject(true)}
+            className="px-4 py-2 bg-blue-600 text-white rounded
+                 hover:bg-blue-700 transition"
+          >
+            + Nytt prosjekt
+          </button>
+
+          <RegisterBtn />
+        </div>
+      </div>
       <FilterTabs
         projects={projects}
         absence={absence}
@@ -70,6 +78,8 @@ export default function Dashboard() {
         setMode={setMode}
         TAB_CONFIG={TAB_CONFIG}
       />
+
+      <SearchBar search={search} setSearch={setSearch} />
 
       <AddProjectModal
         open={showAddProject}

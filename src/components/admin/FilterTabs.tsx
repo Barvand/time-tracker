@@ -28,21 +28,27 @@ function FilterTabs({
 }: FilterTabsProps) {
   return (
     <div className="max-w-4xl mx-auto">
-      <div className="flex mb-4 space-x-4 flex-wrap">
+      <h2 className="text-lg font-semibold color-primary mb-2">
+        Vis prosjekter
+      </h2>
+      <div className="flex mb-6 gap-2 flex-wrap">
+        <h2 className="sr-only">Filter tabs</h2>
         {Object.entries(TAB_CONFIG).map(([key, cfg]) => {
           const count = projects.filter(cfg.filter).length;
 
           return (
             <button
+              role="tab"
+              aria-selected={mode === "projects" && activeTab === key}
               key={key}
               onClick={() => {
                 setMode("projects");
                 setActiveTab(key as ProjectTab);
               }}
-              className={`px-4 py-2 rounded ${
+              className={`px-4 py-2 border-b-2 transition mb-2 ${
                 mode === "projects" && activeTab === key
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-200"
+                  ? "border-blue-600 text-blue-600 font-medium"
+                  : "border-transparent text-gray-600 hover:text-blue-500"
               }`}
             >
               {cfg.label} ({count})
@@ -50,11 +56,17 @@ function FilterTabs({
           );
         })}
 
+        <div className="w-px bg-gray-300 mx-2" />
+
         {/* Fravær button in SAME ROW */}
         <button
+          role="tab"
+          aria-selected={mode === "absence"}
           onClick={() => setMode("absence")}
-          className={`px-4 py-2 rounded ${
-            mode === "absence" ? "bg-red-600 text-white" : "bg-gray-200"
+          className={`px-4 py-2 border-b-2 transition mb-2 ${
+            mode === "absence"
+              ? "border-green-600 text-green-600 font-medium"
+              : "border-transparent text-gray-600 hover:text-green-600"
           }`}
         >
           Fravær ({absence.length})
