@@ -33,7 +33,9 @@ export default function Dashboard() {
   const [mode, setMode] = useState<"projects" | "absence">("projects");
   const { data: projects = [], isLoading, error } = GetProjects();
   const { data: absence = [] } = GetAbsenceData();
-  const displayedProjects = filterProjects(projects, activeTab, search);
+  const displayedProjects = [
+    ...filterProjects(projects, activeTab, search),
+  ].sort((a, b) => Number(b.projectCode) - Number(a.projectCode));
   const [formData, setFormData] = useState<ProjectFormData>(initialFormData);
   const createMutation = useCreateProject();
 
