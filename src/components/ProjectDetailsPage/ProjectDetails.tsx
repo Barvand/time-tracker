@@ -124,16 +124,31 @@ const ProjectDetails: React.FC = () => {
   return (
     <>
       <div className="max-w-6xl mx-auto p-4">
-        <Link to="/admin/dashboard" className="text-blue-600 hover:underline">
-          &larr; Tilbake til Dashboard
-        </Link>
+        <div className="flex items-center justify-between mb-4">
+          <Link to="/admin/dashboard" className="text-blue-600 hover:underline">
+            &larr; Tilbake til Dashboard
+          </Link>
+          {/* Actions */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setShowEditModal(true)}
+              className="px-3 py-1.5 text-sm border hover:bg-blue-900 transition cursor-pointer bg-blue-600 text-white"
+            >
+              Rediger
+            </button>
 
+            <button
+              onClick={() => setShowConfirmModal(true)}
+              className="px-3 py-1.5 text-sm text-red-600 hover:text-red-700 transition cursor-pointer"
+            >
+              Slett
+            </button>
+          </div>
+        </div>
         <ProjectDetailsCard
           project={project}
           getStatusText={getStatusText}
           getStatusColor={getStatusColor}
-          onEdit={() => setShowEditModal(true)}
-          onDelete={() => setShowConfirmModal(true)}
         />
 
         {/* Edit Modal */}

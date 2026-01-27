@@ -13,9 +13,13 @@ import "yet-another-react-lightbox/plugins/thumbnails.css";
 export default function ImageGallery({
   images,
   projectCode,
+  currentUserId,
+  isAdmin,
 }: {
   images: GalleryImage[];
   projectCode: string;
+  currentUserId: number;
+  isAdmin: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const [index, setIndex] = useState(0);
@@ -34,6 +38,10 @@ export default function ImageGallery({
       setOpen(false);
     },
   });
+
+  const canDeleteImage = (image: GalleryImage) => {
+    return isAdmin || image.uploadedBy === currentUserId;
+  };
 
   const handleLoad = (id: number) => {
     setLoaded((prev) => ({
@@ -73,26 +81,28 @@ export default function ImageGallery({
             />
 
             {/* ❌ Delete button */}
-            <button
-              disabled={deleteMutation.isPending}
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                setImageToDelete(image.id);
-                setConfirmOpen(true);
-              }}
-              className="
-    absolute top-2 right-2 z-20 cursor-pointer
-    w-8 h-8 rounded-full
-    bg-black/70 text-red-500
-    flex items-center justify-center
-    transition
-    hover:bg-red-600 hover:text-white
-  "
-              title="Delete image"
-            >
-              ✕
-            </button>
+            {canDeleteImage(image) && (
+              <button
+                disabled={deleteMutation.isPending}
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setImageToDelete(image.id);
+                  setConfirmOpen(true);
+                }}
+                className="
+      absolute top-2 right-2 z-20 cursor-pointer
+      w-8 h-8 rounded-full
+      bg-black/70 text-red-500
+      flex items-center justify-center
+      transition
+      hover:bg-red-600 hover:text-white
+    "
+                title="Delete image"
+              >
+                ✕
+              </button>
+            )}
           </div>
         ))}
       </div>

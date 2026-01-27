@@ -68,4 +68,7 @@ export type GalleryImage = {
   id: number;
   url: string;
   alt?: string;
+  uploadedBy: number;
+  currentUserId?: number;
+  isAdmin?: boolean;
 };

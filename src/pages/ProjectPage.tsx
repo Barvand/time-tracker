@@ -57,15 +57,15 @@ function ProjectPage() {
   return (
     <div>
       {/* Tabs */}
-      <div className="flex justify-start gap-5 border-[#2c3e50] max-w-6xl mx-auto">
+      <div className="flex justify-start gap-5 border-r max-w-6xl mx-auto px-4 py-2">
         <div className="tabs flex gap-3">
           {tabs.map((tab) => (
             <button
               key={tab.key}
               onClick={() => setActiveTab(tab.key)}
-              className={`px-4 py-2 ${
+              className={`px-4 py-2 cursor-pointer border border-b-4 border-gray-900 ${
                 activeTab === tab.key
-                  ? "border-b-4 border-[#2c3e50]font-semibold bg-gray-50 font-semibold"
+                  ? "border-b-4 border-[#2c3e50] bg-[#2c3e50] font-semibold text-white cursor-pointer"
                   : "text-gray-600"
               }`}
             >
