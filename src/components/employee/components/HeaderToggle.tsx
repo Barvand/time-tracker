@@ -25,52 +25,54 @@ export default function HeaderToggle({
   total: number;
 }) {
   return (
-    <div className="mt-8 max-w-6xl mx-auto">
-      {/* Header with View Toggle */}
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold text-gray-900 mb-4">
-          Your Logged Hours
+    <div className="mt-6 sm:mt-8 max-w-6xl mx-auto px-2 sm:px-4">
+      {/* Overskrift */}
+      <div className="mb-5 sm:mb-6">
+        <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-3 sm:mb-4">
+          Mine timer
         </h2>
 
-        {/* View Mode Toggle */}
-        <div className="flex items-center gap-2 mb-4">
+        {/* Bytte mellom uke/måned */}
+        <div className="flex flex-wrap items-center gap-2 mb-4">
           <button
             onClick={() => setViewMode("weekly")}
-            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+            className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-sm sm:text-base font-medium transition-colors ${
               viewMode === "weekly"
                 ? "bg-blue-600 text-white"
                 : "bg-gray-100 text-gray-700 hover:bg-gray-200"
             }`}
           >
-            Weekly View
+            Ukentlig visning
           </button>
+
           <button
             onClick={() => setViewMode("monthly")}
-            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+            className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-sm sm:text-base font-medium transition-colors ${
               viewMode === "monthly"
                 ? "bg-blue-600 text-white"
                 : "bg-gray-100 text-gray-700 hover:bg-gray-200"
             }`}
           >
-            Monthly View
+            Månedlig visning
           </button>
         </div>
       </div>
 
-      {/* Period Navigation */}
-      <div className="bg-white rounded-lg shadow-sm border p-4">
-        <div className="flex items-center justify-between">
+      {/* Periode-navigasjon */}
+      <div className="bg-white rounded-lg shadow-sm border p-3 sm:p-4">
+        <div className="flex items-center justify-between gap-2">
+          {/* Forrige */}
           <button
             onClick={() =>
               viewMode === "weekly"
                 ? setWeekOffset(weekOffset - 1)
                 : setMonthOffset(monthOffset - 1)
             }
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-            aria-label="Previous period"
+            className="p-2 sm:p-2.5 hover:bg-gray-100 rounded-lg transition-colors"
+            aria-label="Forrige periode"
           >
             <svg
-              className="w-6 h-6"
+              className="w-5 h-5 sm:w-6 sm:h-6"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -84,29 +86,35 @@ export default function HeaderToggle({
             </svg>
           </button>
 
-          <div className="text-center">
-            <h3 className="text-lg font-semibold text-gray-900">
+          {/* Midtseksjon */}
+          <div className="text-center flex-1 px-1">
+            <h3 className="text-sm sm:text-lg font-semibold text-gray-900 truncate">
               {viewMode === "weekly" ? weekRange : monthName}
             </h3>
-            <p className="text-sm text-gray-500">
-              {viewMode === "weekly" ? "Weekly Total" : "Monthly Total"}
+
+            <p className="text-xs sm:text-sm text-gray-500">
+              {viewMode === "weekly"
+                ? "Totalt denne uken"
+                : "Totalt denne måneden"}
             </p>
-            <p className="text-3xl font-bold text-blue-600 mt-1">
-              {total.toFixed(2)} hrs
+
+            <p className="text-xl sm:text-3xl font-bold text-blue-600 mt-0.5 sm:mt-1">
+              {total.toFixed(2)} timer
             </p>
           </div>
 
+          {/* Neste */}
           <button
             onClick={() =>
               viewMode === "weekly"
                 ? setWeekOffset(weekOffset + 1)
                 : setMonthOffset(monthOffset + 1)
             }
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-            aria-label="Next period"
+            className="p-2 sm:p-2.5 hover:bg-gray-100 rounded-lg transition-colors"
+            aria-label="Neste periode"
           >
             <svg
-              className="w-6 h-6"
+              className="w-5 h-5 sm:w-6 sm:h-6"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"

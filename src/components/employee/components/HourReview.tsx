@@ -113,10 +113,10 @@ export default function HourReview({
   }
 
   const monthName = formatMonthName(currentMonthDate);
-  const weekRange = `${weeklySummary.startDate.toLocaleDateString("en-US", {
+  const weekRange = `${weeklySummary.startDate.toLocaleDateString("nb-NO", {
     month: "short",
     day: "numeric",
-  })} – ${weeklySummary.endDate.toLocaleDateString("en-US", {
+  })} – ${weeklySummary.endDate.toLocaleDateString("nb-NO", {
     month: "short",
     day: "numeric",
     year: "numeric",
@@ -151,7 +151,7 @@ export default function HourReview({
             return (
               <div
                 key={dateKey}
-                className="8888rounded-lg overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow"
+                className="rounded-lg overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow"
               >
                 {/* Day Header */}
                 <div
@@ -160,20 +160,20 @@ export default function HourReview({
                 >
                   <div className="flex justify-between items-center">
                     <div className="flex items-center gap-3">
-                      <span className="font-semibold text-lg text-gray-900">
-                        {date.toLocaleDateString(undefined, {
+                      <span className="font-semibold text-base text-gray-900">
+                        {date.toLocaleDateString("nb-NO", {
                           weekday: "long",
                           year: "numeric",
                           month: "long",
                           day: "numeric",
                         })}
                       </span>
-                      <span className="text-xs text-gray-600 bg-white px-2.5 py-1 border font-medium">
+                      <span className="text-base text-gray-600 bg-white px-2.5 mr-2 py-1 border font-medium">
                         {daylogs.length}
                       </span>
                     </div>
                     <div className="flex items-center gap-3">
-                      <span className="font-bold text-blue-600 text-lg">
+                      <span className="font-bold text-blue-600 text-base">
                         {dayTotal.toFixed(2)} hrs
                       </span>
                       <span className="text-gray-400 transform transition-transform">

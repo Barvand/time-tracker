@@ -18,7 +18,7 @@ export type MonthTotal = {
 
 export function getWeeklySummary(
   rows: HourRow[],
-  weekOffset: number
+  weekOffset: number,
 ): WeeklySummary {
   const grouped: Record<string, HourRow[]> = {};
   let weeklyTotal = 0;
@@ -54,7 +54,7 @@ export function getWeeklySummary(
   Object.keys(grouped).forEach((dateKey) => {
     grouped[dateKey].sort(
       (a, b) =>
-        new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
+        new Date(a.startTime).getTime() - new Date(b.startTime).getTime(),
     );
   });
 
@@ -66,7 +66,7 @@ export function getWeeklySummary(
 
 export function getMonthlySummary(
   rows: HourRow[],
-  baseDate = new Date()
+  baseDate = new Date(),
 ): WeeklySummary {
   const grouped: Record<string, HourRow[]> = {};
   let monthlyTotal = 0;
@@ -102,7 +102,7 @@ export function getMonthlySummary(
   Object.keys(grouped).forEach((dateKey) => {
     grouped[dateKey].sort(
       (a, b) =>
-        new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
+        new Date(a.startTime).getTime() - new Date(b.startTime).getTime(),
     );
   });
 
@@ -120,7 +120,7 @@ export function getMonthlySummary(
 
 export function getMonthlyTotal(
   rows: HourRow[],
-  baseDate = new Date()
+  baseDate = new Date(),
 ): number {
   const year = baseDate.getFullYear();
   const month = baseDate.getMonth(); // 0-based
@@ -159,7 +159,7 @@ export function getAllMonthlyTotals(rows: HourRow[]): MonthTotal[] {
         year,
         month,
         total,
-        label: date.toLocaleDateString("en-US", {
+        label: date.toLocaleDateString("nb-NO", {
           month: "long",
           year: "numeric",
         }),

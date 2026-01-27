@@ -25,18 +25,13 @@ export default function SelectField({
 }: SelectFieldProps) {
   return (
     <div className="w-full">
-      {label && <label className="text-md font-bold">{label}</label>}
+      {label && <label className="text-md font-bold mb-2">{label}</label>}
       <select
         name={name}
         value={value}
         onChange={onChange}
         disabled={disabled}
-        className="mt-4
-    w-full rounded border bg-white p-3
-    disabled:bg-gray-100
-    disabled:text-gray-400
-    disabled:border-gray-300
-    disabled:cursor-not-allowed
+        className="w-full rounded border bg-white px-4 py-2.5 text-sm border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors
   "
       >
         {placeholder && <option value="">{placeholder}</option>}
