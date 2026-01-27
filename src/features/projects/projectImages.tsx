@@ -15,6 +15,7 @@ export default function ProjectImages({
   });
 
   const { user } = useAuth();
+  const currentUserId = user?.userId;
 
   if (isLoading) {
     return <p className="text-gray-400">Loading images…</p>;
@@ -35,8 +36,8 @@ export default function ProjectImages({
     <ImageGallery
       images={images}
       projectCode={projectCode}
-      currentUserId={user.id}
-      isAdmin={user.role === "admin"}
+      currentUserId={currentUserId ?? 0}
+      isAdmin={user?.role === "admin"}
     />
   );
 }
