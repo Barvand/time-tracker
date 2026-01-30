@@ -19,13 +19,13 @@ export default function HourReview({
   userId,
   weekOffset: initialWeekOffset,
   projects,
-}: hourReviewProps) {
+  userName,
+}: hourReviewProps & { userName: string }) {
   // View state
 
   const [weekOffset, setWeekOffset] = useState(initialWeekOffset);
   const [monthOffset, setMonthOffset] = useState(0);
   const [viewMode, setViewMode] = useState<viewMode>("weekly");
-  // Edit state
   const [editingId, setEditingId] = useState<number | null>(null);
   const [expandedDays, setExpandedDays] = useState<Set<string>>(new Set());
   const [start, setStart] = useState("");
@@ -134,11 +134,12 @@ export default function HourReview({
         weekRange={weekRange}
         monthName={monthName}
         total={total}
+        name={userName}
       />
 
       <>
         {/* Day Entries */}
-        <div className="space-y-3 mb-6">
+        <div className="space-y-3 mb-6 mt-6">
           {sortedDates.map((dateKey) => {
             const daylogs = groupedByDate[dateKey];
             const isExpanded = expandedDays.has(dateKey);

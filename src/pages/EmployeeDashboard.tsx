@@ -71,6 +71,7 @@ export default function EmployeeDashboard() {
               weekOffset={weekOffset}
               projects={projects}
               absence={absence}
+              userName={user?.name || ""}
             />
           )}
         </aside>

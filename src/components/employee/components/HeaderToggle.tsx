@@ -7,6 +7,7 @@ type HeaderToggleProps = {
   setWeekOffset: (offset: number) => void;
   monthOffset: number;
   setMonthOffset: (offset: number) => void;
+  name: string;
 };
 
 export default function HeaderToggle({
@@ -19,6 +20,7 @@ export default function HeaderToggle({
   weekRange,
   monthName,
   total,
+  name,
 }: HeaderToggleProps & {
   weekRange: string;
   monthName: string;
@@ -29,7 +31,7 @@ export default function HeaderToggle({
       {/* Overskrift */}
       <div className="mb-5 sm:mb-6">
         <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-3 sm:mb-4">
-          Mine timer
+          {name}'s timer
         </h2>
 
         {/* Bytte mellom uke/måned */}
