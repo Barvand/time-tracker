@@ -20,7 +20,6 @@ export default function HeaderToggle({
   weekRange,
   monthName,
   total,
-  name,
 }: HeaderToggleProps & {
   weekRange: string;
   monthName: string;
