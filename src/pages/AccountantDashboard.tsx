@@ -62,7 +62,7 @@ export default function AccountantPage() {
       {/* Selected User Info */}
       {!selectedUserId && (
         <div className="mt-10 text-center text-gray-500 italic">
-          ⬆️ Velg en ansatt ovenfor for å vise timer
+          Velg en ansatt ovenfor for å vise timer
         </div>
       )}
 
