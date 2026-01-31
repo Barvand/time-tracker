@@ -30,10 +30,6 @@ export default function HeaderToggle({
     <div className="mt-6 sm:mt-8 max-w-6xl mx-auto px-2 sm:px-4">
       {/* Overskrift */}
       <div className="mb-5 sm:mb-6">
-        <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-3 sm:mb-4">
-          {name}'s timer
-        </h2>
-
         {/* Bytte mellom uke/måned */}
         <div className="flex flex-wrap items-center gap-2 mb-4">
           <button
