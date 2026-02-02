@@ -21,7 +21,9 @@ export function HourDisplayCards({
         {/* Line 1 — Project or Absence */}
         <div>
           {row.absenceId ? (
-            <span className="text-red-600">{absenceName}</span>
+            <Link to={`/admin/absence/${row.absenceId}`} className="block">
+              <span className="text-red-600">{absenceName}</span>
+            </Link>
           ) : (
             <Link
               to={`/project/${projectCode}`}
