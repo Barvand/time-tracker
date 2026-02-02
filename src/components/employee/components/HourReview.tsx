@@ -105,7 +105,7 @@ export default function HourReview({
       setIsUpdating(true);
       await updateMutation.mutateAsync({ idHours, data });
       await queryClient.invalidateQueries({
-        queryKey: ["allHours"],
+        queryKey: ["Hours, all"],
       });
       setEditingId(null);
       alert("Entry updated successfully.");

@@ -10,7 +10,6 @@ export default function AccountantPage() {
   const { data: users = [] } = GetUsers();
   const { data: projects = [] } = GetProjects();
   const { data: absence = [] } = GetAbsenceData();
-
   const [weekOffset] = useState(0);
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
 
