@@ -14,6 +14,7 @@ import type { hourReviewProps, viewMode } from "../../../types";
 import HeaderToggle from "./HeaderToggle";
 import { GetProjects } from "../../../api/projects";
 import { GetAbsenceData } from "../../../api/absence";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function HourReview({
   userId,
@@ -37,6 +38,7 @@ export default function HourReview({
   const { data: projectsData = [] } = GetProjects();
   const { data: absenceData = [] } = GetAbsenceData();
   const updateMutation = useUpdateHour();
+  const queryClient = useQueryClient();
 
   // Maps
   const projectMap = useMemo(() => {
@@ -102,6 +104,9 @@ export default function HourReview({
     try {
       setIsUpdating(true);
       await updateMutation.mutateAsync({ idHours, data });
+      await queryClient.invalidateQueries({
+        queryKey: ["allHours"],
+      });
       setEditingId(null);
       alert("Entry updated successfully.");
     } catch (err) {

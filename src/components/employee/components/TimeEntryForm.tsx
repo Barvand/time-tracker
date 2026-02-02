@@ -13,6 +13,7 @@ import TimeEntrySubmitBtn from "../../UI/buttons/timeEntrySubmitBtn";
 import AttentionMessage from "../../UI/UX-messages/AttentionMessage";
 import PreviewSection from "../form/PreviewSection";
 import { Plus } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function EmployeeAddEmployeeAddHourForm({
   projects,
@@ -34,6 +35,7 @@ export default function EmployeeAddEmployeeAddHourForm({
     note: "",
   });
 
+  const queryClient = useQueryClient();
   const [hidden, setHidden] = useState(true);
 
   const { data: absence = [] } = GetAbsenceData();
@@ -79,6 +81,9 @@ export default function EmployeeAddEmployeeAddHourForm({
   const handleSubmit = async () => {
     try {
       await onSubmit(formData);
+      await queryClient.invalidateQueries({
+        queryKey: ["allHours"],
+      });
       setFormData({
         projectId: "",
         date: "",
