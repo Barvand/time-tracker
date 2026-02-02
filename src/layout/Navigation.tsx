@@ -126,15 +126,6 @@ function Navigation() {
               )}
             </div>
           )}
-
-          {!user && (
-            <Link
-              to="/login"
-              className="text-sm font-medium text-gray-700 hover:text-black transition"
-            >
-              Login
-            </Link>
-          )}
         </div>
       </div>
 
