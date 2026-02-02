@@ -82,7 +82,7 @@ export default function EmployeeAddEmployeeAddHourForm({
     try {
       await onSubmit(formData);
       await queryClient.invalidateQueries({
-        queryKey: ["Hours, all"],
+        queryKey: ["hours, all"],
       });
       setFormData({
         projectId: "",
